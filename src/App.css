@@ -1,0 +1,76 @@
+.app {
+  font-family: Arial, sans-serif;
+  color: #222;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: green;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.card h3 {
+  margin-top: 0;
+  color: blue;
+}
+.dettaglio {
+  max-width: 700px;
+  margin: 40px auto;
+}
+
+.dettaglio a {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #2c3e50;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.dettaglio a:hover {
+  text-decoration: underline;
+}
+
+.dettaglio h1 {
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+.dettaglio h2 {
+  margin-top: 30px;
+  color: #2c3e50;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 5px;
+}
+
+.card {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+}
