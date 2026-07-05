@@ -7,6 +7,8 @@ import './App.css';
 function ListaVie() {
   const [vie, setVie] = useState([]);
   const [caricamento, setCaricamento] = useState(true);
+  const [filtroZona, setFiltroZona] = useState('');
+  const [filtroDifficolta, setFiltroDifficolta] = useState('');
 
   useEffect(() => {
     async function caricaVie() {
@@ -27,6 +29,17 @@ function ListaVie() {
     return <p>Caricamento vie in corso...</p>;
   }
 
+  // Estrae le zone e difficoltà uniche presenti nei dati, per popolare i menu a tendina
+  const zoneDisponibili = [...new Set(vie.map((via) => via.zona))];
+  const difficoltaDisponibili = [...new Set(vie.map((via) => via.difficolta))];
+
+  // Applica i filtri scelti dall'utente
+  const vieFiltrate = vie.filter((via) => {
+    const passaZona = filtroZona === '' || via.zona === filtroZona;
+    const passaDifficolta = filtroDifficolta === '' || via.difficolta === filtroDifficolta;
+    return passaZona && passaDifficolta;
+  });
+
   return (
     <div className="app">
       <header className="header">
@@ -36,15 +49,36 @@ function ListaVie() {
 
       <main className="main">
         <h2>Vie in evidenza</h2>
-        <div className="grid">
-          {vie.map((via) => (
-            <Link to={`/via/${via.id}`} className="card" key={via.id}>
-              <h3>{via.nome}</h3>
-              <p>Zona: {via.zona}</p>
-              <p>Difficoltà: {via.difficolta}</p>
-            </Link>
-          ))}
+
+        <div className="filtri">
+          <select value={filtroZona} onChange={(e) => setFiltroZona(e.target.value)}>
+            <option value="">Tutte le zone</option>
+            {zoneDisponibili.map((zona) => (
+              <option key={zona} value={zona}>{zona}</option>
+            ))}
+          </select>
+
+          <select value={filtroDifficolta} onChange={(e) => setFiltroDifficolta(e.target.value)}>
+            <option value="">Tutte le difficoltà</option>
+            {difficoltaDisponibili.map((difficolta) => (
+              <option key={difficolta} value={difficolta}>{difficolta}</option>
+            ))}
+          </select>
         </div>
+
+        {vieFiltrate.length === 0 ? (
+          <p>Nessuna via corrisponde ai filtri scelti.</p>
+        ) : (
+          <div className="grid">
+            {vieFiltrate.map((via) => (
+              <Link to={`/via/${via.id}`} className="card" key={via.id}>
+                <h3>{via.nome}</h3>
+                <p>Zona: {via.zona}</p>
+                <p>Difficoltà: {via.difficolta}</p>
+              </Link>
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );
