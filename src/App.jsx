@@ -1,9 +1,32 @@
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import vie from './data/vie';
+import { supabase } from './supabaseClient';
 import ViaDettaglio from './pages/ViaDettaglio';
 import './App.css';
 
 function ListaVie() {
+  const [vie, setVie] = useState([]);
+  const [caricamento, setCaricamento] = useState(true);
+
+  useEffect(() => {
+    async function caricaVie() {
+      const { data, error } = await supabase.from('vie').select('*');
+
+      if (error) {
+        console.error('Errore nel caricamento:', error);
+      } else {
+        setVie(data);
+      }
+      setCaricamento(false);
+    }
+
+    caricaVie();
+  }, []);
+
+  if (caricamento) {
+    return <p>Caricamento vie in corso...</p>;
+  }
+
   return (
     <div className="app">
       <header className="header">
