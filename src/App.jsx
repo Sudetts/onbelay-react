@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 import ViaDettaglio from './pages/ViaDettaglio';
 import './App.css';
+import Registrati from './pages/Registrati';
+import NuovaVia from './pages/NuovaVia';
 
 function ListaVie() {
   const [vie, setVie] = useState([]);
@@ -45,6 +47,8 @@ function ListaVie() {
       <header className="header">
         <h1>Onbelay</h1>
         <p>Vie lunghe di arrampicata: relazioni, foto e tracce GPX</p>
+        <Link to="/registrati">Registrati</Link>
+        <Link to="/nuova-via">Aggiungi via</Link>
       </header>
 
       <main className="main">
@@ -90,6 +94,8 @@ function App() {
       <Routes>
         <Route path="/" element={<ListaVie />} />
         <Route path="/via/:id" element={<ViaDettaglio />} />
+        <Route path="/registrati" element={<Registrati />} />
+        <Route path="/nuova-via" element={<NuovaVia />} />
       </Routes>
     </BrowserRouter>
   );
