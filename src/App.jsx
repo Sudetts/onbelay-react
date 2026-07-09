@@ -1,10 +1,42 @@
-import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
+import { useAuth } from './AuthContext';
 import ViaDettaglio from './pages/ViaDettaglio';
-import './App.css';
 import Registrati from './pages/Registrati';
+import Login from './pages/Login';
 import NuovaVia from './pages/NuovaVia';
+import ModificaVia from './pages/ModificaVia';
+import Profilo from './pages/Profilo';
+import './App.css';
+
+
+function Intestazione() {
+  const { utente, logout } = useAuth();
+
+  return (
+    <header className="header">
+      <h1>Onbelay</h1>
+      <p>Vie lunghe di arrampicata: relazioni, foto e tracce GPX</p>
+
+      <nav className="nav">
+        {utente ? (
+          <>
+            <span>Ciao, {utente.user_metadata?.nome || utente.email}</span>
+            <Link to="/profilo">Profilo</Link>
+            <Link to="/nuova-via">Aggiungi via</Link>
+            <button onClick={logout} className="link-button">Esci</button>
+          </>
+        ) : (
+          <>
+            <Link to="/login">Accedi</Link>
+            <Link to="/registrati">Registrati</Link>
+          </>
+        )}
+      </nav>
+    </header>
+  );
+}
 
 function ListaVie() {
   const [vie, setVie] = useState([]);
@@ -15,7 +47,6 @@ function ListaVie() {
   useEffect(() => {
     async function caricaVie() {
       const { data, error } = await supabase.from('vie').select('*');
-
       if (error) {
         console.error('Errore nel caricamento:', error);
       } else {
@@ -23,7 +54,6 @@ function ListaVie() {
       }
       setCaricamento(false);
     }
-
     caricaVie();
   }, []);
 
@@ -31,11 +61,9 @@ function ListaVie() {
     return <p>Caricamento vie in corso...</p>;
   }
 
-  // Estrae le zone e difficoltà uniche presenti nei dati, per popolare i menu a tendina
   const zoneDisponibili = [...new Set(vie.map((via) => via.zona))];
   const difficoltaDisponibili = [...new Set(vie.map((via) => via.difficolta))];
 
-  // Applica i filtri scelti dall'utente
   const vieFiltrate = vie.filter((via) => {
     const passaZona = filtroZona === '' || via.zona === filtroZona;
     const passaDifficolta = filtroDifficolta === '' || via.difficolta === filtroDifficolta;
@@ -44,12 +72,7 @@ function ListaVie() {
 
   return (
     <div className="app">
-      <header className="header">
-        <h1>Onbelay</h1>
-        <p>Vie lunghe di arrampicata: relazioni, foto e tracce GPX</p>
-        <Link to="/registrati">Registrati</Link>
-        <Link to="/nuova-via">Aggiungi via</Link>
-      </header>
+      <Intestazione />
 
       <main className="main">
         <h2>Vie in evidenza</h2>
@@ -95,7 +118,10 @@ function App() {
         <Route path="/" element={<ListaVie />} />
         <Route path="/via/:id" element={<ViaDettaglio />} />
         <Route path="/registrati" element={<Registrati />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/nuova-via" element={<NuovaVia />} />
+        <Route path="/via/:id/modifica" element={<ModificaVia />} />
+        <Route path="/profilo" element={<Profilo />} />
       </Routes>
     </BrowserRouter>
   );

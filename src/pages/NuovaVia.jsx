@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
+import { useAuth } from '../AuthContext';
 
 function NuovaVia() {
+  const { utente } = useAuth();
   const [nome, setNome] = useState('');
   const [zona, setZona] = useState('');
   const [difficolta, setDifficolta] = useState('');
@@ -21,6 +23,7 @@ function NuovaVia() {
       zona,
       difficolta,
       relazione,
+      autore_id: utente.id,
     });
 
     if (error) {
@@ -30,7 +33,16 @@ function NuovaVia() {
     }
 
     setCaricamento(false);
-    navigate('/'); // torna alla homepage, dove dovremmo vedere la nuova via
+    navigate('/');
+  }
+
+  if (!utente) {
+    return (
+      <div className="app dettaglio">
+        <p>Devi accedere per aggiungere una via.</p>
+        <Link to="/login">Vai al login</Link>
+      </div>
+    );
   }
 
   return (

@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
+import { useAuth } from '../AuthContext';
 
 function ViaDettaglio() {
   const { id } = useParams();
+  const { utente } = useAuth();
+  const navigate = useNavigate();
   const [via, setVia] = useState(null);
   const [caricamento, setCaricamento] = useState(true);
 
@@ -26,6 +29,20 @@ function ViaDettaglio() {
     caricaVia();
   }, [id]);
 
+  async function handleElimina() {
+    const conferma = window.confirm('Sei sicuro di voler eliminare questa via?');
+    if (!conferma) return;
+
+    const { error } = await supabase.from('vie').delete().eq('id', id);
+
+    if (error) {
+      alert('Errore durante l\'eliminazione: ' + error.message);
+      return;
+    }
+
+    navigate('/');
+  }
+
   if (caricamento) {
     return <p>Caricamento in corso...</p>;
   }
@@ -39,6 +56,8 @@ function ViaDettaglio() {
     );
   }
 
+  const eAutore = utente && utente.id === via.autore_id;
+
   return (
     <div className="app dettaglio">
       <Link to="/">← Torna alla lista</Link>
@@ -47,6 +66,13 @@ function ViaDettaglio() {
       <p>Difficoltà: {via.difficolta}</p>
       <h2>Relazione</h2>
       <p>{via.relazione}</p>
+
+      {eAutore && (
+        <div className="azioni-autore">
+          <Link to={`/via/${via.id}/modifica`}>Modifica</Link>
+          <button onClick={handleElimina} className="link-button">Elimina</button>
+        </div>
+      )}
     </div>
   );
 }

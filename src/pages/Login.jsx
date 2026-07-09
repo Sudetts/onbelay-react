@@ -2,12 +2,9 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
-function Registrati() {
+function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [nome, setNome] = useState('');
-  const [cognome, setCognome] = useState('');
-  const [citta, setCitta] = useState('');
   const [errore, setErrore] = useState('');
   const [caricamento, setCaricamento] = useState(false);
   const navigate = useNavigate();
@@ -17,16 +14,9 @@ function Registrati() {
     setErrore('');
     setCaricamento(true);
 
-    const { error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
-      options: {
-        data: {
-          nome,
-          cognome,
-          citta,
-        },
-      },
     });
 
     if (error) {
@@ -42,7 +32,7 @@ function Registrati() {
   return (
     <div className="app dettaglio">
       <Link to="/">← Torna alla lista</Link>
-      <h1>Registrati</h1>
+      <h1>Accedi</h1>
 
       <form onSubmit={handleSubmit} className="form">
         <input
@@ -58,38 +48,16 @@ function Registrati() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          minLength={6}
-        />
-        <input
-          type="text"
-          placeholder="Nome"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Cognome"
-          value={cognome}
-          onChange={(e) => setCognome(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Città"
-          value={citta}
-          onChange={(e) => setCitta(e.target.value)}
-          required
         />
 
         {errore && <p className="errore">{errore}</p>}
 
         <button type="submit" disabled={caricamento}>
-          {caricamento ? 'Registrazione in corso...' : 'Registrati'}
+          {caricamento ? 'Accesso in corso...' : 'Accedi'}
         </button>
       </form>
     </div>
   );
 }
 
-export default Registrati;
+export default Login;
