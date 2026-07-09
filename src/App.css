@@ -179,3 +179,14 @@
   margin: 15px 0;
   display: block;
 }
+
+.messaggio-successo {
+  color: #27ae60;
+  font-weight: bold;
+}
+
+.link-piccolo {
+  font-size: 0.85rem;
+  color: #666;
+  text-decoration: underline;
+}

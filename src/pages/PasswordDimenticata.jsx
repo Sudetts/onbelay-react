@@ -1,64 +1,55 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
-function Login() {
+function PasswordDimenticata() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [messaggio, setMessaggio] = useState('');
   const [errore, setErrore] = useState('');
   const [caricamento, setCaricamento] = useState(false);
-  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
     setErrore('');
+    setMessaggio('');
     setCaricamento(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reimposta-password`,
     });
 
     if (error) {
       setErrore(error.message);
-      setCaricamento(false);
-      return;
+    } else {
+      setMessaggio('Controlla la tua email: ti abbiamo inviato un link per reimpostare la password.');
     }
 
     setCaricamento(false);
-    navigate('/');
   }
 
   return (
     <div className="app dettaglio">
-      <Link to="/">← Torna alla lista</Link>
-      <h1>Accedi</h1>
+      <Link to="/login">← Torna al login</Link>
+      <h1>Password dimenticata</h1>
 
       <form onSubmit={handleSubmit} className="form">
         <input
           type="email"
-          placeholder="Email"
+          placeholder="La tua email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
 
-        <Link to="/password-dimenticata" className="link-piccolo">Password dimenticata?</Link>
         {errore && <p className="errore">{errore}</p>}
+        {messaggio && <p className="messaggio-successo">{messaggio}</p>}
 
         <button type="submit" disabled={caricamento}>
-          {caricamento ? 'Accesso in corso...' : 'Accedi'}
+          {caricamento ? 'Invio in corso...' : 'Invia link di recupero'}
         </button>
       </form>
     </div>
   );
 }
 
-export default Login;
+export default PasswordDimenticata;

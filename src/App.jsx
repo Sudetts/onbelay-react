@@ -8,6 +8,8 @@ import Login from './pages/Login';
 import NuovaVia from './pages/NuovaVia';
 import ModificaVia from './pages/ModificaVia';
 import Profilo from './pages/Profilo';
+import PasswordDimenticata from './pages/PasswordDimenticata';
+import ReimpostaPassword from './pages/ReimpostaPassword';
 import './App.css';
 
 
@@ -122,6 +124,8 @@ function App() {
         <Route path="/nuova-via" element={<NuovaVia />} />
         <Route path="/via/:id/modifica" element={<ModificaVia />} />
         <Route path="/profilo" element={<Profilo />} />
+        <Route path="/password-dimenticata" element={<PasswordDimenticata />} />
+        <Route path="/reimposta-password" element={<ReimpostaPassword />} />
       </Routes>
     </BrowserRouter>
   );

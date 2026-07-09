@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
-function Login() {
-  const [email, setEmail] = useState('');
+function ReimpostaPassword() {
   const [password, setPassword] = useState('');
+  const [conferma, setConferma] = useState('');
   const [errore, setErrore] = useState('');
   const [caricamento, setCaricamento] = useState(false);
   const navigate = useNavigate();
@@ -12,12 +12,15 @@ function Login() {
   async function handleSubmit(e) {
     e.preventDefault();
     setErrore('');
+
+    if (password !== conferma) {
+      setErrore('Le due password non coincidono.');
+      return;
+    }
+
     setCaricamento(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error } = await supabase.auth.updateUser({ password });
 
     if (error) {
       setErrore(error.message);
@@ -31,34 +34,34 @@ function Login() {
 
   return (
     <div className="app dettaglio">
-      <Link to="/">← Torna alla lista</Link>
-      <h1>Accedi</h1>
+      <h1>Imposta una nuova password</h1>
 
       <form onSubmit={handleSubmit} className="form">
         <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
           type="password"
-          placeholder="Password"
+          placeholder="Nuova password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          minLength={6}
+        />
+        <input
+          type="password"
+          placeholder="Conferma nuova password"
+          value={conferma}
+          onChange={(e) => setConferma(e.target.value)}
+          required
+          minLength={6}
         />
 
-        <Link to="/password-dimenticata" className="link-piccolo">Password dimenticata?</Link>
         {errore && <p className="errore">{errore}</p>}
 
         <button type="submit" disabled={caricamento}>
-          {caricamento ? 'Accesso in corso...' : 'Accedi'}
+          {caricamento ? 'Salvataggio in corso...' : 'Salva nuova password'}
         </button>
       </form>
     </div>
   );
 }
 
-export default Login;
+export default ReimpostaPassword;
