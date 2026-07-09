@@ -9,6 +9,8 @@ function NuovaVia() {
   const [zona, setZona] = useState('');
   const [difficolta, setDifficolta] = useState('');
   const [relazione, setRelazione] = useState('');
+  const [fotoFile, setFotoFile] = useState(null);
+  const [gpxFile, setGpxFile] = useState(null);
   const [errore, setErrore] = useState('');
   const [caricamento, setCaricamento] = useState(false);
   const navigate = useNavigate();
@@ -18,12 +20,57 @@ function NuovaVia() {
     setErrore('');
     setCaricamento(true);
 
+    let fotoUrl = null;
+    let gpxUrl = null;
+
+    // Se l'utente ha scelto una foto, caricala su Storage
+    if (fotoFile) {
+      const nomeFile = `${utente.id}/${Date.now()}-${fotoFile.name}`;
+      const { error: erroreFoto } = await supabase.storage
+        .from('foto-vie')
+        .upload(nomeFile, fotoFile);
+
+      if (erroreFoto) {
+        setErrore('Errore caricamento foto: ' + erroreFoto.message);
+        setCaricamento(false);
+        return;
+      }
+
+      // Recupera il link pubblico del file appena caricato
+      const { data: urlData } = supabase.storage
+        .from('foto-vie')
+        .getPublicUrl(nomeFile);
+      fotoUrl = urlData.publicUrl;
+    }
+
+    // Stessa cosa per il GPX, se presente
+    if (gpxFile) {
+      const nomeFile = `${utente.id}/${Date.now()}-${gpxFile.name}`;
+      const { error: erroreGpx } = await supabase.storage
+        .from('gpx-vie')
+        .upload(nomeFile, gpxFile);
+
+      if (erroreGpx) {
+        setErrore('Errore caricamento GPX: ' + erroreGpx.message);
+        setCaricamento(false);
+        return;
+      }
+
+      const { data: urlData } = supabase.storage
+        .from('gpx-vie')
+        .getPublicUrl(nomeFile);
+      gpxUrl = urlData.publicUrl;
+    }
+
+    // Ora salviamo la via nel database, con i link ai file (se presenti)
     const { error } = await supabase.from('vie').insert({
       nome,
       zona,
       difficolta,
       relazione,
       autore_id: utente.id,
+      foto_url: fotoUrl,
+      gpx_url: gpxUrl,
     });
 
     if (error) {
@@ -79,6 +126,24 @@ function NuovaVia() {
           rows={5}
           required
         />
+
+        <label>
+          Foto (opzionale)
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setFotoFile(e.target.files[0])}
+          />
+        </label>
+
+        <label>
+          Traccia GPX (opzionale)
+          <input
+            type="file"
+            accept=".gpx"
+            onChange={(e) => setGpxFile(e.target.files[0])}
+          />
+        </label>
 
         {errore && <p className="errore">{errore}</p>}
 

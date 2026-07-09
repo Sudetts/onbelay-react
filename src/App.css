@@ -163,3 +163,19 @@
 .scheda-profilo p {
   margin: 8px 0;
 }
+
+.form label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.foto-via {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 8px;
+  margin: 15px 0;
+  display: block;
+}
