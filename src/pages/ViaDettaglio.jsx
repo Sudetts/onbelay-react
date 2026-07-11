@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
+import MappaGpx from '../components/MappaGpx';
 
 function ViaDettaglio() {
   const { id } = useParams();
@@ -73,9 +74,13 @@ function ViaDettaglio() {
       <p>{via.relazione}</p>
 
       {via.gpx_url && (
-        <p>
-          <a href={via.gpx_url} download>Scarica traccia GPX</a>
-        </p>
+        <div>
+          <h2>Avvicinamento</h2>
+          <MappaGpx gpxUrl={via.gpx_url} />
+          <p>
+            <a href={via.gpx_url} download>Scarica traccia GPX</a>
+          </p>
+        </div>
       )}
 
       {eAutore && (

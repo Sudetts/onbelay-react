@@ -17,7 +17,7 @@ function Intestazione() {
   const { utente, logout } = useAuth();
 
   return (
-    <header className="header">
+    <header className="header header-immagine">
       <h1>Onbelay</h1>
       <p>Vie lunghe di arrampicata: relazioni, foto e tracce GPX</p>
 

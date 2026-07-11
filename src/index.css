@@ -1,9 +1,31 @@
+:root {
+  --colore-sfondo: #EAE7E1;
+  --colore-testo: #252A2E;
+  --colore-testo-secondario: #5B5F5A;
+  --colore-accento: #B8452F;
+  --colore-accento-scuro: #8C3320;
+  --colore-secondario: #5B7A8C;
+  --colore-successo: #5C6E4F;
+  --colore-superficie: #F5F3EE;
+  --colore-bordo: #D8D4CA;
+
+  --font-titoli: 'Fraunces', Georgia, serif;
+  --font-testo: 'Inter', Arial, sans-serif;
+  --font-tecnico: 'JetBrains Mono', monospace;
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  background-color: #ffffff;
-  color: #222222;
+  color: var(--colore-testo);
+  font-family: var(--font-testo);
+  background-image: url('/sfondo-header.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
 }
