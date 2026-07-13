@@ -62,25 +62,50 @@ function ViaDettaglio() {
   return (
     <div className="app dettaglio">
       <Link to="/">← Torna alla lista</Link>
-<h1>{via.nome}</h1>
+      <h1>{via.nome}</h1>
       <p>Zona: {via.zona}</p>
       <p>Difficoltà: {via.difficolta}</p>
 
-      {via.foto_url && (
-        <img src={via.foto_url} alt={via.nome} className="foto-via" />
+      {via.avvicinamento_descrizione && (
+        <>
+          <h2>Avvicinamento</h2>
+          <p>{via.avvicinamento_descrizione}</p>
+          {via.avvicinamento_foto_url && (
+            <img src={via.avvicinamento_foto_url} alt="Avvicinamento" className="foto-via" />
+          )}
+          {via.avvicinamento_gpx_url && (
+            <>
+              <MappaGpx gpxUrl={via.avvicinamento_gpx_url} />
+              <p><a href={via.avvicinamento_gpx_url} download>Scarica traccia GPX avvicinamento</a></p>
+            </>
+          )}
+        </>
       )}
 
-      <h2>Relazione</h2>
-      <p>{via.relazione}</p>
+      {via.descrizione_via && (
+        <>
+          <h2>Via</h2>
+          <p>{via.descrizione_via}</p>
+          {via.diagramma_url && (
+            <img src={via.diagramma_url} alt="Topo della via" className="foto-via" />
+          )}
+        </>
+      )}
 
-      {via.gpx_url && (
-        <div>
-          <h2>Avvicinamento</h2>
-          <MappaGpx gpxUrl={via.gpx_url} />
-          <p>
-            <a href={via.gpx_url} download>Scarica traccia GPX</a>
-          </p>
-        </div>
+      {via.allontanamento_descrizione && (
+        <>
+          <h2>Allontanamento</h2>
+          <p>{via.allontanamento_descrizione}</p>
+          {via.allontanamento_foto_url && (
+            <img src={via.allontanamento_foto_url} alt="Allontanamento" className="foto-via" />
+          )}
+          {via.allontanamento_gpx_url && (
+            <>
+              <MappaGpx gpxUrl={via.allontanamento_gpx_url} />
+              <p><a href={via.allontanamento_gpx_url} download>Scarica traccia GPX allontanamento</a></p>
+            </>
+          )}
+        </>
       )}
 
       {eAutore && (

@@ -25,14 +25,14 @@
   font-family: var(--font-titoli);
   font-size: 3.2rem;
   font-weight: 600;
-  color: #fff;
+  color: #000;
   margin: 0 0 4px;
   letter-spacing: -0.02em;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
 }
 
 .header p {
-  color: #fff;
+  color: #000;
   font-size: 1.05rem;
   margin: 0;
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
@@ -293,4 +293,42 @@
 
 .scheda-profilo p {
   margin: 8px 0;
+}
+
+.campo-ricerca {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--colore-bordo);
+  background-color: var(--colore-superficie);
+  font-family: var(--font-testo);
+  font-size: 0.9rem;
+  color: var(--colore-testo);
+  min-width: 200px;
+}
+
+.titolo-sezione {
+  font-family: var(--font-titoli);
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: var(--colore-testo);
+  margin: 10px 0 0;
+  padding-top: 15px;
+  border-top: 1px solid var(--colore-bordo);
+}
+
+.badge-attesa {
+  display: inline-block;
+  color: #1d5f8a;
+  background-color: rgba(91, 122, 140, 0.15);
+  font-family: var(--font-tecnico);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin-top: 6px;
+}
+
+.badge-rifiutata {
+  color: #A32D2D;
+  font-weight: 600;
 }

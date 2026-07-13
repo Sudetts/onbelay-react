@@ -79,11 +79,13 @@ function Profilo() {
         <div className="grid">
           {vieUtente.map((via) => (
             <Link to={`/via/${via.id}`} className="card" key={via.id}>
-              <h3>{via.nome}</h3>
-              <p>Zona: {via.zona}</p>
-              <p>Difficoltà: {via.difficolta}</p>
-            </Link>
-          ))}
+            <h3>{via.nome}</h3>
+            <p>Zona: {via.zona}</p>
+            <p>Difficoltà: {via.difficolta}</p>
+          {via.stato === 'in_attesa' && <p className="badge-attesa">In attesa di approvazione</p>}
+          {via.stato === 'rifiutata' && <p className="badge-rifiutata">Rifiutata</p>}
+        </Link>
+      ))}
         </div>
       )}
     </div>

@@ -45,10 +45,12 @@ function ListaVie() {
   const [caricamento, setCaricamento] = useState(true);
   const [filtroZona, setFiltroZona] = useState('');
   const [filtroDifficolta, setFiltroDifficolta] = useState('');
+  const [ricerca, setRicerca] = useState('');
+  
 
   useEffect(() => {
     async function caricaVie() {
-      const { data, error } = await supabase.from('vie').select('*');
+      const { data, error } = await supabase.from('vie').select('*').eq('stato', 'approvata');
       if (error) {
         console.error('Errore nel caricamento:', error);
       } else {
@@ -66,11 +68,12 @@ function ListaVie() {
   const zoneDisponibili = [...new Set(vie.map((via) => via.zona))];
   const difficoltaDisponibili = [...new Set(vie.map((via) => via.difficolta))];
 
-  const vieFiltrate = vie.filter((via) => {
-    const passaZona = filtroZona === '' || via.zona === filtroZona;
-    const passaDifficolta = filtroDifficolta === '' || via.difficolta === filtroDifficolta;
-    return passaZona && passaDifficolta;
-  });
+const vieFiltrate = vie.filter((via) => {
+  const passaZona = filtroZona === '' || via.zona === filtroZona;
+  const passaDifficolta = filtroDifficolta === '' || via.difficolta === filtroDifficolta;
+  const passaRicerca = via.nome.toLowerCase().includes(ricerca.toLowerCase());
+  return passaZona && passaDifficolta && passaRicerca;
+});
 
   return (
     <div className="app">
@@ -79,7 +82,15 @@ function ListaVie() {
       <main className="main">
         <h2>Vie in evidenza</h2>
 
-        <div className="filtri">
+<div className="filtri">
+  <input
+    type="text"
+    placeholder="Cerca per nome via..."
+    value={ricerca}
+    onChange={(e) => setRicerca(e.target.value)}
+    className="campo-ricerca"
+  />
+
           <select value={filtroZona} onChange={(e) => setFiltroZona(e.target.value)}>
             <option value="">Tutte le zone</option>
             {zoneDisponibili.map((zona) => (

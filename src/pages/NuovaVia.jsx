@@ -8,81 +8,78 @@ function NuovaVia() {
   const [nome, setNome] = useState('');
   const [zona, setZona] = useState('');
   const [difficolta, setDifficolta] = useState('');
-  const [relazione, setRelazione] = useState('');
-  const [fotoFile, setFotoFile] = useState(null);
-  const [gpxFile, setGpxFile] = useState(null);
+
+  const [avvicinamentoDescrizione, setAvvicinamentoDescrizione] = useState('');
+  const [avvicinamentoFoto, setAvvicinamentoFoto] = useState(null);
+  const [avvicinamentoGpx, setAvvicinamentoGpx] = useState(null);
+
+  const [descrizioneVia, setDescrizioneVia] = useState('');
+  const [diagrammaFile, setDiagrammaFile] = useState(null);
+
+  const [allontanamentoDescrizione, setAllontanamentoDescrizione] = useState('');
+  const [allontanamentoFoto, setAllontanamentoFoto] = useState(null);
+  const [allontanamentoGpx, setAllontanamentoGpx] = useState(null);
+
   const [errore, setErrore] = useState('');
   const [caricamento, setCaricamento] = useState(false);
   const navigate = useNavigate();
 
-  async function handleSubmit(e) {
+  async function caricaFile(file, bucket) {
+    if (!file) return null;
+    const nomeFile = `${utente.id}/${Date.now()}-${file.name}`;
+    const { error } = await supabase.storage.from(bucket).upload(nomeFile, file);
+    if (error) throw new Error(error.message);
+    const { data } = supabase.storage.from(bucket).getPublicUrl(nomeFile);
+    return data.publicUrl;
+  }
+
+async function handleSubmit(e) {
     e.preventDefault();
     setErrore('');
-    setCaricamento(true);
 
-    let fotoUrl = null;
-    let gpxUrl = null;
-
-    // Se l'utente ha scelto una foto, caricala su Storage
-    if (fotoFile) {
-      const nomeFile = `${utente.id}/${Date.now()}-${fotoFile.name}`;
-      const { error: erroreFoto } = await supabase.storage
-        .from('foto-vie')
-        .upload(nomeFile, fotoFile);
-
-      if (erroreFoto) {
-        setErrore('Errore caricamento foto: ' + erroreFoto.message);
-        setCaricamento(false);
-        return;
-      }
-
-      // Recupera il link pubblico del file appena caricato
-      const { data: urlData } = supabase.storage
-        .from('foto-vie')
-        .getPublicUrl(nomeFile);
-      fotoUrl = urlData.publicUrl;
-    }
-
-    // Stessa cosa per il GPX, se presente
-    if (gpxFile) {
-      const nomeFile = `${utente.id}/${Date.now()}-${gpxFile.name}`;
-      const { error: erroreGpx } = await supabase.storage
-        .from('gpx-vie')
-        .upload(nomeFile, gpxFile);
-
-      if (erroreGpx) {
-        setErrore('Errore caricamento GPX: ' + erroreGpx.message);
-        setCaricamento(false);
-        return;
-      }
-
-      const { data: urlData } = supabase.storage
-        .from('gpx-vie')
-        .getPublicUrl(nomeFile);
-      gpxUrl = urlData.publicUrl;
-    }
-
-    // Ora salviamo la via nel database, con i link ai file (se presenti)
-    const { error } = await supabase.from('vie').insert({
-      nome,
-      zona,
-      difficolta,
-      relazione,
-      autore_id: utente.id,
-      foto_url: fotoUrl,
-      gpx_url: gpxUrl,
-    });
-
-    if (error) {
-      setErrore(error.message);
-      setCaricamento(false);
+    if (!avvicinamentoFoto && !avvicinamentoGpx) {
+      setErrore('Per l\'avvicinamento serve almeno una foto o una traccia GPX.');
       return;
     }
 
-    setCaricamento(false);
-    navigate('/');
-  }
+    if (!allontanamentoFoto && !allontanamentoGpx) {
+      setErrore('Per l\'allontanamento serve almeno una foto o una traccia GPX.');
+      return;
+    }
 
+    setCaricamento(true);
+
+    try {
+      const avvicinamentoFotoUrl = await caricaFile(avvicinamentoFoto, 'foto-vie');
+      const avvicinamentoGpxUrl = await caricaFile(avvicinamentoGpx, 'gpx-vie');
+      const diagrammaUrl = await caricaFile(diagrammaFile, 'foto-vie');
+      const allontanamentoFotoUrl = await caricaFile(allontanamentoFoto, 'foto-vie');
+      const allontanamentoGpxUrl = await caricaFile(allontanamentoGpx, 'gpx-vie');
+
+      const { error } = await supabase.from('vie').insert({
+        nome,
+        zona,
+        difficolta,
+        autore_id: utente.id,
+        avvicinamento_descrizione: avvicinamentoDescrizione,
+        avvicinamento_foto_url: avvicinamentoFotoUrl,
+        avvicinamento_gpx_url: avvicinamentoGpxUrl,
+        descrizione_via: descrizioneVia,
+        diagramma_url: diagrammaUrl,
+        allontanamento_descrizione: allontanamentoDescrizione,
+        allontanamento_foto_url: allontanamentoFotoUrl,
+        allontanamento_gpx_url: allontanamentoGpxUrl,
+      });
+
+      if (error) throw new Error(error.message);
+
+      setCaricamento(false);
+      navigate('/');
+    } catch (err) {
+      setErrore(err.message);
+      setCaricamento(false);
+    }
+  }
   if (!utente) {
     return (
       <div className="app dettaglio">
@@ -114,35 +111,62 @@ function NuovaVia() {
         />
         <input
           type="text"
-          placeholder="Difficoltà (es. 6a)"
+          placeholder="Difficoltà (es. 6a, oppure D+/TD in scala alpinistica)"
           value={difficolta}
           onChange={(e) => setDifficolta(e.target.value)}
           required
         />
+
+        <h2 className="titolo-sezione">Avvicinamento</h2>
         <textarea
-          placeholder="Relazione"
-          value={relazione}
-          onChange={(e) => setRelazione(e.target.value)}
-          rows={5}
+          placeholder="Descrivi come raggiungere l'attacco della via"
+          value={avvicinamentoDescrizione}
+          onChange={(e) => setAvvicinamentoDescrizione(e.target.value)}
+          rows={4}
           required
         />
-
         <label>
-          Foto (opzionale)
+          Foto avvicinamento (opzionale)
+          <input type="file" accept="image/*" onChange={(e) => setAvvicinamentoFoto(e.target.files[0])} />
+        </label>
+        <label>
+          Traccia GPX avvicinamento (opzionale)
+          <input type="file" accept=".gpx" onChange={(e) => setAvvicinamentoGpx(e.target.files[0])} />
+        </label>
+
+        <h2 className="titolo-sezione">Via</h2>
+        <textarea
+          placeholder="Descrivi i tiri della via (lunghezza, difficoltà, soste...)"
+          value={descrizioneVia}
+          onChange={(e) => setDescrizioneVia(e.target.value)}
+          rows={6}
+          required
+        />
+        <label>
+          Topo della via (immagine, obbligatoria)
           <input
             type="file"
             accept="image/*"
-            onChange={(e) => setFotoFile(e.target.files[0])}
+            onChange={(e) => setDiagrammaFile(e.target.files[0])}
+            required
           />
         </label>
 
+        <h2 className="titolo-sezione">Allontanamento</h2>
+        <textarea
+          placeholder="Descrivi come tornare dalla via (calate, sentiero...)"
+          value={allontanamentoDescrizione}
+          onChange={(e) => setAllontanamentoDescrizione(e.target.value)}
+          rows={4}
+          required
+        />
         <label>
-          Traccia GPX (opzionale)
-          <input
-            type="file"
-            accept=".gpx"
-            onChange={(e) => setGpxFile(e.target.files[0])}
-          />
+          Foto allontanamento (opzionale)
+          <input type="file" accept="image/*" onChange={(e) => setAllontanamentoFoto(e.target.files[0])} />
+        </label>
+        <label>
+          Traccia GPX allontanamento (opzionale)
+          <input type="file" accept=".gpx" onChange={(e) => setAllontanamentoGpx(e.target.files[0])} />
         </label>
 
         {errore && <p className="errore">{errore}</p>}
