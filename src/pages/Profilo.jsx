@@ -8,6 +8,8 @@ function Profilo() {
   const [profilo, setProfilo] = useState(null);
   const [vieUtente, setVieUtente] = useState([]);
   const [caricamento, setCaricamento] = useState(true);
+  const [proposteUtente, setProposteUtente] = useState([]);
+
 
   useEffect(() => {
     if (!utente) return;
@@ -26,7 +28,7 @@ function Profilo() {
         setProfilo(datiProfilo);
       }
 
-      // Carica le vie inserite da questo utente
+// Carica le vie inserite da questo utente
       const { data: vie, error: erroreVie } = await supabase
         .from('vie')
         .select('*')
@@ -38,6 +40,18 @@ function Profilo() {
         setVieUtente(vie);
       }
 
+      // Carica le proposte di modifica fatte da questo utente, ancora in attesa
+      const { data: proposte, error: erroreProposte } = await supabase
+        .from('modifiche_proposte')
+        .select('*, vie(nome)')
+        .eq('proponente_id', utente.id)
+        .eq('stato', 'in_attesa');
+
+      if (erroreProposte) {
+        console.error('Errore nel caricamento delle proposte:', erroreProposte);
+      } else {
+        setProposteUtente(proposte);
+      }
       setCaricamento(false);
     }
 
@@ -87,6 +101,19 @@ function Profilo() {
         </Link>
       ))}
         </div>
+      )}
+      {proposteUtente.length > 0 && (
+        <>
+          <h2>Le mie modifiche in attesa di approvazione</h2>
+          <div className="grid">
+            {proposteUtente.map((proposta) => (
+              <Link to={`/via/${proposta.via_id}`} className="card" key={proposta.id}>
+                <h3>{proposta.vie?.nome}</h3>
+                <p className="badge-attesa">In attesa approvazione modifica</p>
+              </Link>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

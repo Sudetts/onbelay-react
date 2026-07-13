@@ -10,6 +10,7 @@ import ModificaVia from './pages/ModificaVia';
 import Profilo from './pages/Profilo';
 import PasswordDimenticata from './pages/PasswordDimenticata';
 import ReimpostaPassword from './pages/ReimpostaPassword';
+import ProponiModifica from './pages/ProponiModifica';
 import './App.css';
 
 
@@ -137,6 +138,7 @@ function App() {
         <Route path="/profilo" element={<Profilo />} />
         <Route path="/password-dimenticata" element={<PasswordDimenticata />} />
         <Route path="/reimposta-password" element={<ReimpostaPassword />} />
+        <Route path="/via/:id/proponi-modifica" element={<ProponiModifica />} />
       </Routes>
     </BrowserRouter>
   );

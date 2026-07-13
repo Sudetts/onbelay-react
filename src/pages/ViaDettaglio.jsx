@@ -65,6 +65,9 @@ function ViaDettaglio() {
       <h1>{via.nome}</h1>
       <p>Zona: {via.zona}</p>
       <p>Difficoltà: {via.difficolta}</p>
+      {via.ultimo_aggiornamento && (
+        <p className="link-piccolo">Aggiornato in data {new Date(via.ultimo_aggiornamento).toLocaleDateString('it-IT')}</p>
+      )}
 
       {via.avvicinamento_descrizione && (
         <>
@@ -108,10 +111,12 @@ function ViaDettaglio() {
         </>
       )}
 
-      {eAutore && (
+      {utente && (
         <div className="azioni-autore">
-          <Link to={`/via/${via.id}/modifica`}>Modifica</Link>
-          <button onClick={handleElimina} className="link-button">Elimina</button>
+          <Link to={`/via/${via.id}/proponi-modifica`}>Proponi una modifica</Link>
+          {eAutore && (
+            <button onClick={handleElimina} className="link-button">Elimina</button>
+          )}
         </div>
       )}
     </div>
