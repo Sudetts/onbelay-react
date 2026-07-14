@@ -10,6 +10,10 @@ function ViaDettaglio() {
   const navigate = useNavigate();
   const [via, setVia] = useState(null);
   const [caricamento, setCaricamento] = useState(true);
+  const [dataSalita, setDataSalita] = useState('');
+  const [salvataggioDiario, setSalvataggioDiario] = useState(false);
+  const [erroreDiario, setErroreDiario] = useState('');
+  const [salitaRegistrata, setSalitaRegistrata] = useState(false);
 
   useEffect(() => {
     async function caricaVia() {
@@ -42,6 +46,27 @@ function ViaDettaglio() {
     }
 
     navigate('/');
+  }
+
+async function handleSegnaFatta(e) {
+    e.preventDefault();
+    setErroreDiario('');
+    setSalvataggioDiario(true);
+
+    const { error } = await supabase.from('diario').insert({
+      utente_id: utente.id,
+      via_id: id,
+      data_salita: dataSalita,
+    });
+
+    if (error) {
+      setErroreDiario(error.message);
+      setSalvataggioDiario(false);
+      return;
+    }
+
+    setSalvataggioDiario(false);
+    setSalitaRegistrata(true);
   }
 
   if (caricamento) {
@@ -109,6 +134,28 @@ function ViaDettaglio() {
             </>
           )}
         </>
+      )}
+
+{utente && (
+        <div className="box-diario">
+          <h2>Hai fatto questa via?</h2>
+          {salitaRegistrata ? (
+            <p className="messaggio-successo">Salita registrata nel tuo diario!</p>
+          ) : (
+            <form onSubmit={handleSegnaFatta} className="form form-inline">
+              <input
+                type="date"
+                value={dataSalita}
+                onChange={(e) => setDataSalita(e.target.value)}
+                required
+              />
+              {erroreDiario && <p className="errore">{erroreDiario}</p>}
+              <button type="submit" disabled={salvataggioDiario}>
+                {salvataggioDiario ? 'Salvataggio...' : 'Segna come fatta'}
+              </button>
+            </form>
+          )}
+        </div>
       )}
 
       {utente && (

@@ -9,7 +9,7 @@ function Profilo() {
   const [vieUtente, setVieUtente] = useState([]);
   const [caricamento, setCaricamento] = useState(true);
   const [proposteUtente, setProposteUtente] = useState([]);
-
+  const [diarioUtente, setDiarioUtente] = useState([]);
 
   useEffect(() => {
     if (!utente) return;
@@ -40,7 +40,7 @@ function Profilo() {
         setVieUtente(vie);
       }
 
-      // Carica le proposte di modifica fatte da questo utente, ancora in attesa
+// Carica le proposte di modifica fatte da questo utente, ancora in attesa
       const { data: proposte, error: erroreProposte } = await supabase
         .from('modifiche_proposte')
         .select('*, vie(nome)')
@@ -52,6 +52,20 @@ function Profilo() {
       } else {
         setProposteUtente(proposte);
       }
+
+      // Carica il diario delle vie fatte, in ordine cronologico (più recenti prima)
+      const { data: diario, error: erroreDiario } = await supabase
+        .from('diario')
+        .select('*, vie(nome, zona, difficolta)')
+        .eq('utente_id', utente.id)
+        .order('data_salita', { ascending: false });
+
+      if (erroreDiario) {
+        console.error('Errore nel caricamento del diario:', erroreDiario);
+      } else {
+        setDiarioUtente(diario);
+      }
+
       setCaricamento(false);
     }
 
@@ -110,6 +124,22 @@ function Profilo() {
               <Link to={`/via/${proposta.via_id}`} className="card" key={proposta.id}>
                 <h3>{proposta.vie?.nome}</h3>
                 <p className="badge-attesa">In attesa approvazione modifica</p>
+              </Link>
+            ))}
+          </div>
+        </>
+      )}
+      {diarioUtente.length > 0 && (
+        <>
+          <h2>Il mio diario ({diarioUtente.length})</h2>
+          <div className="lista-diario">
+            {diarioUtente.map((voce) => (
+              <Link to={`/via/${voce.via_id}`} className="voce-diario" key={voce.id}>
+                <span className="data-diario">
+                  {new Date(voce.data_salita).toLocaleDateString('it-IT')}
+                </span>
+                <span className="nome-diario">{voce.vie?.nome}</span>
+                <span className="dettagli-diario">{voce.vie?.zona} · {voce.vie?.difficolta}</span>
               </Link>
             ))}
           </div>
