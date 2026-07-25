@@ -16,6 +16,18 @@ import './App.css';
 
 function Intestazione() {
   const { utente, logout } = useAuth();
+  const [crediti, setCrediti] = useState(null);
+
+  useEffect(() => {
+    if (!utente) return;
+
+    supabase
+      .from('profili')
+      .select('crediti')
+      .eq('id', utente.id)
+      .single()
+      .then(({ data }) => setCrediti(data?.crediti));
+  }, [utente]);
 
   return (
     <header className="header header-immagine">
@@ -26,6 +38,7 @@ function Intestazione() {
         {utente ? (
           <>
             <span>Ciao, {utente.user_metadata?.nome || utente.email}</span>
+              {crediti !== null && <span className="crediti-badge">🪙 {crediti}</span>}
             <Link to="/profilo">Profilo</Link>
             <Link to="/nuova-via">Aggiungi via</Link>
             <button onClick={logout} className="link-button">Esci</button>

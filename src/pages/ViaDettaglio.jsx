@@ -9,13 +9,17 @@ function ViaDettaglio() {
   const { utente } = useAuth();
   const navigate = useNavigate();
   const [via, setVia] = useState(null);
+  const [sbloccata, setSbloccata] = useState(false);
+  const [crediti, setCrediti] = useState(null);
+  const [erroreSblocco, setErroreSblocco] = useState('');
+  const [sbloccoInCorso, setSbloccoInCorso] = useState(false);
   const [caricamento, setCaricamento] = useState(true);
   const [dataSalita, setDataSalita] = useState('');
   const [salvataggioDiario, setSalvataggioDiario] = useState(false);
   const [erroreDiario, setErroreDiario] = useState('');
   const [salitaRegistrata, setSalitaRegistrata] = useState(false);
 
-  useEffect(() => {
+useEffect(() => {
     async function caricaVia() {
       const { data, error } = await supabase
         .from('vie')
@@ -25,16 +29,40 @@ function ViaDettaglio() {
 
       if (error) {
         console.error('Errore nel caricamento:', error);
-      } else {
-        setVia(data);
+        setCaricamento(false);
+        return;
       }
+
+      setVia(data);
+
+      if (utente) {
+        if (utente.id === data.autore_id) {
+          setSbloccata(true);
+        } else {
+          const { data: sblocco } = await supabase
+            .from('sblocchi')
+            .select('id')
+            .eq('utente_id', utente.id)
+            .eq('via_id', id)
+            .maybeSingle();
+          setSbloccata(!!sblocco);
+        }
+
+        const { data: profiloData } = await supabase
+          .from('profili')
+          .select('crediti')
+          .eq('id', utente.id)
+          .single();
+        setCrediti(profiloData?.crediti ?? 0);
+      }
+
       setCaricamento(false);
     }
 
     caricaVia();
-  }, [id]);
+  }, [id, utente]);
 
-  async function handleElimina() {
+async function handleElimina() {
     const conferma = window.confirm('Sei sicuro di voler eliminare questa via?');
     if (!conferma) return;
 
@@ -48,7 +76,27 @@ function ViaDettaglio() {
     navigate('/');
   }
 
-async function handleSegnaFatta(e) {
+async function handleSblocca() {
+    const conferma = window.confirm('Vuoi sbloccare questa via spendendo 1 credito?');
+    if (!conferma) return;
+
+    setErroreSblocco('');
+    setSbloccoInCorso(true);
+
+    const { error } = await supabase.rpc('sblocca_via', { p_via_id: id });
+
+    if (error) {
+      setErroreSblocco(error.message);
+      setSbloccoInCorso(false);
+      return;
+    }
+
+    setSbloccata(true);
+    setCrediti((c) => c - 1);
+    setSbloccoInCorso(false);
+  }
+
+  async function handleSegnaFatta(e) {
     e.preventDefault();
     setErroreDiario('');
     setSalvataggioDiario(true);
@@ -94,46 +142,72 @@ async function handleSegnaFatta(e) {
         <p className="link-piccolo">Aggiornato in data {new Date(via.ultimo_aggiornamento).toLocaleDateString('it-IT')}</p>
       )}
 
-      {via.avvicinamento_descrizione && (
+{sbloccata ? (
         <>
-          <h2>Avvicinamento</h2>
-          <p>{via.avvicinamento_descrizione}</p>
-          {via.avvicinamento_foto_url && (
-            <img src={via.avvicinamento_foto_url} alt="Avvicinamento" className="foto-via" />
-          )}
-          {via.avvicinamento_gpx_url && (
+          {via.avvicinamento_descrizione && (
             <>
-              <MappaGpx gpxUrl={via.avvicinamento_gpx_url} />
-              <p><a href={via.avvicinamento_gpx_url} download>Scarica traccia GPX avvicinamento</a></p>
+              <h2>Avvicinamento</h2>
+              <p>{via.avvicinamento_descrizione}</p>
+              {via.avvicinamento_foto_url && (
+                <img src={via.avvicinamento_foto_url} alt="Avvicinamento" className="foto-via" />
+              )}
+              {via.avvicinamento_gpx_url && (
+                <>
+                  <MappaGpx gpxUrl={via.avvicinamento_gpx_url} />
+                  <p><a href={via.avvicinamento_gpx_url} download>Scarica traccia GPX avvicinamento</a></p>
+                </>
+              )}
+            </>
+          )}
+
+          {via.descrizione_via && (
+            <>
+              <h2>Via</h2>
+              <p>{via.descrizione_via}</p>
+              {via.diagramma_url && (
+                <img src={via.diagramma_url} alt="Topo della via" className="foto-via" />
+              )}
+            </>
+          )}
+
+          {via.allontanamento_descrizione && (
+            <>
+              <h2>Allontanamento</h2>
+              <p>{via.allontanamento_descrizione}</p>
+              {via.allontanamento_foto_url && (
+                <img src={via.allontanamento_foto_url} alt="Allontanamento" className="foto-via" />
+              )}
+              {via.allontanamento_gpx_url && (
+                <>
+                  <MappaGpx gpxUrl={via.allontanamento_gpx_url} />
+                  <p><a href={via.allontanamento_gpx_url} download>Scarica traccia GPX allontanamento</a></p>
+                </>
+              )}
             </>
           )}
         </>
-      )}
+      ) : (
+        <div className="box-blocco">
+          <h2>Relazione bloccata</h2>
+          <p>Avvicinamento, descrizione della via e allontanamento sono visibili solo dopo lo sblocco.</p>
 
-      {via.descrizione_via && (
-        <>
-          <h2>Via</h2>
-          <p>{via.descrizione_via}</p>
-          {via.diagramma_url && (
-            <img src={via.diagramma_url} alt="Topo della via" className="foto-via" />
-          )}
-        </>
-      )}
-
-      {via.allontanamento_descrizione && (
-        <>
-          <h2>Allontanamento</h2>
-          <p>{via.allontanamento_descrizione}</p>
-          {via.allontanamento_foto_url && (
-            <img src={via.allontanamento_foto_url} alt="Allontanamento" className="foto-via" />
-          )}
-          {via.allontanamento_gpx_url && (
+          {!utente ? (
+            <p><Link to="/login">Accedi</Link> per sbloccare questa via.</p>
+          ) : (
             <>
-              <MappaGpx gpxUrl={via.allontanamento_gpx_url} />
-              <p><a href={via.allontanamento_gpx_url} download>Scarica traccia GPX allontanamento</a></p>
+              <p>Hai <strong>{crediti}</strong> {crediti === 1 ? 'credito' : 'crediti'} disponibili.</p>
+              {erroreSblocco && <p className="errore">{erroreSblocco}</p>}
+              <button
+                onClick={handleSblocca}
+                disabled={sbloccoInCorso || crediti < 1}
+                className="form button"
+              >
+                {sbloccoInCorso ? 'Sblocco in corso...' : 'Sblocca relazione (-1 credito)'}
+              </button>
+              {crediti < 1 && <p className="link-piccolo">Non hai crediti sufficienti. Carica una via o proponi una modifica per guadagnarne.</p>}
             </>
           )}
-        </>
+        </div>
       )}
 
 {utente && (
