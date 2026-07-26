@@ -11,22 +11,27 @@ import Profilo from './pages/Profilo';
 import PasswordDimenticata from './pages/PasswordDimenticata';
 import ReimpostaPassword from './pages/ReimpostaPassword';
 import ProponiModifica from './pages/ProponiModifica';
+import Amministrazione from './pages/Amministrazione';
 import './App.css';
 
 
 function Intestazione() {
   const { utente, logout } = useAuth();
   const [crediti, setCrediti] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     if (!utente) return;
 
     supabase
       .from('profili')
-      .select('crediti')
+      .select('crediti, is_admin')
       .eq('id', utente.id)
       .single()
-      .then(({ data }) => setCrediti(data?.crediti));
+      .then(({ data }) => {
+        setCrediti(data?.crediti);
+        setIsAdmin(data?.is_admin || false);
+      });
   }, [utente]);
 
   return (
@@ -41,6 +46,7 @@ function Intestazione() {
               {crediti !== null && <span className="crediti-badge">🪙 {crediti}</span>}
             <Link to="/profilo">Profilo</Link>
             <Link to="/nuova-via">Aggiungi via</Link>
+              {isAdmin && <Link to="/pannello-controllo-onbelay" className="link-admin">⚙️ Admin</Link>}
             <button onClick={logout} className="link-button">Esci</button>
           </>
         ) : (
@@ -152,6 +158,7 @@ function App() {
         <Route path="/password-dimenticata" element={<PasswordDimenticata />} />
         <Route path="/reimposta-password" element={<ReimpostaPassword />} />
         <Route path="/via/:id/proponi-modifica" element={<ProponiModifica />} />
+        <Route path="/pannello-controllo-onbelay" element={<Amministrazione />} />
       </Routes>
     </BrowserRouter>
   );
