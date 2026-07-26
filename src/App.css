@@ -474,3 +474,77 @@
 .link-admin {
   font-weight: 700;
 }
+
+/* RESPONSIVE - SCHERMI PICCOLI (SMARTPHONE E TABLET) */
+
+@media (max-width: 640px) {
+  .app {
+    padding: 12px;
+  }
+
+  .header-immagine {
+    min-height: 35vh;
+    padding: 25px 15px;
+  }
+
+  .header h1 {
+    font-size: 2.2rem;
+  }
+
+  .header p {
+    font-size: 0.9rem;
+  }
+
+  .nav {
+    gap: 12px;
+    font-size: 0.85rem;
+  }
+
+  .main {
+    padding: 20px 12px;
+  }
+
+  .filtri {
+    flex-direction: column;
+  }
+
+  .filtri select,
+  .campo-ricerca {
+    width: 100%;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dettaglio {
+    margin: 20px auto;
+  }
+
+  .dettaglio h1 {
+    font-size: 1.7rem;
+  }
+
+  .form {
+    max-width: 100%;
+  }
+
+  .mappa-gpx {
+    height: 280px;
+  }
+
+  .foto-via {
+    max-width: 100%;
+  }
+
+  .azioni-autore,
+  .azioni-admin {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .scheda-admin {
+    padding: 12px 14px;
+  }
+}
+
