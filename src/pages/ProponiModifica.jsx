@@ -133,12 +133,12 @@ function ProponiModifica() {
       <p className="link-piccolo">Le modifiche proposte verranno revisionate prima di essere pubblicate.</p>
 
       <form onSubmit={handleSubmit} className="form">
-        <input type="text" placeholder="Nome via" value={nome} onChange={(e) => setNome(e.target.value)} required />
-        <input type="text" placeholder="Zona" value={zona} onChange={(e) => setZona(e.target.value)} required />
-        <input type="text" placeholder="Difficoltà" value={difficolta} onChange={(e) => setDifficolta(e.target.value)} required />
+        <input type="text" placeholder="Nome via" value={nome} onChange={(e) => setNome(e.target.value)} required minLength={3} maxLength={60}/>
+        <input type="text" placeholder="Zona" value={zona} onChange={(e) => setZona(e.target.value)} required minLength={2} maxLength={60}/>
+        <input type="text" placeholder="Difficoltà" value={difficolta} onChange={(e) => setDifficolta(e.target.value)} required maxLength={15}/>
 
         <h2 className="titolo-sezione">Avvicinamento</h2>
-        <textarea placeholder="Descrizione avvicinamento" value={avvicinamentoDescrizione} onChange={(e) => setAvvicinamentoDescrizione(e.target.value)} rows={4} required />
+        <textarea placeholder="Descrizione avvicinamento" value={avvicinamentoDescrizione} onChange={(e) => setAvvicinamentoDescrizione(e.target.value)} rows={4} required minLength={10} maxLength={2000}/>
         <label>
           {avvicinamentoFotoUrl ? 'Sostituisci foto avvicinamento' : 'Foto avvicinamento'}
           <input type="file" accept="image/*" onChange={(e) => setNuovaAvvicinamentoFoto(e.target.files[0])} />
@@ -149,14 +149,14 @@ function ProponiModifica() {
         </label>
 
         <h2 className="titolo-sezione">Via</h2>
-        <textarea placeholder="Descrizione dei tiri" value={descrizioneVia} onChange={(e) => setDescrizioneVia(e.target.value)} rows={6} required />
+        <textarea placeholder="Descrizione dei tiri" value={descrizioneVia} onChange={(e) => setDescrizioneVia(e.target.value)} rows={6} required minLength={10} maxLength={3000}/>
         <label>
           {diagrammaUrl ? 'Sostituisci topo della via' : 'Topo della via'}
           <input type="file" accept="image/*" onChange={(e) => setNuovoDiagramma(e.target.files[0])} />
         </label>
 
         <h2 className="titolo-sezione">Allontanamento</h2>
-        <textarea placeholder="Descrizione allontanamento" value={allontanamentoDescrizione} onChange={(e) => setAllontanamentoDescrizione(e.target.value)} rows={4} required />
+        <textarea placeholder="Descrizione allontanamento" value={allontanamentoDescrizione} onChange={(e) => setAllontanamentoDescrizione(e.target.value)} rows={4} required minLength={10} maxLength={2000}/>
         <label>
           {allontanamentoFotoUrl ? 'Sostituisci foto allontanamento' : 'Foto allontanamento'}
           <input type="file" accept="image/*" onChange={(e) => setNuovaAllontanamentoFoto(e.target.files[0])} />

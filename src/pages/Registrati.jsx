@@ -61,25 +61,31 @@ function Registrati() {
           minLength={6}
         />
         <input
-          type="text"
-          placeholder="Nome"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-          required
+        type="text"
+        placeholder="Nome"
+        value={nome}
+        onChange={(e) => setNome(e.target.value)}
+        required
+        minLength={2}
+        maxLength={40}
         />
         <input
-          type="text"
-          placeholder="Cognome"
-          value={cognome}
-          onChange={(e) => setCognome(e.target.value)}
-          required
+        type="text"
+        placeholder="Cognome"
+        value={cognome}
+        onChange={(e) => setCognome(e.target.value)}
+        required
+        minLength={2}
+        maxLength={40}
         />
         <input
-          type="text"
-          placeholder="Città"
-          value={citta}
-          onChange={(e) => setCitta(e.target.value)}
-          required
+        type="text"
+        placeholder="Città"
+        value={citta}
+        onChange={(e) => setCitta(e.target.value)}
+        required
+        minLength={2}
+        maxLength={60}
         />
 
         {errore && <p className="errore">{errore}</p>}

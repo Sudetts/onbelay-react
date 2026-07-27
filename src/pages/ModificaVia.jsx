@@ -140,6 +140,8 @@ function ModificaVia() {
           value={nome}
           onChange={(e) => setNome(e.target.value)}
           required
+          minLength={3}
+          maxLength={60}
         />
         <input
           type="text"
@@ -147,6 +149,8 @@ function ModificaVia() {
           value={zona}
           onChange={(e) => setZona(e.target.value)}
           required
+          minLength={2}
+          maxLength={60}
         />
         <input
           type="text"
@@ -154,6 +158,7 @@ function ModificaVia() {
           value={difficolta}
           onChange={(e) => setDifficolta(e.target.value)}
           required
+          maxLength={15}
         />
 
         <h2 className="titolo-sezione">Avvicinamento</h2>
@@ -163,6 +168,8 @@ function ModificaVia() {
           onChange={(e) => setAvvicinamentoDescrizione(e.target.value)}
           rows={4}
           required
+          minLength={10}
+          maxLength={2000}
         />
         <label>
           {avvicinamentoFotoUrl ? 'Sostituisci foto avvicinamento' : 'Foto avvicinamento'}
@@ -180,6 +187,8 @@ function ModificaVia() {
           onChange={(e) => setDescrizioneVia(e.target.value)}
           rows={6}
           required
+          minLength={10}
+          maxLength={3000}
         />
         <label>
           {diagrammaUrl ? 'Sostituisci topo della via' : 'Topo della via'}
@@ -193,6 +202,8 @@ function ModificaVia() {
           onChange={(e) => setAllontanamentoDescrizione(e.target.value)}
           rows={4}
           required
+          minLength={10}
+          maxLength={2000}
         />
         <label>
           {allontanamentoFotoUrl ? 'Sostituisci foto allontanamento' : 'Foto allontanamento'}

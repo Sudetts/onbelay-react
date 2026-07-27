@@ -101,6 +101,8 @@ async function handleSubmit(e) {
           value={nome}
           onChange={(e) => setNome(e.target.value)}
           required
+          minLength={3}
+          maxLength={60}
         />
         <input
           type="text"
@@ -108,6 +110,8 @@ async function handleSubmit(e) {
           value={zona}
           onChange={(e) => setZona(e.target.value)}
           required
+          minLength={2}
+          maxLength={60}
         />
         <input
           type="text"
@@ -115,6 +119,7 @@ async function handleSubmit(e) {
           value={difficolta}
           onChange={(e) => setDifficolta(e.target.value)}
           required
+          maxLength={15}
         />
 
         <h2 className="titolo-sezione">Avvicinamento</h2>
@@ -124,6 +129,8 @@ async function handleSubmit(e) {
           onChange={(e) => setAvvicinamentoDescrizione(e.target.value)}
           rows={4}
           required
+          minLength={10}
+          maxLength={3000}
         />
         <label>
           Foto avvicinamento (opzionale)
@@ -141,6 +148,8 @@ async function handleSubmit(e) {
           onChange={(e) => setDescrizioneVia(e.target.value)}
           rows={6}
           required
+           minLength={10}
+          maxLength={3000}
         />
         <label>
           Topo della via (immagine, obbligatoria)
@@ -159,6 +168,8 @@ async function handleSubmit(e) {
           onChange={(e) => setAllontanamentoDescrizione(e.target.value)}
           rows={4}
           required
+          minLength={10}
+          maxLength={3000}
         />
         <label>
           Foto allontanamento (opzionale)
