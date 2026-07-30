@@ -12,6 +12,10 @@ import PasswordDimenticata from './pages/PasswordDimenticata';
 import ReimpostaPassword from './pages/ReimpostaPassword';
 import ProponiModifica from './pages/ProponiModifica';
 import Amministrazione from './pages/Amministrazione';
+import Privacy from './pages/Privacy';
+import Termini from './pages/Termini';
+import BannerCookie from './components/BannerCookie';
+import Footer from './components/Footer';
 import './App.css';
 
 
@@ -159,7 +163,11 @@ function App() {
         <Route path="/reimposta-password" element={<ReimpostaPassword />} />
         <Route path="/via/:id/proponi-modifica" element={<ProponiModifica />} />
         <Route path="/pannello-controllo-onbelay" element={<Amministrazione />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/termini" element={<Termini />} />
       </Routes>
+      <Footer />
+      <BannerCookie />
     </BrowserRouter>
   );
 }
