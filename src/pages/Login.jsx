@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
@@ -7,17 +7,30 @@ function Login() {
   const [password, setPassword] = useState('');
   const [errore, setErrore] = useState('');
   const [caricamento, setCaricamento] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+  if (window.turnstile) {
+    window.turnstile.render('#turnstile-widget-login', {
+      sitekey: '0x4AAAAAAEBx6Buicj5YPu_-',
+      callback: (token) => setCaptchaToken(token),
+    });
+  }
+}, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setErrore('');
     setCaricamento(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+const { error } = await supabase.auth.signInWithPassword({
+  email,
+  password,
+  options: {
+    captchaToken,
+  },
+});
 
     if (error) {
       setErrore(error.message);
@@ -51,6 +64,7 @@ function Login() {
         />
 
         <Link to="/password-dimenticata" className="link-piccolo">Password dimenticata?</Link>
+        <div id="turnstile-widget-login"></div>
         {errore && <p className="errore">{errore}</p>}
 
         <button type="submit" disabled={caricamento}>

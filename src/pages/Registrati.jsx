@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
@@ -10,7 +10,18 @@ function Registrati() {
   const [citta, setCitta] = useState('');
   const [errore, setErrore] = useState('');
   const [caricamento, setCaricamento] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState('');
+  const [registrazioneCompletata, setRegistrazioneCompletata] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+  if (window.turnstile) {
+    window.turnstile.render('#turnstile-widget', {
+      sitekey: '0x4AAAAAAEBx6Buicj5YPu_-',
+      callback: (token) => setCaptchaToken(token),
+    });
+  }
+}, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -26,17 +37,35 @@ function Registrati() {
           cognome,
           citta,
         },
+        captchaToken,
       },
     });
 
-    if (error) {
-      setErrore(error.message);
+if (error) {
+      if (error.message.includes('Email not confirmed')) {
+        setErrore('Devi prima confermare la tua email. Controlla la tua casella di posta.');
+      } else {
+        setErrore(error.message);
+      }
       setCaricamento(false);
       return;
     }
 
     setCaricamento(false);
-    navigate('/');
+    setRegistrazioneCompletata(true);
+  }
+
+if (registrazioneCompletata) {
+    return (
+      <div className="app dettaglio">
+        <h1>Controlla la tua email</h1>
+        <p className="messaggio-successo">
+          Ti abbiamo inviato un'email di conferma. Clicca sul link contenuto nel messaggio per attivare
+          il tuo account, poi torna qui per accedere.
+        </p>
+        <Link to="/login">Vai al login</Link>
+      </div>
+    );
   }
 
   return (
@@ -87,6 +116,9 @@ function Registrati() {
         minLength={2}
         maxLength={60}
         />
+
+        <div id="turnstile-widget"></div>
+
 
         {errore && <p className="errore">{errore}</p>}
 
