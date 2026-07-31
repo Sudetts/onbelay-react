@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
+import { comprimiImmagine } from '../utils/comprimiImmagine';
 
 function ModificaVia() {
   const { id } = useParams();
@@ -59,14 +60,15 @@ function ModificaVia() {
     caricaVia();
   }, [id]);
 
-  async function caricaFile(file, bucket) {
-    if (!file) return null;
-    const nomeFile = `${utente.id}/${Date.now()}-${file.name}`;
-    const { error } = await supabase.storage.from(bucket).upload(nomeFile, file);
-    if (error) throw new Error(error.message);
-    const { data } = supabase.storage.from(bucket).getPublicUrl(nomeFile);
-    return data.publicUrl;
-  }
+async function caricaFile(file, bucket) {
+  if (!file) return null;
+  const fileFinale = await comprimiImmagine(file);
+  const nomeFile = `${utente.id}/${Date.now()}-${fileFinale.name}`;
+  const { error } = await supabase.storage.from(bucket).upload(nomeFile, fileFinale);
+  if (error) throw new Error(error.message);
+  const { data } = supabase.storage.from(bucket).getPublicUrl(nomeFile);
+  return data.publicUrl;
+}
 
   async function handleSubmit(e) {
     e.preventDefault();

@@ -35,8 +35,16 @@ useEffect(() => {
 
       setVia(data);
 
-      if (utente) {
-        if (utente.id === data.autore_id) {
+if (utente) {
+        const { data: profiloData } = await supabase
+          .from('profili')
+          .select('crediti, is_admin')
+          .eq('id', utente.id)
+          .single();
+
+        setCrediti(profiloData?.crediti ?? 0);
+
+        if (utente.id === data.autore_id || profiloData?.is_admin) {
           setSbloccata(true);
         } else {
           const { data: sblocco } = await supabase
@@ -47,13 +55,6 @@ useEffect(() => {
             .maybeSingle();
           setSbloccata(!!sblocco);
         }
-
-        const { data: profiloData } = await supabase
-          .from('profili')
-          .select('crediti')
-          .eq('id', utente.id)
-          .single();
-        setCrediti(profiloData?.crediti ?? 0);
       }
 
       setCaricamento(false);
