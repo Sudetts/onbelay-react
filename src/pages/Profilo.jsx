@@ -90,6 +90,10 @@ function Profilo() {
       <Link to="/">← Torna alla lista</Link>
       <h1>Il mio profilo</h1>
 
+ {profilo?.is_admin && (
+  <p><Link to="/sicurezza-account">Gestisci sicurezza account (autenticazione a due fattori)</Link></p>
+)}
+
       {profilo && (
         <div className="scheda-profilo">
           <p><strong>Nome:</strong> {profilo.nome}</p>

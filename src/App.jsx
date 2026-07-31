@@ -16,6 +16,7 @@ import Privacy from './pages/Privacy';
 import Termini from './pages/Termini';
 import BannerCookie from './components/BannerCookie';
 import Footer from './components/Footer';
+import SicurezzaAccount from './pages/SicurezzaAccount';
 import './App.css';
 
 
@@ -148,7 +149,91 @@ const vieFiltrate = vie.filter((via) => {
   );
 }
 
+function VerificaMfaObbligatoria() {
+  const { verificaLivelloSicurezza, logout } = useAuth();
+  const [codice, setCodice] = useState('');
+  const [errore, setErrore] = useState('');
+  const [caricamento, setCaricamento] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setErrore('');
+    setCaricamento(true);
+
+    const { data: fattori } = await supabase.auth.mfa.listFactors();
+    const factorId = fattori.totp[0].id;
+
+    const { data: challenge, error: erroreChallenge } = await supabase.auth.mfa.challenge({
+      factorId,
+    });
+
+    if (erroreChallenge) {
+      setErrore(erroreChallenge.message);
+      setCaricamento(false);
+      return;
+    }
+
+    const { error: erroreVerifica } = await supabase.auth.mfa.verify({
+      factorId,
+      challengeId: challenge.id,
+      code: codice,
+    });
+
+    if (erroreVerifica) {
+      setErrore('Codice non valido, riprova.');
+      setCaricamento(false);
+      return;
+    }
+
+    await verificaLivelloSicurezza();
+    setCaricamento(false);
+  }
+
+  return (
+    <div className="app dettaglio">
+      <h1>Verifica in due passaggi</h1>
+      <p>Inserisci il codice a 6 cifre generato dalla tua app authenticator.</p>
+
+      <form onSubmit={handleSubmit} className="form">
+        <input
+          type="text"
+          placeholder="123456"
+          value={codice}
+          onChange={(e) => setCodice(e.target.value)}
+          maxLength={6}
+          required
+          autoFocus
+        />
+
+        {errore && <p className="errore">{errore}</p>}
+
+        <button type="submit" disabled={caricamento}>
+          {caricamento ? 'Verifica in corso...' : 'Verifica'}
+        </button>
+      </form>
+
+      <button onClick={logout} className="link-button" style={{ marginTop: '15px' }}>
+        Esci e accedi con un altro account
+      </button>
+    </div>
+  );
+}
+
 function App() {
+  const { mfaNonVerificato, caricamento } = useAuth();
+
+  if (caricamento) {
+    return <p>Caricamento in corso...</p>;
+  }
+
+  if (mfaNonVerificato) {
+    return (
+      <BrowserRouter>
+        <VerificaMfaObbligatoria />
+      </BrowserRouter>
+    );
+  }
+
   return (
     <BrowserRouter>
       <Routes>
@@ -165,6 +250,7 @@ function App() {
         <Route path="/pannello-controllo-onbelay" element={<Amministrazione />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/termini" element={<Termini />} />
+        <Route path="/sicurezza-account" element={<SicurezzaAccount />} />
       </Routes>
       <Footer />
       <BannerCookie />

@@ -659,3 +659,10 @@
   background-color: var(--colore-accento-scuro);
 }
 
+.qr-code {
+  display: block;
+  margin: 15px 0;
+  max-width: 220px;
+  border: 1px solid var(--colore-bordo);
+  border-radius: 4px;
+}
