@@ -26,20 +26,32 @@ if (!mappaRef.current) {
 
     const vieConCoordinate = vie.filter((via) => via.latitudine && via.longitudine);
 
-    vieConCoordinate.forEach((via) => {
+vieConCoordinate.forEach((via) => {
       const marker = L.marker([via.latitudine, via.longitudine]);
       marker.bindPopup(`
         <strong>${via.nome}</strong><br>
         ${via.zona} · ${via.difficolta}<br>
-        <a href="/via/${via.id}">Vedi dettagli →</a>
+        <a href="#" class="popup-link" data-via-id="${via.id}">Vedi dettagli →</a>
       `);
       gruppoMarker.addLayer(marker);
     });
 
     mappaRef.current.addLayer(gruppoMarker);
 
-    return () => {
+    function gestisciClickPopup(e) {
+      const link = e.target.closest('.popup-link');
+      if (link) {
+        e.preventDefault();
+        const viaId = link.getAttribute('data-via-id');
+        navigate(`/via/${viaId}`);
+      }
+    }
+
+    contenitoreRef.current.addEventListener('click', gestisciClickPopup);;
+
+return () => {
       mappaRef.current.removeLayer(gruppoMarker);
+      contenitoreRef.current?.removeEventListener('click', gestisciClickPopup);
     };
   }, [vie]);
 

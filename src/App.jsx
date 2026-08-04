@@ -108,7 +108,7 @@ const vieFiltrate = vie.filter((via) => {
       <main className="main">
         <h2>Vie in evidenza</h2>
 
-        <MappaVie vie={vie} />
+        <MappaVie vie={vieFiltrate} />
 
 <div className="filtri">
   <input

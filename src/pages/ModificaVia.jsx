@@ -3,6 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
 import { comprimiImmagine } from '../utils/comprimiImmagine';
+import SelettorePosizione from '../components/SelettorePosizione';
+
 
 function ModificaVia() {
   const { id } = useParams();
@@ -34,6 +36,9 @@ function ModificaVia() {
   const [salvataggio, setSalvataggio] = useState(false);
   const [errore, setErrore] = useState('');
 
+  const [latitudine, setLatitudine] = useState(null);
+  const [longitudine, setLongitudine] = useState(null);
+
   useEffect(() => {
     async function caricaVia() {
       const { data, error } = await supabase.from('vie').select('*').eq('id', id).single();
@@ -52,6 +57,8 @@ function ModificaVia() {
         setAllontanamentoDescrizione(data.allontanamento_descrizione || '');
         setAllontanamentoFotoUrl(data.allontanamento_foto_url);
         setAllontanamentoGpxUrl(data.allontanamento_gpx_url);
+        setLatitudine(data.latitudine);
+        setLongitudine(data.longitudine);
         setAutoreId(data.autore_id);
       }
       setCaricamento(false);
@@ -98,6 +105,8 @@ async function caricaFile(file, bucket) {
           nome,
           zona,
           difficolta,
+          latitudine,
+          longitudine,
           avvicinamento_descrizione: avvicinamentoDescrizione,
           avvicinamento_foto_url: nuovoAvvicinamentoFotoUrl,
           avvicinamento_gpx_url: nuovoAvvicinamentoGpxUrl,
@@ -154,6 +163,16 @@ async function caricaFile(file, bucket) {
           minLength={2}
           maxLength={60}
         />
+
+        <SelettorePosizione
+          latitudine={latitudine}
+          longitudine={longitudine}
+          onChange={(lat, lng) => {
+            setLatitudine(lat);
+            setLongitudine(lng);
+          }}
+        />
+
         <input
           type="text"
           placeholder="Difficoltà"

@@ -3,6 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
 import { comprimiImmagine } from '../utils/comprimiImmagine';
+import SelettorePosizione from '../components/SelettorePosizione';
+
 
 function ProponiModifica() {
   const { id } = useParams();
@@ -34,6 +36,9 @@ function ProponiModifica() {
   const [errore, setErrore] = useState('');
   const [inviato, setInviato] = useState(false);
 
+  const [latitudine, setLatitudine] = useState(null);
+  const [longitudine, setLongitudine] = useState(null);
+
   useEffect(() => {
     async function caricaVia() {
       const { data, error } = await supabase.from('vie').select('*').eq('id', id).single();
@@ -49,6 +54,8 @@ function ProponiModifica() {
         setDiagrammaUrl(data.diagramma_url);
         setAllontanamentoDescrizione(data.allontanamento_descrizione || '');
         setAllontanamentoFotoUrl(data.allontanamento_foto_url);
+        setLatitudine(data.latitudine);
+        setLongitudine(data.longitudine);
         setAllontanamentoGpxUrl(data.allontanamento_gpx_url);
       }
       setCaricamento(false);
@@ -85,6 +92,8 @@ async function caricaFile(file, bucket) {
         nome,
         zona,
         difficolta,
+        latitudine,
+        longitudine,
         avvicinamento_descrizione: avvicinamentoDescrizione,
         avvicinamento_foto_url: urlAvvFoto,
         avvicinamento_gpx_url: urlAvvGpx,
@@ -137,6 +146,14 @@ async function caricaFile(file, bucket) {
       <form onSubmit={handleSubmit} className="form">
         <input type="text" placeholder="Nome via" value={nome} onChange={(e) => setNome(e.target.value)} required minLength={3} maxLength={60}/>
         <input type="text" placeholder="Zona" value={zona} onChange={(e) => setZona(e.target.value)} required minLength={2} maxLength={60}/>
+        <SelettorePosizione
+          latitudine={latitudine}
+          longitudine={longitudine}
+          onChange={(lat, lng) => {
+            setLatitudine(lat);
+            setLongitudine(lng);
+          }}
+        />
         <input type="text" placeholder="Difficoltà" value={difficolta} onChange={(e) => setDifficolta(e.target.value)} required maxLength={15}/>
 
         <h2 className="titolo-sezione">Avvicinamento</h2>
