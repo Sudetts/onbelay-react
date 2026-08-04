@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
 import { comprimiImmagine } from '../utils/comprimiImmagine';
+import EditorTiri from '../components/EditorTiri';
 import SelettorePosizione from '../components/SelettorePosizione';
 
 
@@ -39,6 +40,8 @@ function ModificaVia() {
   const [latitudine, setLatitudine] = useState(null);
   const [longitudine, setLongitudine] = useState(null);
 
+  const [tiri, setTiri] = useState([]);
+
   useEffect(() => {
     async function caricaVia() {
       const { data, error } = await supabase.from('vie').select('*').eq('id', id).single();
@@ -60,6 +63,7 @@ function ModificaVia() {
         setLatitudine(data.latitudine);
         setLongitudine(data.longitudine);
         setAutoreId(data.autore_id);
+        setTiri(data.tiri || []);
       }
       setCaricamento(false);
     }
@@ -192,6 +196,9 @@ async function caricaFile(file, bucket) {
           minLength={10}
           maxLength={2000}
         />
+
+        <EditorTiri tiri={tiri} onChange={setTiri} />
+
         <label>
           {avvicinamentoFotoUrl ? 'Sostituisci foto avvicinamento' : 'Foto avvicinamento'}
           <input type="file" accept="image/*" onChange={(e) => setNuovaAvvicinamentoFoto(e.target.files[0])} />

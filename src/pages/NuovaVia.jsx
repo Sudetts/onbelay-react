@@ -47,15 +47,15 @@ async function handleSubmit(e) {
     e.preventDefault();
     setErrore('');
 
-    if (!avvicinamentoFoto && !avvicinamentoGpx) {
-      setErrore('Per l\'avvicinamento serve almeno una foto o una traccia GPX.');
-      return;
-    }
+//    if (!avvicinamentoFoto && !avvicinamentoGpx) {
+//     setErrore('Per l\'avvicinamento serve almeno una foto o una traccia GPX.');
+//      return;
+//    }
 
-    if (!allontanamentoFoto && !allontanamentoGpx) {
-      setErrore('Per l\'allontanamento serve almeno una foto o una traccia GPX.');
-      return;
-    }
+//    if (!allontanamentoFoto && !allontanamentoGpx) {
+//      setErrore('Per l\'allontanamento serve almeno una foto o una traccia GPX.');
+//      return;
+//    }
 
     setCaricamento(true);
 
@@ -181,7 +181,7 @@ async function handleSubmit(e) {
             type="file"
             accept="image/*"
             onChange={(e) => setDiagrammaFile(e.target.files[0])}
-            required
+//            required
           />
         </label>
 
