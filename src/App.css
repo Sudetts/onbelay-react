@@ -666,3 +666,81 @@
   border: 1px solid var(--colore-bordo);
   border-radius: 4px;
 }
+
+
+.mappa-vie {
+  width: 100%;
+  height: 400px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid var(--colore-bordo);
+  z-index: 1;
+}
+
+.selettore-posizione {
+  margin-bottom: 10px;
+}
+
+.ricerca-posizione {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.ricerca-posizione input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--colore-bordo);
+  font-family: var(--font-testo);
+}
+
+.ricerca-posizione button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  background-color: var(--colore-accento);
+  color: #fff;
+  cursor: pointer;
+}
+
+.risultati-ricerca {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  border: 1px solid var(--colore-bordo);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.risultati-ricerca li {
+  padding: 10px 14px;
+  background-color: var(--colore-superficie);
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--colore-bordo);
+}
+
+.risultati-ricerca li:last-child {
+  border-bottom: none;
+}
+
+.risultati-ricerca li:hover {
+  background-color: rgba(184, 69, 47, 0.08);
+}
+
+.mappa-selettore {
+  width: 100%;
+  height: 300px;
+  border-radius: 6px;
+  border: 1px solid var(--colore-bordo);
+  z-index: 1;
+}
+
+.mappa-selettore {
+  cursor: default;
+}
+
+.mappa-selettore:active {
+  cursor: grabbing;
+}

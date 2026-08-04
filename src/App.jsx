@@ -17,6 +17,7 @@ import Termini from './pages/Termini';
 import BannerCookie from './components/BannerCookie';
 import Footer from './components/Footer';
 import SicurezzaAccount from './pages/SicurezzaAccount';
+import MappaVie from './components/MappaVie';
 import './App.css';
 
 
@@ -106,6 +107,8 @@ const vieFiltrate = vie.filter((via) => {
 
       <main className="main">
         <h2>Vie in evidenza</h2>
+
+        <MappaVie vie={vie} />
 
 <div className="filtri">
   <input

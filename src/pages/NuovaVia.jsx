@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
 import { comprimiImmagine } from '../utils/comprimiImmagine';
+import SelettorePosizione from '../components/SelettorePosizione';
+
 
 function NuovaVia() {
   const { utente } = useAuth();
@@ -24,6 +26,9 @@ function NuovaVia() {
   const [errore, setErrore] = useState('');
   const [caricamento, setCaricamento] = useState(false);
   const navigate = useNavigate();
+
+  const [latitudine, setLatitudine] = useState(null);
+  const [longitudine, setLongitudine] = useState(null);
 
 async function caricaFile(file, bucket) {
   if (!file) return null;
@@ -63,6 +68,8 @@ async function handleSubmit(e) {
         zona,
         difficolta,
         autore_id: utente.id,
+        latitudine,
+        longitudine,
         avvicinamento_descrizione: avvicinamentoDescrizione,
         avvicinamento_foto_url: avvicinamentoFotoUrl,
         avvicinamento_gpx_url: avvicinamentoGpxUrl,
@@ -115,6 +122,16 @@ async function handleSubmit(e) {
           minLength={2}
           maxLength={60}
         />
+
+        <SelettorePosizione
+          latitudine={latitudine}
+          longitudine={longitudine}
+          onChange={(lat, lng) => {
+            setLatitudine(lat);
+            setLongitudine(lng);
+          }}
+        />
+
         <input
           type="text"
           placeholder="Difficoltà (es. 6a, oppure D+/TD in scala alpinistica)"
