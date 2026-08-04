@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
 import { comprimiImmagine } from '../utils/comprimiImmagine';
+import EditorTiri from '../components/EditorTiri';
 import SelettorePosizione from '../components/SelettorePosizione';
 
 
@@ -29,6 +30,8 @@ function NuovaVia() {
 
   const [latitudine, setLatitudine] = useState(null);
   const [longitudine, setLongitudine] = useState(null);
+
+  const [tiri, setTiri] = useState([]);
 
 async function caricaFile(file, bucket) {
   if (!file) return null;
@@ -70,6 +73,7 @@ async function handleSubmit(e) {
         autore_id: utente.id,
         latitudine,
         longitudine,
+        tiri,
         avvicinamento_descrizione: avvicinamentoDescrizione,
         avvicinamento_foto_url: avvicinamentoFotoUrl,
         avvicinamento_gpx_url: avvicinamentoGpxUrl,
@@ -160,16 +164,17 @@ async function handleSubmit(e) {
           <input type="file" accept=".gpx" onChange={(e) => setAvvicinamentoGpx(e.target.files[0])} />
         </label>
 
-        <h2 className="titolo-sezione">Via</h2>
-        <textarea
-          placeholder="Descrivi i tiri della via (lunghezza, difficoltà, soste...)"
-          value={descrizioneVia}
-          onChange={(e) => setDescrizioneVia(e.target.value)}
-          rows={6}
-          required
-           minLength={10}
-          maxLength={3000}
-        />
+     <h2 className="titolo-sezione">Via</h2>
+     <textarea
+      placeholder="Descrizione generale della via (opzionale, oltre ai singoli tiri)"
+      value={descrizioneVia}
+      onChange={(e) => setDescrizioneVia(e.target.value)}
+      rows={3}
+      maxLength={3000}
+     />
+
+<EditorTiri tiri={tiri} onChange={setTiri} />
+
         <label>
           Topo della via (immagine, obbligatoria)
           <input

@@ -93,8 +93,9 @@ function Amministrazione() {
       ) : (
         vieInAttesa.map((via) => (
           <div className="scheda-admin" key={via.id}>
-            <h3>{via.nome}</h3>
-            <p>Zona: {via.zona} · Difficoltà: {via.difficolta}</p>
+          <h3>{via.nome}</h3>
+          <p>Zona: {via.zona} · Difficoltà: {via.difficolta}</p>
+          <p className="link-piccolo">{via.tiri?.length || 0} tiri inseriti</p>
             <p><Link to={`/via/${via.id}`}>Vedi dettagli completi →</Link></p>
             <div className="azioni-admin">
               <button onClick={() => approvaVia(via.id)} className="btn-approva">Approva</button>

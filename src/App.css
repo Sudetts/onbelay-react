@@ -744,3 +744,111 @@
 .mappa-selettore:active {
   cursor: grabbing;
 }
+
+.editor-tiri {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.scheda-tiro {
+  background-color: var(--colore-superficie);
+  border: 1px solid var(--colore-bordo);
+  border-radius: 6px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.scheda-tiro-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.scheda-tiro-header h3 {
+  margin: 0;
+  font-family: var(--font-titoli);
+  font-size: 1rem;
+}
+
+.scheda-tiro textarea,
+.scheda-tiro input {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--colore-bordo);
+  font-family: var(--font-testo);
+  font-size: 0.9rem;
+}
+
+.riga-campi-tiro {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.riga-campi-tiro input {
+  flex: 1;
+  min-width: 120px;
+}
+
+.btn-aggiungi-tiro {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px dashed var(--colore-accento);
+  background: none;
+  color: var(--colore-accento);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-aggiungi-tiro:hover {
+  background-color: rgba(184, 69, 47, 0.06);
+}
+
+.form input:required,
+.form textarea:required {
+  border-left: 3px solid var(--colore-accento);
+}
+
+.scheda-tiro input:required,
+.scheda-tiro textarea:required {
+  border-left: 3px solid var(--colore-accento);
+}
+
+.lista-tiri-vista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 15px 0;
+}
+
+.scheda-tiro-vista {
+  background-color: var(--colore-superficie);
+  border: 1px solid var(--colore-bordo);
+  border-left: 3px solid var(--colore-secondario);
+  border-radius: 4px;
+  padding: 12px 16px;
+}
+
+.scheda-tiro-vista h3 {
+  font-family: var(--font-tecnico);
+  font-size: 0.95rem;
+  margin: 0 0 6px;
+  color: var(--colore-testo);
+}
+
+.scheda-tiro-vista p {
+  margin: 4px 0;
+  font-size: 0.9rem;
+}
+
+.dettagli-tiro {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: var(--colore-testo-secondario);
+}

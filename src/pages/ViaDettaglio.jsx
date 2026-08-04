@@ -161,16 +161,32 @@ async function handleSblocca() {
             </>
           )}
 
-          {via.descrizione_via && (
-            <>
-              <h2>Via</h2>
-              <p>{via.descrizione_via}</p>
-              {via.diagramma_url && (
-                <img src={via.diagramma_url} alt="Topo della via" className="foto-via" />
-              )}
-            </>
+    {(via.descrizione_via || (via.tiri && via.tiri.length > 0)) && (
+        <>
+          <h2>Via</h2>
+          {via.descrizione_via && <p>{via.descrizione_via}</p>}
+
+          {via.tiri && via.tiri.length > 0 && (
+            <div className="lista-tiri-vista">
+              {via.tiri.map((tiro, indice) => (
+                <div className="scheda-tiro-vista" key={indice}>
+                  <h3>Tiro {indice + 1} — {tiro.difficoltaMax} · {tiro.lunghezza}m</h3>
+                  <p>{tiro.descrizione}</p>
+                  <p className="dettagli-tiro">
+                    {tiro.gradoMedio && <span>Grado medio: {tiro.gradoMedio}</span>}
+                    {tiro.sosta && <span>Sosta: {tiro.sosta}</span>}
+                    {tiro.chiodatura && <span>Chiodatura: {tiro.chiodatura}</span>}
+                  </p>
+                </div>
+              ))}
+            </div>
           )}
 
+          {via.diagramma_url && (
+            <img src={via.diagramma_url} alt="Topo della via" className="foto-via" />
+          )}
+        </>
+      )}    
           {via.allontanamento_descrizione && (
             <>
               <h2>Allontanamento</h2>
