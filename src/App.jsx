@@ -18,6 +18,7 @@ import BannerCookie from './components/BannerCookie';
 import Footer from './components/Footer';
 import SicurezzaAccount from './pages/SicurezzaAccount';
 import MappaVie from './components/MappaVie';
+import MenuMultiSelezione from './components/MenuMultiSelezione';
 import './App.css';
 
 
@@ -25,18 +26,20 @@ function Intestazione() {
   const { utente, logout } = useAuth();
   const [crediti, setCrediti] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState(null);
 
   useEffect(() => {
     if (!utente) return;
 
-    supabase
+supabase
       .from('profili')
-      .select('crediti, is_admin')
+      .select('crediti, is_admin, avatar_url')
       .eq('id', utente.id)
       .single()
       .then(({ data }) => {
         setCrediti(data?.crediti);
         setIsAdmin(data?.is_admin || false);
+        setAvatarUrl(data?.avatar_url || null);
       });
   }, [utente]);
 
@@ -45,23 +48,25 @@ function Intestazione() {
       <h1>Onbelay</h1>
       <p>Vie lunghe di arrampicata: relazioni, foto e tracce GPX</p>
 
-      <nav className="nav">
-        {utente ? (
-          <>
-            <span>Ciao, {utente.user_metadata?.nome || utente.email}</span>
-              {crediti !== null && <span className="crediti-badge">🪙 {crediti}</span>}
-            <Link to="/profilo">Profilo</Link>
-            <Link to="/nuova-via">Aggiungi via</Link>
-              {isAdmin && <Link to="/pannello-controllo-onbelay" className="link-admin">⚙️ Admin</Link>}
-            <button onClick={logout} className="link-button">Esci</button>
-          </>
-        ) : (
-          <>
-            <Link to="/login">Accedi</Link>
-            <Link to="/registrati">Registrati</Link>
-          </>
-        )}
-      </nav>
+{!utente && (
+        <nav className="nav">
+          <Link to="/login">Accedi</Link>
+          <Link to="/registrati">Registrati</Link>
+        </nav>
+      )}
+
+      {utente && (
+        <Link to="/profilo" className="mini-profilo">
+          {avatarUrl ? (
+            <img src={avatarUrl} alt="Il tuo profilo" className="mini-avatar" />
+          ) : (
+            <div className="mini-avatar mini-avatar-segnaposto">
+              {(utente.user_metadata?.nome || utente.email)?.[0]?.toUpperCase()}
+            </div>
+          )}
+          <span className="mini-nome">Ciao {utente.user_metadata?.nome || utente.email}</span>
+        </Link>
+      )}
     </header>
   );
 }
@@ -69,8 +74,8 @@ function Intestazione() {
 function ListaVie() {
   const [vie, setVie] = useState([]);
   const [caricamento, setCaricamento] = useState(true);
-  const [filtroZona, setFiltroZona] = useState('');
-  const [filtroDifficolta, setFiltroDifficolta] = useState('');
+  const [filtroZona, setFiltroZona] = useState([]);
+  const [filtroDifficolta, setFiltroDifficolta] = useState([]);
   const [ricerca, setRicerca] = useState('');
   
 
@@ -94,9 +99,9 @@ function ListaVie() {
   const zoneDisponibili = [...new Set(vie.map((via) => via.zona))];
   const difficoltaDisponibili = [...new Set(vie.map((via) => via.difficolta))];
 
-const vieFiltrate = vie.filter((via) => {
-  const passaZona = filtroZona === '' || via.zona === filtroZona;
-  const passaDifficolta = filtroDifficolta === '' || via.difficolta === filtroDifficolta;
+  const vieFiltrate = vie.filter((via) => {
+  const passaZona = filtroZona.length === 0 || filtroZona.includes(via.zona);
+  const passaDifficolta = filtroDifficolta.length === 0 || filtroDifficolta.includes(via.difficolta);
   const passaRicerca = via.nome.toLowerCase().includes(ricerca.toLowerCase());
   return passaZona && passaDifficolta && passaRicerca;
 });
@@ -106,7 +111,7 @@ const vieFiltrate = vie.filter((via) => {
       <Intestazione />
 
       <main className="main">
-        <h2>Vie in evidenza</h2>
+        <h2>Dove vuoi scalare?</h2>
 
         <MappaVie vie={vieFiltrate} />
 
@@ -118,23 +123,24 @@ const vieFiltrate = vie.filter((via) => {
     onChange={(e) => setRicerca(e.target.value)}
     className="campo-ricerca"
   />
+</div>
 
-          <select value={filtroZona} onChange={(e) => setFiltroZona(e.target.value)}>
-            <option value="">Tutte le zone</option>
-            {zoneDisponibili.map((zona) => (
-              <option key={zona} value={zona}>{zona}</option>
-            ))}
-          </select>
+<div className="gruppo-filtri">
+  <MenuMultiSelezione
+    etichetta="Zona"
+    opzioni={zoneDisponibili}
+    selezionati={filtroZona}
+    onCambia={setFiltroZona}
+  />
+  <MenuMultiSelezione
+    etichetta="Difficoltà"
+    opzioni={difficoltaDisponibili}
+    selezionati={filtroDifficolta}
+    onCambia={setFiltroDifficolta}
+  />
+</div>
 
-          <select value={filtroDifficolta} onChange={(e) => setFiltroDifficolta(e.target.value)}>
-            <option value="">Tutte le difficoltà</option>
-            {difficoltaDisponibili.map((difficolta) => (
-              <option key={difficolta} value={difficolta}>{difficolta}</option>
-            ))}
-          </select>
-        </div>
-
-        {vieFiltrate.length === 0 ? (
+{filtroZona.length === 0 && filtroDifficolta.length === 0 && ricerca === '' ? null : vieFiltrate.length === 0 ? (
           <p>Nessuna via corrisponde ai filtri scelti.</p>
         ) : (
           <div className="grid">

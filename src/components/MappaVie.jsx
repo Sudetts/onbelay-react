@@ -15,7 +15,10 @@ function MappaVie({ vie }) {
     if (!contenitoreRef.current) return;
 
 if (!mappaRef.current) {
-      mappaRef.current = L.map(contenitoreRef.current).setView([42.5, 12.5], 6);
+      mappaRef.current = L.map(contenitoreRef.current);
+
+      const confiniItalia = L.latLngBounds([36.5, 6.0], [47.3, 18.6]);
+      mappaRef.current.fitBounds(confiniItalia);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors',

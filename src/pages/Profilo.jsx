@@ -6,7 +6,7 @@ import { comprimiImmagine } from '../utils/comprimiImmagine';
 import Cropper from 'react-easy-crop';
 
 function Profilo() {
-  const { utente } = useAuth();
+  const { utente, logout } = useAuth();
   const [profilo, setProfilo] = useState(null);
   const [vieUtente, setVieUtente] = useState([]);
   const [caricamento, setCaricamento] = useState(true);
@@ -169,7 +169,14 @@ async function confermaRitaglioECarica() {
   return (
     <div className="app dettaglio pagina-profilo">
       <Link to="/">← Torna alla lista</Link>
-      <h1>Il mio profilo</h1>
+<h1>Il mio profilo</h1>
+
+      <div className="azioni-profilo-header">
+        <Link to="/nuova-via">Aggiungi via</Link>
+        {profilo?.crediti !== undefined && <span className="crediti-badge">🪙 {profilo.crediti}</span>}
+        {profilo?.is_admin && <Link to="/pannello-controllo-onbelay" className="link-admin">⚙️ Admin</Link>}
+        <button onClick={logout} className="link-button">Esci</button>
+      </div>
 
  {profilo?.is_admin && (
   <p><Link to="/sicurezza-account">Gestisci sicurezza account (autenticazione a due fattori)</Link></p>

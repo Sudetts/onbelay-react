@@ -15,6 +15,7 @@
 /* HEADER */
 
 .header {
+  position: relative;
   text-align: center;
   margin-bottom: 40px;
 }
@@ -484,6 +485,19 @@
 @media (max-width: 640px) {
   .app {
     padding: 12px;
+    .mini-avatar,
+  .mini-avatar-segnaposto {
+    width: 38px;
+    height: 38px;
+  }
+
+  .mini-nome {
+    font-size: 0.65rem;
+  }
+  }
+
+  .mappa-vie {
+    height: 380px;
   }
 
   .header-immagine {
@@ -674,7 +688,7 @@
 
 .mappa-vie {
   width: 100%;
-  height: 400px;
+  height: 650px;
   border-radius: 8px;
   margin-bottom: 30px;
   border: 1px solid var(--colore-bordo);
@@ -992,3 +1006,142 @@
 .pagina-profilo .link-piccolo {
   color: var(--colore-testo-pannello);
 }
+
+/* Mini profilo in alto a destra dell'header */
+
+.mini-profilo {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  max-width: 200px;
+}
+
+.mini-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+.mini-avatar-segnaposto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: var(--colore-testo-pannello);
+  font-family: var(--font-titoli);
+  font-weight: 600;
+  font-size: 2.0rem;
+}
+
+.mini-nome {
+  color: var(--colore-testo-pannello);
+  font-size: 1.2rem;
+  font-weight: 200;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Azioni in cima al profilo (crediti, admin, esci) */
+
+.azioni-profilo-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.pagina-profilo .link-admin,
+.pagina-profilo .link-button {
+  color: var(--colore-testo-pannello);
+}
+
+.gruppo-filtri {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.menu-multi-selezione {
+  position: relative;
+}
+
+.bottone-menu-multi {
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--colore-bordo);
+  background-color: var(--colore-superficie);
+  color: var(--colore-testo);
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: var(--font-testo);
+}
+
+.tendina-menu-multi {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 200px;
+  max-height: 260px;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid var(--colore-bordo);
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  padding: 6px;
+  z-index: 100;
+}
+
+.voce-seleziona-tutto {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  margin-bottom: 4px;
+  border: none;
+  border-bottom: 1px solid var(--colore-bordo);
+  border-radius: 0;
+  background: none;
+  color: var(--colore-accento);
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: var(--font-testo);
+}
+
+.voce-seleziona-tutto:hover {
+  background-color: var(--colore-superficie);
+}
+
+.voce-menu-multi {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--colore-testo);
+}
+
+.voce-menu-multi:hover {
+  background-color: var(--colore-superficie);
+}
+
+.voce-menu-multi.selezionata {
+  background-color: rgba(184, 69, 47, 0.1);
+  font-weight: 500;
+}
+
+.voce-menu-multi input[type="checkbox"] {
+  cursor: pointer;
+}
+
