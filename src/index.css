@@ -22,7 +22,9 @@ body {
   margin: 0;
   color: var(--colore-testo);
   font-family: var(--font-testo);
-  background-image: url('/sfondo-header.jpg');
+  background-image:
+    linear-gradient(rgba(20, 18, 15, 0.6), rgba(20, 18, 15, 0.55)),
+    url('/sfondo-header.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

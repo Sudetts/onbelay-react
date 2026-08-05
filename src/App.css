@@ -75,9 +75,10 @@
 }
 
 .main {
-  background-color: rgba(234, 231, 225, 0.2);
+  background-color: rgba(255, 255, 255, 0.94);
   padding: 30px 20px;
   border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
 
 .main h2 {
@@ -151,6 +152,10 @@
 .dettaglio {
   max-width: 700px;
   margin: 40px auto;
+  background-color: rgba(255, 255, 255, 0.94);
+  padding: 30px 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
 
 .dettaglio a {
