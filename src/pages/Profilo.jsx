@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
+import { comprimiImmagine } from '../utils/comprimiImmagine';
+import Cropper from 'react-easy-crop';
 
 function Profilo() {
   const { utente } = useAuth();
@@ -10,7 +12,13 @@ function Profilo() {
   const [caricamento, setCaricamento] = useState(true);
   const [proposteUtente, setProposteUtente] = useState([]);
   const [diarioUtente, setDiarioUtente] = useState([]);
-
+  const [caricamentoAvatar, setCaricamentoAvatar] = useState(false);
+  const [erroreAvatar, setErroreAvatar] = useState('');
+  const [immagineOriginale, setImmagineOriginale] = useState(null);
+  const [nomeFileOriginale, setNomeFileOriginale] = useState('');
+  const [ritaglio, setRitaglio] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [areaRitagliata, setAreaRitagliata] = useState(null);
   useEffect(() => {
     if (!utente) return;
 
@@ -72,6 +80,79 @@ function Profilo() {
     caricaDati();
   }, [utente]);
 
+ function handleSelezionaFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  setErroreAvatar('');
+  setNomeFileOriginale(file.name);
+
+  const lettore = new FileReader();
+  lettore.onload = () => setImmagineOriginale(lettore.result);
+  lettore.readAsDataURL(file);
+}
+
+function onRitaglioCompletato(_areaVisibile, areaInPixel) {
+  setAreaRitagliata(areaInPixel);
+}
+
+function annullaRitaglio() {
+  setImmagineOriginale(null);
+  setAreaRitagliata(null);
+  setZoom(1);
+  setRitaglio({ x: 0, y: 0 });
+}
+
+async function confermaRitaglioECarica() {
+  setErroreAvatar('');
+  setCaricamentoAvatar(true);
+
+  try {
+    // Disegniamo solo la porzione scelta dall'utente su un canvas
+    const immagine = new Image();
+    immagine.src = immagineOriginale;
+    await new Promise((resolve) => { immagine.onload = resolve; });
+
+    const canvas = document.createElement('canvas');
+    canvas.width = areaRitagliata.width;
+    canvas.height = areaRitagliata.height;
+    const contesto = canvas.getContext('2d');
+    contesto.drawImage(
+      immagine,
+      areaRitagliata.x, areaRitagliata.y, areaRitagliata.width, areaRitagliata.height,
+      0, 0, areaRitagliata.width, areaRitagliata.height
+    );
+
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.9));
+    const fileRitagliato = new File([blob], nomeFileOriginale, { type: 'image/jpeg' });
+
+    const fileCompresso = await comprimiImmagine(fileRitagliato);
+    const nomeFile = `${utente.id}/${Date.now()}-${fileCompresso.name}`;
+
+    const { error: erroreUpload } = await supabase.storage
+      .from('avatar-utenti')
+      .upload(nomeFile, fileCompresso);
+
+    if (erroreUpload) throw new Error(erroreUpload.message);
+
+    const { data } = supabase.storage.from('avatar-utenti').getPublicUrl(nomeFile);
+
+    const { error: erroreUpdate } = await supabase
+      .from('profili')
+      .update({ avatar_url: data.publicUrl })
+      .eq('id', utente.id);
+
+    if (erroreUpdate) throw new Error(erroreUpdate.message);
+
+    setProfilo((prev) => ({ ...prev, avatar_url: data.publicUrl }));
+    annullaRitaglio();
+  } catch (err) {
+    setErroreAvatar(err.message);
+  }
+
+  setCaricamentoAvatar(false);
+}
+
   if (!utente) {
     return (
       <div className="app dettaglio">
@@ -94,8 +175,70 @@ function Profilo() {
   <p><Link to="/sicurezza-account">Gestisci sicurezza account (autenticazione a due fattori)</Link></p>
 )}
 
-      {profilo && (
+{profilo && (
         <div className="scheda-profilo">
+          <div className="blocco-avatar">
+            {profilo.avatar_url ? (
+              <img src={profilo.avatar_url} alt="Immagine profilo" className="avatar-utente" />
+            ) : (
+              <div className="avatar-utente avatar-segnaposto">
+                {profilo.nome?.[0]?.toUpperCase()}
+              </div>
+            )}
+
+            <label className="link-piccolo">
+              {profilo.avatar_url ? 'Cambia immagine profilo' : 'Carica immagine profilo'}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleSelezionaFile}
+                disabled={caricamentoAvatar}
+                style={{ display: 'block', marginTop: '6px' }}
+              />
+            </label>
+            {caricamentoAvatar && <p className="link-piccolo">Caricamento in corso...</p>}
+            {erroreAvatar && <p className="errore">{erroreAvatar}</p>}
+          </div>
+
+          {immagineOriginale && (
+  <div className="overlay-ritaglio">
+    <div className="finestra-ritaglio">
+      <h3>Posiziona la tua foto</h3>
+      <div className="area-cropper">
+        <Cropper
+          image={immagineOriginale}
+          crop={ritaglio}
+          zoom={zoom}
+          aspect={1}
+          cropShape="round"
+          showGrid={false}
+          onCropChange={setRitaglio}
+          onZoomChange={setZoom}
+          onCropComplete={onRitaglioCompletato}
+        />
+      </div>
+      <input
+        type="range"
+        min={1}
+        max={3}
+        step={0.1}
+        value={zoom}
+        onChange={(e) => setZoom(Number(e.target.value))}
+        className="slider-zoom"
+      />
+      {erroreAvatar && <p className="errore">{erroreAvatar}</p>}
+      <div className="azioni-ritaglio">
+        <button type="button" onClick={annullaRitaglio} disabled={caricamentoAvatar}>
+          Annulla
+        </button>
+        <button type="button" onClick={confermaRitaglioECarica} disabled={caricamentoAvatar}>
+          {caricamentoAvatar ? 'Caricamento...' : 'Conferma'}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
           <p><strong>Nome:</strong> {profilo.nome}</p>
           <p><strong>Cognome:</strong> {profilo.cognome}</p>
           <p><strong>Città:</strong> {profilo.citta}</p>
