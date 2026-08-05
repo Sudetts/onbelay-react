@@ -237,26 +237,28 @@ function App() {
     );
   }
 
-  return (
+return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<ListaVie />} />
-        <Route path="/via/:id" element={<ViaDettaglio />} />
-        <Route path="/registrati" element={<Registrati />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/nuova-via" element={<NuovaVia />} />
-        <Route path="/via/:id/modifica" element={<ModificaVia />} />
-        <Route path="/profilo" element={<Profilo />} />
-        <Route path="/password-dimenticata" element={<PasswordDimenticata />} />
-        <Route path="/reimposta-password" element={<ReimpostaPassword />} />
-        <Route path="/via/:id/proponi-modifica" element={<ProponiModifica />} />
-        <Route path="/pannello-controllo-onbelay" element={<Amministrazione />} />
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/termini" element={<Termini />} />
-        <Route path="/sicurezza-account" element={<SicurezzaAccount />} />
-      </Routes>
-      <Footer />
-      <BannerCookie />
+      <div className="pagina">
+        <Routes>
+          <Route path="/" element={<ListaVie />} />
+          <Route path="/via/:id" element={<ViaDettaglio />} />
+          <Route path="/registrati" element={<Registrati />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/nuova-via" element={<NuovaVia />} />
+          <Route path="/via/:id/modifica" element={<ModificaVia />} />
+          <Route path="/profilo" element={<Profilo />} />
+          <Route path="/password-dimenticata" element={<PasswordDimenticata />} />
+          <Route path="/reimposta-password" element={<ReimpostaPassword />} />
+          <Route path="/via/:id/proponi-modifica" element={<ProponiModifica />} />
+          <Route path="/pannello-controllo-onbelay" element={<Amministrazione />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/termini" element={<Termini />} />
+          <Route path="/sicurezza-account" element={<SicurezzaAccount />} />
+        </Routes>
+        <Footer />
+        <BannerCookie />
+      </div>
     </BrowserRouter>
   );
 }

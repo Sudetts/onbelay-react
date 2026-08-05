@@ -167,7 +167,7 @@ async function confermaRitaglioECarica() {
   }
 
   return (
-    <div className="app dettaglio">
+    <div className="app dettaglio pagina-profilo">
       <Link to="/">← Torna alla lista</Link>
       <h1>Il mio profilo</h1>
 

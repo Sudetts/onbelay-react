@@ -1,4 +1,6 @@
 :root {
+  --colore-pannello: 0, 0, 0;
+  --opacita-pannello: 0.5;
   --colore-sfondo: #EAE7E1;
   --colore-testo: #000000;
   --colore-testo-secondario: #000000;
@@ -8,6 +10,7 @@
   --colore-successo: #5C6E4F;
   --colore-superficie: #F5F3EE;
   --colore-bordo: #D8D4CA;
+  --colore-testo-pannello: #FFFFFF;
 
   --font-titoli: 'Fraunces', Georgia, serif;
   --font-testo: 'Inter', Arial, sans-serif;

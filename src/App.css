@@ -5,6 +5,13 @@
   padding: 20px;
 }
 
+.pagina {
+  max-width: 900px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background-color: rgba(var(--colore-pannello), var(--opacita-pannello));
+}
+
 /* HEADER */
 
 .header {
@@ -25,17 +32,15 @@
   font-family: var(--font-titoli);
   font-size: 3.2rem;
   font-weight: 600;
-  color: #000;
+  color: var(--colore-testo);
   margin: 0 0 4px;
   letter-spacing: -0.02em;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
 }
 
 .header p {
-  color: #000;
+  color: var(--colore-testo-secondario);
   font-size: 1.05rem;
   margin: 0;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
 }
 
 .nav {
@@ -75,10 +80,7 @@
 }
 
 .main {
-  background-color: rgba(255, 255, 255, 0.94);
-  padding: 30px 20px;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  padding: 30px 0;
 }
 
 .main h2 {
@@ -151,11 +153,8 @@
 
 .dettaglio {
   max-width: 700px;
-  margin: 40px auto;
-  background-color: rgba(255, 255, 255, 0.94);
-  padding: 30px 25px;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  margin: 0 auto;
+  padding: 10px 0;
 }
 
 .dettaglio a {
@@ -965,3 +964,31 @@
   color: #fff;
 }
 
+/* Testo bianco su fondo scuro: titolo, sottotitolo, menu, footer */
+
+.main h2,
+.header h1,
+.header p {
+  color: var(--colore-testo-pannello);
+}
+
+.nav a,
+.nav span,
+.link-button {
+  color: var(--colore-testo-pannello);
+}
+
+.footer,
+.footer-nav a {
+  color: var(--colore-testo-pannello);
+}
+
+/* Testo bianco nella pagina Profilo */
+
+.pagina-profilo h1,
+.pagina-profilo h2,
+.scheda-profilo p,
+.scheda-profilo strong,
+.pagina-profilo .link-piccolo {
+  color: var(--colore-testo-pannello);
+}
