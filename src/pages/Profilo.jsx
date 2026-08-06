@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
@@ -19,6 +19,7 @@ function Profilo() {
   const [ritaglio, setRitaglio] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [areaRitagliata, setAreaRitagliata] = useState(null);
+  const inputFileRef = useRef(null);
   useEffect(() => {
     if (!utente) return;
 
@@ -168,90 +169,132 @@ async function confermaRitaglioECarica() {
 
   return (
     <div className="app dettaglio pagina-profilo">
-      <Link to="/">← Torna alla lista</Link>
-<h1>Il mio profilo</h1>
+<Link to="/" className="link-home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 9.5 12 3l9 6.5" />
+          <path d="M5 9v11a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9" />
+        </svg>
+        HOME
+      </Link>
+      <h1>Il mio profilo</h1>
 
-      <div className="azioni-profilo-header">
-        <Link to="/nuova-via">Aggiungi via</Link>
-        {profilo?.crediti !== undefined && <span className="crediti-badge">🪙 {profilo.crediti}</span>}
-        {profilo?.is_admin && <Link to="/pannello-controllo-onbelay" className="link-admin">⚙️ Admin</Link>}
-        <button onClick={logout} className="link-button">Esci</button>
-      </div>
+      <div className="profilo-colonne">
+        <div className="colonna-sinistra">
+          {profilo && (
+            <div className="scheda-profilo">
+              <div className="blocco-avatar">
+                <div className="contenitore-avatar">
+                  {profilo.avatar_url ? (
+                    <img src={profilo.avatar_url} alt="Immagine profilo" className="avatar-utente avatar-utente-grande" />
+                  ) : (
+                    <div className="avatar-utente avatar-utente-grande avatar-segnaposto">
+                      {profilo.nome?.[0]?.toUpperCase()}
+                    </div>
+                  )}
 
- {profilo?.is_admin && (
-  <p><Link to="/sicurezza-account">Gestisci sicurezza account (autenticazione a due fattori)</Link></p>
-)}
+                  <button
+                    type="button"
+                    className="bottone-modifica-avatar"
+                    onClick={() => inputFileRef.current?.click()}
+                    disabled={caricamentoAvatar}
+                    aria-label="Cambia immagine profilo"
+                    title="Cambia immagine profilo"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 20h9" />
+                      <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                    </svg>
+                  </button>
 
-{profilo && (
-        <div className="scheda-profilo">
-          <div className="blocco-avatar">
-            {profilo.avatar_url ? (
-              <img src={profilo.avatar_url} alt="Immagine profilo" className="avatar-utente" />
-            ) : (
-              <div className="avatar-utente avatar-segnaposto">
-                {profilo.nome?.[0]?.toUpperCase()}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={inputFileRef}
+                    onChange={handleSelezionaFile}
+                    disabled={caricamentoAvatar}
+                    style={{ display: 'none' }}
+                  />
+                </div>
+
+                {caricamentoAvatar && <p className="link-piccolo">Caricamento in corso...</p>}
+                {erroreAvatar && <p className="errore">{erroreAvatar}</p>}
+              </div>
+
+              {immagineOriginale && (
+                <div className="overlay-ritaglio">
+                  <div className="finestra-ritaglio">
+                    <h3>Posiziona la tua foto</h3>
+                    <div className="area-cropper">
+                      <Cropper
+                        image={immagineOriginale}
+                        crop={ritaglio}
+                        zoom={zoom}
+                        aspect={1}
+                        cropShape="round"
+                        showGrid={false}
+                        onCropChange={setRitaglio}
+                        onZoomChange={setZoom}
+                        onCropComplete={onRitaglioCompletato}
+                      />
+                    </div>
+                    <input
+                      type="range"
+                      min={1}
+                      max={3}
+                      step={0.1}
+                      value={zoom}
+                      onChange={(e) => setZoom(Number(e.target.value))}
+                      className="slider-zoom"
+                    />
+                    {erroreAvatar && <p className="errore">{erroreAvatar}</p>}
+                    <div className="azioni-ritaglio">
+                      <button type="button" onClick={annullaRitaglio} disabled={caricamentoAvatar}>
+                        Annulla
+                      </button>
+                      <button type="button" onClick={confermaRitaglioECarica} disabled={caricamentoAvatar}>
+                        {caricamentoAvatar ? 'Caricamento...' : 'Conferma'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <p><strong>Nome:</strong> {profilo.nome}</p>
+              <p><strong>Cognome:</strong> {profilo.cognome}</p>
+              <p><strong>Città:</strong> {profilo.citta}</p>
+              <p><strong>Email:</strong> {utente.email}</p>
+            </div>
+          )}
+        </div>
+
+<div className="colonna-destra">
+          <div className="azioni-profilo">
+            <Link to="/nuova-via" className="azione-profilo-voce">Aggiungi via</Link>
+
+            {profilo?.crediti !== undefined && (
+              <div className="azione-profilo-voce blocco-crediti">
+                Crediti
+                <svg className="icona-moneta" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="9.5" stroke="currentColor" strokeWidth="1.5" />
+                  <circle cx="12" cy="12" r="6.8" stroke="currentColor" strokeWidth="1" opacity="0.6" />
+                  <text x="12" y="16" textAnchor="middle" fontSize="9" fontWeight="700" fill="currentColor" fontFamily="var(--font-tecnico)">€</text>
+                </svg>
+                {profilo.crediti}
               </div>
             )}
 
-            <label className="link-piccolo">
-              {profilo.avatar_url ? 'Cambia immagine profilo' : 'Carica immagine profilo'}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleSelezionaFile}
-                disabled={caricamentoAvatar}
-                style={{ display: 'block', marginTop: '6px' }}
-              />
-            </label>
-            {caricamentoAvatar && <p className="link-piccolo">Caricamento in corso...</p>}
-            {erroreAvatar && <p className="errore">{erroreAvatar}</p>}
+            {profilo?.is_admin && (
+              <Link to="/pannello-controllo-onbelay" className="azione-profilo-voce link-admin">Admin</Link>
+            )}
+
+            {profilo?.is_admin && (
+              <Link to="/sicurezza-account" className="azione-profilo-voce">Gestisci sicurezza account (autenticazione a due fattori)</Link>
+            )}
+
+            <button onClick={logout} className="azione-profilo-voce link-button">Logout</button>
           </div>
-
-          {immagineOriginale && (
-  <div className="overlay-ritaglio">
-    <div className="finestra-ritaglio">
-      <h3>Posiziona la tua foto</h3>
-      <div className="area-cropper">
-        <Cropper
-          image={immagineOriginale}
-          crop={ritaglio}
-          zoom={zoom}
-          aspect={1}
-          cropShape="round"
-          showGrid={false}
-          onCropChange={setRitaglio}
-          onZoomChange={setZoom}
-          onCropComplete={onRitaglioCompletato}
-        />
-      </div>
-      <input
-        type="range"
-        min={1}
-        max={3}
-        step={0.1}
-        value={zoom}
-        onChange={(e) => setZoom(Number(e.target.value))}
-        className="slider-zoom"
-      />
-      {erroreAvatar && <p className="errore">{erroreAvatar}</p>}
-      <div className="azioni-ritaglio">
-        <button type="button" onClick={annullaRitaglio} disabled={caricamentoAvatar}>
-          Annulla
-        </button>
-        <button type="button" onClick={confermaRitaglioECarica} disabled={caricamentoAvatar}>
-          {caricamentoAvatar ? 'Caricamento...' : 'Conferma'}
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
-          <p><strong>Nome:</strong> {profilo.nome}</p>
-          <p><strong>Cognome:</strong> {profilo.cognome}</p>
-          <p><strong>Città:</strong> {profilo.citta}</p>
-          <p><strong>Email:</strong> {utente.email}</p>
         </div>
-      )}
+      </div>
 
       <h2>Le mie vie ({vieUtente.length})</h2>
 
