@@ -296,8 +296,26 @@ async function confermaRitaglioECarica() {
         </div>
       </div>
 
-      <h2>Le mie vie ({vieUtente.length})</h2>
+<h2>Il mio diario ({diarioUtente.length})</h2>
+      {diarioUtente.length === 0 ? (
+        <p>Non hai ancora registrato nessuna salita.</p>
+      ) : (
+        <div className="lista-diario">
+{diarioUtente.map((voce) => (
+              <Link to={`/via/${voce.via_id}`} className="voce-diario" key={voce.id}>
+                <span className="data-diario">
+                  {new Date(voce.data_salita).toLocaleDateString('it-IT')}
+                </span>
+                <span className="separatore-diario">·</span>
+                <span className="nome-diario">{voce.vie?.nome}</span>
+                <span className="separatore-diario">·</span>
+                <span className="dettagli-diario">{voce.vie?.zona} · {voce.vie?.difficolta}</span>
+              </Link>
+            ))}
+        </div>
+      )}
 
+      <h2>Le mie vie ({vieUtente.length})</h2>
       {vieUtente.length === 0 ? (
         <p>Non hai ancora inserito nessuna via.</p>
       ) : (
@@ -313,6 +331,7 @@ async function confermaRitaglioECarica() {
       ))}
         </div>
       )}
+
       {proposteUtente.length > 0 && (
         <>
           <h2>Le mie modifiche in attesa di approvazione</h2>
@@ -321,22 +340,6 @@ async function confermaRitaglioECarica() {
               <Link to={`/via/${proposta.via_id}`} className="card" key={proposta.id}>
                 <h3>{proposta.vie?.nome}</h3>
                 <p className="badge-attesa">In attesa approvazione modifica</p>
-              </Link>
-            ))}
-          </div>
-        </>
-      )}
-      {diarioUtente.length > 0 && (
-        <>
-          <h2>Il mio diario ({diarioUtente.length})</h2>
-          <div className="lista-diario">
-            {diarioUtente.map((voce) => (
-              <Link to={`/via/${voce.via_id}`} className="voce-diario" key={voce.id}>
-                <span className="data-diario">
-                  {new Date(voce.data_salita).toLocaleDateString('it-IT')}
-                </span>
-                <span className="nome-diario">{voce.vie?.nome}</span>
-                <span className="dettagli-diario">{voce.vie?.zona} · {voce.vie?.difficolta}</span>
               </Link>
             ))}
           </div>

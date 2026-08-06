@@ -416,23 +416,32 @@
 }
 
 .voce-diario:hover {
-  background-color: rgba(184, 69, 47, 0.06);
+  background-color: var(--colore-superficie);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 42, 46, 0.1);
 }
 
 .data-diario {
-  font-family: var(--font-tecnico);
-  font-size: 0.85rem;
+  font-family: var(--font-testo);
+  font-size: 0.9rem;
   color: var(--colore-testo-secondario);
-  min-width: 90px;
+}
+
+.separatore-diario {
+  font-family: var(--font-testo);
+  font-size: 0.9rem;
+  color: var(--colore-testo-secondario);
 }
 
 .nome-diario {
+  font-family: var(--font-testo);
+  font-size: 0.9rem;
   font-weight: 600;
-  flex: 1;
 }
 
 .dettagli-diario {
-  font-size: 0.85rem;
+  font-family: var(--font-testo);
+  font-size: 0.9rem;
   color: var(--colore-testo-secondario);
 }
 
