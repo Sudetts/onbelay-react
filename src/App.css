@@ -17,16 +17,16 @@
 .header {
   position: relative;
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
 }
 
 .header-immagine {
-  min-height: 45vh;
+  min-height: 38vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  padding: 40px 20px;
+  padding: 30px 20px;
 }
 
 .header h1 {
@@ -81,7 +81,7 @@
 }
 
 .main {
-  padding: 30px 0;
+  padding: px 0 30px;
 }
 
 .main h2 {
@@ -556,7 +556,7 @@
   }
 
   .header-immagine {
-    min-height: 35vh;
+    min-height: 25vh;
     padding: 25px 15px;
   }
 
@@ -1127,12 +1127,30 @@
   font-size: 2.0rem;
 }
 
+.mini-avatar.mini-avatar-ospite {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: #d89be7;
+  color: #000000;
+  font-family: var(--font-titoli);
+  font-weight: 1000;
+  font-size: 3.5rem;
+}
+
 .mini-nome {
   color: var(--colore-testo-pannello);
   font-size: 1.2rem;
   font-weight: 200;
   text-align: center;
   line-height: 1.2;
+}
+
+.mini-avatar-ospite ~ .mini-nome {
+  font-size: 0.85rem;
 }
 
 /* Azioni in cima al profilo (crediti, admin, esci) */

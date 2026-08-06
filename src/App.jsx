@@ -49,10 +49,10 @@ supabase
       <p>Vie lunghe di arrampicata: relazioni, foto e tracce GPX</p>
 
 {!utente && (
-        <nav className="nav">
-          <Link to="/login">Accedi</Link>
-          <Link to="/registrati">Registrati</Link>
-        </nav>
+        <Link to="/login" className="mini-profilo">
+          <div className="mini-avatar mini-avatar-ospite">O</div>
+          <span className="mini-nome">Login/Registrati</span>
+        </Link>
       )}
 
       {utente && (
@@ -195,7 +195,7 @@ function VerificaMfaObbligatoria() {
     }
 
     await verificaLivelloSicurezza();
-    setCaricamento(false);
+    window.location.href = '/';
   }
 
   return (

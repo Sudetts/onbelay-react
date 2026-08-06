@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
 import { comprimiImmagine } from '../utils/comprimiImmagine';
@@ -7,6 +7,7 @@ import Cropper from 'react-easy-crop';
 
 function Profilo() {
   const { utente, logout } = useAuth();
+  const navigate = useNavigate();
   const [profilo, setProfilo] = useState(null);
   const [vieUtente, setVieUtente] = useState([]);
   const [caricamento, setCaricamento] = useState(true);
@@ -291,7 +292,15 @@ async function confermaRitaglioECarica() {
               <Link to="/sicurezza-account" className="azione-profilo-voce">Gestisci sicurezza account (autenticazione a due fattori)</Link>
             )}
 
-            <button onClick={logout} className="azione-profilo-voce link-button">Logout</button>
+           <button
+  onClick={async () => {
+    await logout();
+    navigate('/');
+  }}
+  className="azione-profilo-voce link-button"
+>
+  Logout
+</button>
           </div>
         </div>
       </div>

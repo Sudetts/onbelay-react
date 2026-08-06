@@ -149,6 +149,10 @@ if (richiedeMfa) {
           {caricamento ? 'Accesso in corso...' : 'Accedi'}
         </button>
       </form>
+
+      <p className="link-piccolo" style={{ marginTop: '15px' }}>
+        Non sei registrato? <Link to="/registrati">Registrati</Link>
+      </p>
     </div>
   );
 }
