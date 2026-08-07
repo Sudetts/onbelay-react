@@ -21,6 +21,10 @@ function Profilo() {
   const [zoom, setZoom] = useState(1);
   const [areaRitagliata, setAreaRitagliata] = useState(null);
   const inputFileRef = useRef(null);
+  const [vieNuoveAperte, setVieNuoveAperte] = useState(false);
+  const [vieModificateAperte, setVieModificateAperte] = useState(false);
+  const [attesaNuoveAperte, setAttesaNuoveAperte] = useState(false);
+  const [attesaModificateAperte, setAttesaModificateAperte] = useState(false);
   useEffect(() => {
     if (!utente) return;
 
@@ -54,8 +58,7 @@ function Profilo() {
       const { data: proposte, error: erroreProposte } = await supabase
         .from('modifiche_proposte')
         .select('*, vie(nome)')
-        .eq('proponente_id', utente.id)
-        .eq('stato', 'in_attesa');
+        .eq('proponente_id', utente.id);
 
       if (erroreProposte) {
         console.error('Errore nel caricamento delle proposte:', erroreProposte);
@@ -167,6 +170,11 @@ async function confermaRitaglioECarica() {
   if (caricamento) {
     return <p>Caricamento in corso...</p>;
   }
+
+  const vieApprovate = vieUtente.filter((via) => via.stato === 'approvata');
+  const vieInAttesa = vieUtente.filter((via) => via.stato === 'in_attesa');
+  const modificheApprovate = proposteUtente.filter((proposta) => proposta.stato === 'approvata');
+  const modificheInAttesa = proposteUtente.filter((proposta) => proposta.stato === 'in_attesa');
 
   return (
     <div className="app dettaglio pagina-profilo">
@@ -310,48 +318,123 @@ async function confermaRitaglioECarica() {
         <p>Non hai ancora registrato nessuna salita.</p>
       ) : (
         <div className="lista-diario">
-{diarioUtente.map((voce) => (
-              <Link to={`/via/${voce.via_id}`} className="voce-diario" key={voce.id}>
-                <span className="data-diario">
-                  {new Date(voce.data_salita).toLocaleDateString('it-IT')}
-                </span>
-                <span className="separatore-diario">·</span>
-                <span className="nome-diario">{voce.vie?.nome}</span>
-                <span className="separatore-diario">·</span>
-                <span className="dettagli-diario">{voce.vie?.zona} · {voce.vie?.difficolta}</span>
-              </Link>
-            ))}
+          {diarioUtente.map((voce) => (
+            <Link to={`/via/${voce.via_id}`} className="voce-diario" key={voce.id}>
+              <span className="data-diario">
+                {new Date(voce.data_salita).toLocaleDateString('it-IT')}
+              </span>
+              <span className="separatore-diario">·</span>
+              <span className="nome-diario">{voce.vie?.nome}</span>
+              <span className="separatore-diario">·</span>
+              <span className="dettagli-diario">{voce.vie?.zona} · {voce.vie?.difficolta}</span>
+            </Link>
+          ))}
         </div>
       )}
 
-      <h2>Le mie vie ({vieUtente.length})</h2>
-      {vieUtente.length === 0 ? (
-        <p>Non hai ancora inserito nessuna via.</p>
-      ) : (
-        <div className="grid">
-          {vieUtente.map((via) => (
-            <Link to={`/via/${via.id}`} className="card" key={via.id}>
-            <h3>{via.nome}</h3>
-            <p>Zona: {via.zona}</p>
-            <p>Difficoltà: {via.difficolta}</p>
-          {via.stato === 'in_attesa' && <p className="badge-attesa">In attesa di approvazione</p>}
-          {via.stato === 'rifiutata' && <p className="badge-rifiutata">Rifiutata</p>}
-        </Link>
-      ))}
-        </div>
-      )}
-
-      {proposteUtente.length > 0 && (
-        <>
-          <h2>Le mie modifiche in attesa di approvazione</h2>
-          <div className="grid">
-            {proposteUtente.map((proposta) => (
-              <Link to={`/via/${proposta.via_id}`} className="card" key={proposta.id}>
-                <h3>{proposta.vie?.nome}</h3>
-                <p className="badge-attesa">In attesa approvazione modifica</p>
+      <button
+        type="button"
+        className="intestazione-sezione-scomparibile"
+        onClick={() => setVieNuoveAperte((a) => !a)}
+      >
+        <span>Vie nuove caricate ({vieApprovate.length})</span>
+        <svg className={`icona-freccia-sezione${vieNuoveAperte ? ' aperta' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+      {vieNuoveAperte && (
+        vieApprovate.length === 0 ? (
+          <p>Non hai ancora vie approvate.</p>
+        ) : (
+          <div className="lista-diario">
+            {vieApprovate.map((via) => (
+              <Link to={`/via/${via.id}`} className="voce-diario" key={via.id}>
+                <span className="nome-diario">{via.nome}</span>
+                <span className="separatore-diario">·</span>
+                <span className="dettagli-diario">{via.zona} · {via.difficolta}</span>
               </Link>
             ))}
           </div>
+        )
+      )}
+
+      <button
+        type="button"
+        className="intestazione-sezione-scomparibile"
+        onClick={() => setVieModificateAperte((a) => !a)}
+      >
+        <span>Vie modificate ({modificheApprovate.length})</span>
+        <svg className={`icona-freccia-sezione${vieModificateAperte ? ' aperta' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+      {vieModificateAperte && (
+        modificheApprovate.length === 0 ? (
+          <p>Non hai ancora modifiche approvate.</p>
+        ) : (
+          <div className="lista-diario">
+            {modificheApprovate.map((proposta) => (
+              <Link to={`/via/${proposta.via_id}`} className="voce-diario" key={proposta.id}>
+                <span className="nome-diario">{proposta.vie?.nome}</span>
+                <span className="separatore-diario">·</span>
+                <span className="dettagli-diario">{proposta.zona} · {proposta.difficolta}</span>
+              </Link>
+            ))}
+          </div>
+        )
+      )}
+
+      {vieInAttesa.length > 0 && (
+        <>
+          <button
+            type="button"
+            className="intestazione-sezione-scomparibile"
+            onClick={() => setAttesaNuoveAperte((a) => !a)}
+          >
+            <span>Vie nuove in attesa di approvazione ({vieInAttesa.length})</span>
+            <svg className={`icona-freccia-sezione${attesaNuoveAperte ? ' aperta' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+          {attesaNuoveAperte && (
+            <div className="lista-diario">
+              {vieInAttesa.map((via) => (
+                <Link to={`/via/${via.id}`} className="voce-diario" key={via.id}>
+                  <span className="nome-diario">{via.nome}</span>
+                  <span className="separatore-diario">·</span>
+                  <span className="dettagli-diario">{via.zona} · {via.difficolta}</span>
+                  <span className="separatore-diario">·</span>
+                  <span className="badge-attesa">In attesa di approvazione</span>
+                </Link>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+
+      {modificheInAttesa.length > 0 && (
+        <>
+          <button
+            type="button"
+            className="intestazione-sezione-scomparibile"
+            onClick={() => setAttesaModificateAperte((a) => !a)}
+          >
+            <span>Vie modificate in attesa di approvazione ({modificheInAttesa.length})</span>
+            <svg className={`icona-freccia-sezione${attesaModificateAperte ? ' aperta' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+          {attesaModificateAperte && (
+            <div className="lista-diario">
+              {modificheInAttesa.map((proposta) => (
+                <Link to={`/via/${proposta.via_id}`} className="voce-diario" key={proposta.id}>
+                  <span className="nome-diario">{proposta.vie?.nome}</span>
+                  <span className="separatore-diario">·</span>
+                  <span className="badge-attesa">In attesa approvazione modifica</span>
+                </Link>
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>

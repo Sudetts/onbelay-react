@@ -226,6 +226,15 @@
   border-top: 1px solid var(--colore-bordo);
 }
 
+.pannello-scuro > h1,
+.pannello-scuro > a,
+.pannello-scuro p:not(.errore):not(.messaggio-successo),
+.pannello-scuro label,
+.pannello-scuro .link-piccolo,
+.pannello-scuro .link-piccolo a {
+  color: var(--colore-testo-pannello);
+}
+
 /* FORM (registrazione, login, nuova via...) */
 
 .form {
@@ -1090,7 +1099,8 @@
 
 .pagina-profilo > h1,
 .pagina-profilo > h2,
-.pagina-profilo > a {
+.pagina-profilo > a,
+.pagina-profilo > p {
   color: var(--colore-testo-pannello);
 }
 
@@ -1272,5 +1282,34 @@
 
 .voce-menu-multi input[type="checkbox"] {
   cursor: pointer;
+}
+
+.intestazione-sezione-scomparibile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 2px solid var(--colore-bordo);
+  cursor: pointer;
+  padding: 0 0 6px;
+  margin: 30px 0 20px;
+  font-family: var(--font-titoli);
+  font-weight: 600;
+  font-size: 1.6rem;
+  color: var(--colore-testo-pannello);
+  text-align: left;
+}
+
+.icona-freccia-sezione {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.icona-freccia-sezione.aperta {
+  transform: rotate(180deg);
 }
 
