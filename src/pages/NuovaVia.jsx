@@ -30,6 +30,9 @@ function NuovaVia() {
 
   const [latitudine, setLatitudine] = useState(null);
   const [longitudine, setLongitudine] = useState(null);
+  const [nazione, setNazione] = useState('Italia');
+  const [regione, setRegione] = useState('');
+  const [provincia, setProvincia] = useState('');
 
   const [tiri, setTiri] = useState([]);
 
@@ -73,6 +76,9 @@ async function handleSubmit(e) {
         autore_id: utente.id,
         latitudine,
         longitudine,
+        nazione,
+        regione,
+        provincia,
         tiri,
         avvicinamento_descrizione: avvicinamentoDescrizione,
         avvicinamento_foto_url: avvicinamentoFotoUrl,
@@ -102,24 +108,71 @@ async function handleSubmit(e) {
     );
   }
 
-  return (
-    <div className="app dettaglio">
-      <Link to="/">← Torna alla lista</Link>
+return (<div className="app dettaglio pannello-scuro dettaglio-largo">
+    
+      <Link to="/profilo" className="link-home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+        </svg>
+        PROFILO
+      </Link>
       <h1>Aggiungi una via</h1>
+      <p className="legenda-obbligatori"><strong>*</strong> campi obbligatori</p>
 
       <form onSubmit={handleSubmit} className="form">
         <input
           type="text"
-          placeholder="Nome via"
+          placeholder="Nome via *"
           value={nome}
           onChange={(e) => setNome(e.target.value)}
           required
           minLength={3}
           maxLength={60}
         />
+
+        <SelettorePosizione
+          latitudine={latitudine}
+          longitudine={longitudine}
+          onChange={(lat, lng, localita) => {
+            setLatitudine(lat);
+            setLongitudine(lng);
+            if (localita) {
+              if (localita.nazione) setNazione(localita.nazione);
+              if (localita.regione) setRegione(localita.regione);
+              if (localita.provincia) setProvincia(localita.provincia);
+            }
+          }}
+        />
+
         <input
           type="text"
-          placeholder="Zona"
+          placeholder="Nazione *"
+          value={nazione}
+          onChange={(e) => setNazione(e.target.value)}
+          required
+          maxLength={60}
+        />
+        <input
+          type="text"
+          placeholder="Regione *"
+          value={regione}
+          onChange={(e) => setRegione(e.target.value)}
+          required
+          maxLength={60}
+        />
+        <input
+          type="text"
+          placeholder="Provincia *"
+          value={provincia}
+          onChange={(e) => setProvincia(e.target.value)}
+          required
+          maxLength={60}
+        />
+
+        <input
+          type="text"
+          placeholder="Zona *"
           value={zona}
           onChange={(e) => setZona(e.target.value)}
           required
@@ -127,18 +180,9 @@ async function handleSubmit(e) {
           maxLength={60}
         />
 
-        <SelettorePosizione
-          latitudine={latitudine}
-          longitudine={longitudine}
-          onChange={(lat, lng) => {
-            setLatitudine(lat);
-            setLongitudine(lng);
-          }}
-        />
-
         <input
           type="text"
-          placeholder="Difficoltà (es. 6a, oppure D+/TD in scala alpinistica)"
+          placeholder="Difficoltà (es. 6a, oppure D+/TD in scala alpinistica) *"
           value={difficolta}
           onChange={(e) => setDifficolta(e.target.value)}
           required

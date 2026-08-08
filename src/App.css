@@ -227,11 +227,15 @@
 }
 
 .pannello-scuro > h1,
+.pannello-scuro > h2,
 .pannello-scuro > a,
 .pannello-scuro p:not(.errore):not(.messaggio-successo),
 .pannello-scuro label,
 .pannello-scuro .link-piccolo,
-.pannello-scuro .link-piccolo a {
+.pannello-scuro .link-piccolo a,
+.pannello-scuro .titolo-sezione,
+.pannello-scuro.form label,
+.pannello-scuro .form label {
   color: var(--colore-testo-pannello);
 }
 
@@ -241,7 +245,7 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  max-width: 380px;
+  max-width: 100%;
 }
 
 .form input,
@@ -765,8 +769,11 @@
 
 .ricerca-posizione {
   display: flex;
-  gap: 8px;
   margin-bottom: 8px;
+}
+
+.ricerca-posizione input {
+  width: 100%;
 }
 
 .ricerca-posizione input {
@@ -808,15 +815,43 @@
 }
 
 .risultati-ricerca li:hover {
-  background-color: rgba(184, 69, 47, 0.08);
+  background-color: #EFE9E2;
 }
 
 .mappa-selettore {
   width: 100%;
-  height: 300px;
+  height: 480px;
   border-radius: 6px;
   border: 1px solid var(--colore-bordo);
   z-index: 1;
+}
+
+.contenitore-mappa-selettore {
+  position: relative;
+}
+
+.ricerca-posizione-overlay {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  z-index: 500;
+  margin-bottom: 0;
+}
+
+.ricerca-posizione-overlay input,
+.ricerca-posizione-overlay button {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.risultati-ricerca-overlay {
+  position: absolute;
+  top: 54px;
+  left: 10px;
+  right: 10px;
+  z-index: 500;
+  margin: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .mappa-selettore {
@@ -892,12 +927,12 @@
 
 .form input:required,
 .form textarea:required {
-  border-left: 3px solid var(--colore-accento);
+  border-left: 4px solid #D32F2F;
 }
 
 .scheda-tiro input:required,
 .scheda-tiro textarea:required {
-  border-left: 3px solid var(--colore-accento);
+  border-left: 4px solid #D32F2F;
 }
 
 .lista-tiri-vista {
@@ -1313,3 +1348,20 @@
   transform: rotate(180deg);
 }
 
+.legenda-obbligatori {
+  font-size: 0.85rem;
+  margin: 8px 0 20px;
+  opacity: 0.85;
+}
+
+.legenda-obbligatori strong {
+  color: #FF6B6B;
+}
+
+.dettaglio-largo {
+  max-width: 900px;
+}
+
+.dettaglio-largo .form {
+  max-width: 100%;
+}
