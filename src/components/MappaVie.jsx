@@ -29,12 +29,33 @@ if (!mappaRef.current) {
 
     const vieConCoordinate = vie.filter((via) => via.latitudine && via.longitudine);
 
-vieConCoordinate.forEach((via) => {
-      const marker = L.marker([via.latitudine, via.longitudine]);
+    // Raggruppa le vie che condividono (più o meno) la stessa posizione,
+    // così sulla mappa compare un solo punto anche se ci sono molte vie vicine
+    const puntiPerPosizione = {};
+    vieConCoordinate.forEach((via) => {
+      const chiave = `${via.latitudine.toFixed(4)},${via.longitudine.toFixed(4)}`;
+      if (!puntiPerPosizione[chiave]) {
+        puntiPerPosizione[chiave] = {
+          latitudine: via.latitudine,
+          longitudine: via.longitudine,
+          vie: [],
+        };
+      }
+      puntiPerPosizione[chiave].vie.push(via);
+    });
+
+    Object.values(puntiPerPosizione).forEach((punto) => {
+      const marker = L.marker([punto.latitudine, punto.longitudine]);
+      const titolo = punto.vie[0].zona || 'Vie in questo punto';
+      const listaVie = punto.vie
+        .map(
+          (via) =>
+            `<a href="#" class="popup-link" data-via-id="${via.id}">${via.nome}</a> · ${via.difficolta}`
+        )
+        .join('<br>');
       marker.bindPopup(`
-        <strong>${via.nome}</strong><br>
-        ${via.zona} · ${via.difficolta}<br>
-        <a href="#" class="popup-link" data-via-id="${via.id}">Vedi dettagli →</a>
+        <strong>${titolo}</strong><br>
+        ${listaVie}
       `);
       gruppoMarker.addLayer(marker);
     });

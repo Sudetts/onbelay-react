@@ -12,6 +12,40 @@ function NuovaVia() {
   const [nome, setNome] = useState('');
   const [zona, setZona] = useState('');
   const [difficolta, setDifficolta] = useState('');
+  const [localita, setLocalita] = useState('');
+
+  const [svilupploTotale, setSviluppoTotale] = useState('');
+  const [dislivello, setDislivello] = useState('');
+  const [quotaInizio, setQuotaInizio] = useState('');
+  const [quotaFine, setQuotaFine] = useState('');
+  const [tempoAvvicinamento, setTempoAvvicinamento] = useState('');
+  const [tempoVia, setTempoVia] = useState('');
+  const [tempoRientro, setTempoRientro] = useState('');
+  const [tipoRoccia, setTipoRoccia] = useState('');
+  const [qualitaRoccia, setQualitaRoccia] = useState('');
+
+  const [gradoMedio, setGradoMedio] = useState('');
+  const [impegno, setImpegno] = useState('');
+
+  const [tipoCorda, setTipoCorda] = useState('');
+  const [lunghezzaCorda, setLunghezzaCorda] = useState('');
+  const [protezioniMobili, setProtezioniMobili] = useState(false);
+  const [rinviiConsigliati, setRinviiConsigliati] = useState('');
+
+  const [annoApertura, setAnnoApertura] = useState('');
+  const [apritori, setApritori] = useState('');
+
+  const [permessi, setPermessi] = useState('');
+  const [parcheggio, setParcheggio] = useState('');
+  const [puntoAppoggio, setPuntoAppoggio] = useState('');
+
+  const [coperturaCellulare, setCoperturaCellulare] = useState('');
+  const [possibilitaRitirata, setPossibilitaRitirata] = useState(false);
+  const [pericoliOggettivi, setPericoliOggettivi] = useState('');
+
+  const [esposizione, setEsposizione] = useState('');
+  const [ombraSole, setOmbraSole] = useState('');
+  const [mesiConsigliati, setMesiConsigliati] = useState('');
 
   const [avvicinamentoDescrizione, setAvvicinamentoDescrizione] = useState('');
   const [avvicinamentoFoto, setAvvicinamentoFoto] = useState(null);
@@ -172,11 +206,9 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
 
         <input
           type="text"
-          placeholder="Zona *"
+          placeholder="Zona (es. Dolomiti, Alpi Apuane) - opzionale"
           value={zona}
           onChange={(e) => setZona(e.target.value)}
-          required
-          minLength={2}
           maxLength={60}
         />
 
@@ -188,6 +220,46 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
           required
           maxLength={15}
         />
+
+        <input type="text" placeholder="Località" value={localita} onChange={(e) => setLocalita(e.target.value)} maxLength={60} />
+        <input type="number" placeholder="Sviluppo totale (m)" value={svilupploTotale} onChange={(e) => setSviluppoTotale(e.target.value)} />
+        <input type="number" placeholder="Dislivello (m)" value={dislivello} onChange={(e) => setDislivello(e.target.value)} />
+        <input type="number" placeholder="Quota inizio via (m) *" value={quotaInizio} onChange={(e) => setQuotaInizio(e.target.value)} required />
+        <input type="number" placeholder="Quota fine via (m)" value={quotaFine} onChange={(e) => setQuotaFine(e.target.value)} />
+        <input type="text" placeholder="Tempo avvicinamento (es. 45 min) *" value={tempoAvvicinamento} onChange={(e) => setTempoAvvicinamento(e.target.value)} required />
+        <input type="text" placeholder="Tempo sulla via (es. 3-4 ore)" value={tempoVia} onChange={(e) => setTempoVia(e.target.value)} />
+        <input type="text" placeholder="Tempo rientro (es. 30 min) *" value={tempoRientro} onChange={(e) => setTempoRientro(e.target.value)} required />
+        <input type="text" placeholder="Tipo di roccia (es. calcare, granito) *" value={tipoRoccia} onChange={(e) => setTipoRoccia(e.target.value)} required />
+        <input type="text" placeholder="Qualità della roccia" value={qualitaRoccia} onChange={(e) => setQualitaRoccia(e.target.value)} />
+
+        <input type="text" placeholder="Grado medio *" value={gradoMedio} onChange={(e) => setGradoMedio(e.target.value)} required />
+        <input type="text" placeholder="Impegno (es. PD, AD, D, TD, ED)" value={impegno} onChange={(e) => setImpegno(e.target.value)} />
+
+        <input type="text" placeholder="Tipo corda (singola/doppia) *" value={tipoCorda} onChange={(e) => setTipoCorda(e.target.value)} required />
+        <input type="number" placeholder="Lunghezza corda consigliata (m) *" value={lunghezzaCorda} onChange={(e) => setLunghezzaCorda(e.target.value)} required />
+        <label>
+          <input type="checkbox" checked={protezioniMobili} onChange={(e) => setProtezioniMobili(e.target.checked)} />
+          {' '}Servono protezioni mobili
+        </label>
+        <input type="number" placeholder="Rinvii consigliati" value={rinviiConsigliati} onChange={(e) => setRinviiConsigliati(e.target.value)} />
+
+        <input type="number" placeholder="Anno di apertura" value={annoApertura} onChange={(e) => setAnnoApertura(e.target.value)} />
+        <input type="text" placeholder="Apritori" value={apritori} onChange={(e) => setApritori(e.target.value)} maxLength={200} />
+
+        <input type="text" placeholder="Permessi/autorizzazioni necessarie *" value={permessi} onChange={(e) => setPermessi(e.target.value)} required />
+        <input type="text" placeholder="Parcheggio (gratuito/a pagamento, capienza)" value={parcheggio} onChange={(e) => setParcheggio(e.target.value)} />
+        <input type="text" placeholder="Punto d'appoggio più vicino" value={puntoAppoggio} onChange={(e) => setPuntoAppoggio(e.target.value)} />
+
+        <input type="text" placeholder="Copertura cellulare" value={coperturaCellulare} onChange={(e) => setCoperturaCellulare(e.target.value)} />
+        <label>
+          <input type="checkbox" checked={possibilitaRitirata} onChange={(e) => setPossibilitaRitirata(e.target.checked)} />
+          {' '}Possibilità di ritirata a metà via
+        </label>
+        <textarea placeholder="Pericoli oggettivi" value={pericoliOggettivi} onChange={(e) => setPericoliOggettivi(e.target.value)} rows={3} maxLength={1000} />
+
+        <input type="text" placeholder="Esposizione (es. Nord, Sud-Est) *" value={esposizione} onChange={(e) => setEsposizione(e.target.value)} required />
+        <input type="text" placeholder="Ombra/sole" value={ombraSole} onChange={(e) => setOmbraSole(e.target.value)} />
+        <input type="text" placeholder="Mesi consigliati (es. Aprile-Ottobre) *" value={mesiConsigliati} onChange={(e) => setMesiConsigliati(e.target.value)} required />
 
         <h2 className="titolo-sezione">Avvicinamento</h2>
         <textarea

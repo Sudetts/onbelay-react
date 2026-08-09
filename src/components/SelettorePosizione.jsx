@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { supabase } from '../supabaseClient';
 
-function SelettorePosizione({ latitudine, longitudine, onChange }) {
+function SelettorePosizione({ latitudine, longitudine, onChange, escludiId }) {
   const mappaRef = useRef(null);
   const markerRef = useRef(null);
   const contenitoreRef = useRef(null);
@@ -27,6 +28,57 @@ function SelettorePosizione({ latitudine, longitudine, onChange }) {
       markerRef.current = L.marker([latitudine, longitudine]).addTo(mappaRef.current);
     }
 
+    const layerViePresenti = L.layerGroup().addTo(mappaRef.current);
+
+    async function caricaViePresenti() {
+      let query = supabase
+        .from('vie')
+        .select('id, nome, latitudine, longitudine')
+        .eq('stato', 'approvata')
+        .not('latitudine', 'is', null)
+        .not('longitudine', 'is', null);
+
+      if (escludiId) {
+        query = query.neq('id', escludiId);
+      }
+
+      const { data, error } = await query;
+      if (error || !data) return;
+
+      data.forEach((via) => {
+        const puntino = L.circleMarker([via.latitudine, via.longitudine], {
+          radius: 6,
+          color: '#5B7A8C',
+          fillColor: '#5B7A8C',
+          fillOpacity: 0.7,
+          weight: 2,
+        });
+        puntino.bindPopup(`
+          <strong>${via.nome}</strong><br>
+          <button type="button" class="popup-usa-posizione" data-lat="${via.latitudine}" data-lng="${via.longitudine}">
+            Usa questa posizione
+          </button>
+        `);
+        puntino.addTo(layerViePresenti);
+      });
+    }
+
+    caricaViePresenti();
+
+    function gestisciClickPopup(e) {
+      const bottone = e.target.closest('.popup-usa-posizione');
+      if (bottone) {
+        e.preventDefault();
+        const lat = parseFloat(bottone.dataset.lat);
+        const lng = parseFloat(bottone.dataset.lng);
+        mappaRef.current.setView([lat, lng], 15);
+        posizionaMarker(lat, lng);
+        recuperaLocalita(lat, lng);
+        mappaRef.current.closePopup();
+      }
+    }
+    contenitoreRef.current.addEventListener('click', gestisciClickPopup);
+
     mappaRef.current.on('click', (e) => {
       const { lat, lng } = e.latlng;
       posizionaMarker(lat, lng);
@@ -38,6 +90,7 @@ function SelettorePosizione({ latitudine, longitudine, onChange }) {
     });
 
     return () => {
+      contenitoreRef.current?.removeEventListener('click', gestisciClickPopup);
       mappaRef.current.remove();
       mappaRef.current = null;
     };

@@ -1365,3 +1365,19 @@
 .dettaglio-largo .form {
   max-width: 100%;
 }
+
+.popup-usa-posizione {
+  margin-top: 4px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: var(--colore-secondario);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.popup-usa-posizione:hover {
+  opacity: 0.85;
+}
