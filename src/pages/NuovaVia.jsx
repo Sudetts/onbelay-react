@@ -113,6 +113,33 @@ async function handleSubmit(e) {
         nazione,
         regione,
         provincia,
+        localita,
+        sviluppo_totale: svilupploTotale || null,
+        dislivello: dislivello || null,
+        quota_inizio: quotaInizio || null,
+        quota_fine: quotaFine || null,
+        tempo_avvicinamento: tempoAvvicinamento,
+        tempo_via: tempoVia,
+        tempo_rientro: tempoRientro,
+        tipo_roccia: tipoRoccia,
+        qualita_roccia: qualitaRoccia,
+        grado_medio: gradoMedio,
+        impegno,
+        tipo_corda: tipoCorda,
+        lunghezza_corda: lunghezzaCorda || null,
+        protezioni_mobili: protezioniMobili,
+        rinvii_consigliati: rinviiConsigliati || null,
+        anno_apertura: annoApertura || null,
+        apritori,
+        permessi,
+        parcheggio,
+        punto_appoggio: puntoAppoggio,
+        copertura_cellulare: coperturaCellulare,
+        possibilita_ritirata: possibilitaRitirata,
+        pericoli_oggettivi: pericoliOggettivi,
+        esposizione,
+        ombra_sole: ombraSole,
+        mesi_consigliati: mesiConsigliati,
         tiri,
         avvicinamento_descrizione: avvicinamentoDescrizione,
         avvicinamento_foto_url: avvicinamentoFotoUrl,
@@ -221,20 +248,27 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
           maxLength={15}
         />
 
+        <h2 className="titolo-sezione">Località</h2>
         <input type="text" placeholder="Località" value={localita} onChange={(e) => setLocalita(e.target.value)} maxLength={60} />
+
+        <h2 className="titolo-sezione">Caratteristiche del terreno</h2>
         <input type="number" placeholder="Sviluppo totale (m)" value={svilupploTotale} onChange={(e) => setSviluppoTotale(e.target.value)} />
         <input type="number" placeholder="Dislivello (m)" value={dislivello} onChange={(e) => setDislivello(e.target.value)} />
         <input type="number" placeholder="Quota inizio via (m) *" value={quotaInizio} onChange={(e) => setQuotaInizio(e.target.value)} required />
         <input type="number" placeholder="Quota fine via (m)" value={quotaFine} onChange={(e) => setQuotaFine(e.target.value)} />
-        <input type="text" placeholder="Tempo avvicinamento (es. 45 min) *" value={tempoAvvicinamento} onChange={(e) => setTempoAvvicinamento(e.target.value)} required />
-        <input type="text" placeholder="Tempo sulla via (es. 3-4 ore)" value={tempoVia} onChange={(e) => setTempoVia(e.target.value)} />
-        <input type="text" placeholder="Tempo rientro (es. 30 min) *" value={tempoRientro} onChange={(e) => setTempoRientro(e.target.value)} required />
         <input type="text" placeholder="Tipo di roccia (es. calcare, granito) *" value={tipoRoccia} onChange={(e) => setTipoRoccia(e.target.value)} required />
         <input type="text" placeholder="Qualità della roccia" value={qualitaRoccia} onChange={(e) => setQualitaRoccia(e.target.value)} />
 
+        <h2 className="titolo-sezione">Tempistiche</h2>
+        <input type="text" placeholder="Tempo avvicinamento (es. 45 min) *" value={tempoAvvicinamento} onChange={(e) => setTempoAvvicinamento(e.target.value)} required />
+        <input type="text" placeholder="Tempo sulla via (es. 3-4 ore)" value={tempoVia} onChange={(e) => setTempoVia(e.target.value)} />
+        <input type="text" placeholder="Tempo rientro (es. 30 min) *" value={tempoRientro} onChange={(e) => setTempoRientro(e.target.value)} required />
+
+        <h2 className="titolo-sezione">Difficoltà e impegno</h2>
         <input type="text" placeholder="Grado medio *" value={gradoMedio} onChange={(e) => setGradoMedio(e.target.value)} required />
         <input type="text" placeholder="Impegno (es. PD, AD, D, TD, ED)" value={impegno} onChange={(e) => setImpegno(e.target.value)} />
 
+        <h2 className="titolo-sezione">Materiale consigliato</h2>
         <input type="text" placeholder="Tipo corda (singola/doppia) *" value={tipoCorda} onChange={(e) => setTipoCorda(e.target.value)} required />
         <input type="number" placeholder="Lunghezza corda consigliata (m) *" value={lunghezzaCorda} onChange={(e) => setLunghezzaCorda(e.target.value)} required />
         <label>
@@ -243,13 +277,16 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
         </label>
         <input type="number" placeholder="Rinvii consigliati" value={rinviiConsigliati} onChange={(e) => setRinviiConsigliati(e.target.value)} />
 
+        <h2 className="titolo-sezione">Storia della via</h2>
         <input type="number" placeholder="Anno di apertura" value={annoApertura} onChange={(e) => setAnnoApertura(e.target.value)} />
         <input type="text" placeholder="Apritori" value={apritori} onChange={(e) => setApritori(e.target.value)} maxLength={200} />
 
+        <h2 className="titolo-sezione">Accesso e parcheggio</h2>
         <input type="text" placeholder="Permessi/autorizzazioni necessarie *" value={permessi} onChange={(e) => setPermessi(e.target.value)} required />
         <input type="text" placeholder="Parcheggio (gratuito/a pagamento, capienza)" value={parcheggio} onChange={(e) => setParcheggio(e.target.value)} />
         <input type="text" placeholder="Punto d'appoggio più vicino" value={puntoAppoggio} onChange={(e) => setPuntoAppoggio(e.target.value)} />
 
+        <h2 className="titolo-sezione">Sicurezza</h2>
         <input type="text" placeholder="Copertura cellulare" value={coperturaCellulare} onChange={(e) => setCoperturaCellulare(e.target.value)} />
         <label>
           <input type="checkbox" checked={possibilitaRitirata} onChange={(e) => setPossibilitaRitirata(e.target.checked)} />
@@ -257,6 +294,7 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
         </label>
         <textarea placeholder="Pericoli oggettivi" value={pericoliOggettivi} onChange={(e) => setPericoliOggettivi(e.target.value)} rows={3} maxLength={1000} />
 
+        <h2 className="titolo-sezione">Esposizione e stagionalità</h2>
         <input type="text" placeholder="Esposizione (es. Nord, Sud-Est) *" value={esposizione} onChange={(e) => setEsposizione(e.target.value)} required />
         <input type="text" placeholder="Ombra/sole" value={ombraSole} onChange={(e) => setOmbraSole(e.target.value)} />
         <input type="text" placeholder="Mesi consigliati (es. Aprile-Ottobre) *" value={mesiConsigliati} onChange={(e) => setMesiConsigliati(e.target.value)} required />

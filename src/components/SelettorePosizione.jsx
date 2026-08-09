@@ -124,13 +124,15 @@ function SelettorePosizione({ latitudine, longitudine, onChange, escludiId }) {
     }
   }
 
+const PAESI_UE = 'at,be,bg,hr,cy,cz,dk,ee,fi,fr,de,gr,hu,ie,it,lv,lt,lu,mt,nl,pl,pt,ro,sk,si,es,se';
+
 async function cercaLuogo(testoRicerca) {
     setCercando(true);
     setRisultatiRicerca([]);
 
     try {
       const risposta = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(testoRicerca)}&limit=5`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(testoRicerca)}&limit=5&countrycodes=${PAESI_UE}`
       );
       const dati = await risposta.json();
       setRisultatiRicerca(dati);
