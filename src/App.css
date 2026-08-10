@@ -249,13 +249,22 @@
 }
 
 .form input,
-.form textarea {
+.form textarea,
+.form select {
   padding: 11px 14px;
   border-radius: 6px;
   border: 1px solid var(--colore-bordo);
   background-color: var(--colore-superficie);
   font-size: 1rem;
   font-family: var(--font-testo);
+  color: var(--colore-testo);
+}
+
+.form select.campo-vuoto {
+  color: #8a8a8a;
+}
+
+.form select option {
   color: var(--colore-testo);
 }
 
