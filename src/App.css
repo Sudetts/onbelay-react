@@ -264,6 +264,10 @@
   color: #8a8a8a;
 }
 
+.form select:required.campo-vuoto {
+  color: #D32F2F;
+}
+
 .form select option {
   color: var(--colore-testo);
 }
@@ -920,23 +924,36 @@
   min-width: 120px;
 }
 
-.btn-aggiungi-tiro {
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px dashed var(--colore-accento);
-  background: none;
-  color: var(--colore-accento);
-  font-weight: 500;
+.form button.btn-aggiungi-tiro {
+  padding: 10px 120px;
+  border-radius: 999px;
+  border: none;
+  background-color: var(--colore-secondario);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
+  width: auto;
+  align-self: center;
+  margin-top: 4px;
+  transition: background-color 0.15s ease, transform 0.1s ease;
 }
 
-.btn-aggiungi-tiro:hover {
-  background-color: rgba(184, 69, 47, 0.06);
+.form button.btn-aggiungi-tiro:hover {
+  background-color: #754a6c;
+  transform: translateY(-1px);
 }
 
 .form input:required,
-.form textarea:required {
+.form textarea:required,
+.form select:required {
   border-left: 4px solid #D32F2F;
+}
+
+.form input:required::placeholder,
+.form textarea:required::placeholder {
+  color: #D32F2F;
+  opacity: 1;
 }
 
 .scheda-tiro input:required,

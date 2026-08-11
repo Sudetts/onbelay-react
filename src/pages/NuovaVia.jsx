@@ -188,6 +188,7 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
           maxLength={60}
         />
 
+        <h2 className="titolo-sezione">Posizione via</h2>
         <SelettorePosizione
           latitudine={latitudine}
           longitudine={longitudine}
@@ -279,11 +280,7 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
             onChange={(e) => setTipoProtezioniMobili(e.target.value)}
           />
         )}
-        <input type="number" placeholder="Rinvii consigliati" value={rinviiConsigliati} onChange={(e) => setRinviiConsigliati(e.target.value)} />
-
-        <h2 className="titolo-sezione">Storia della via</h2>
-        <input type="number" placeholder="Anno di apertura" value={annoApertura} onChange={(e) => setAnnoApertura(e.target.value)} />
-        <input type="text" placeholder="Apritori" value={apritori} onChange={(e) => setApritori(e.target.value)} maxLength={200} />
+        <input type="number" placeholder="Numero di rinvii consigliati" value={rinviiConsigliati} onChange={(e) => setRinviiConsigliati(e.target.value)} />
 
         <h2 className="titolo-sezione">Accesso e parcheggio</h2>
         <input type="text" placeholder="Permessi/autorizzazioni necessarie *" value={permessi} onChange={(e) => setPermessi(e.target.value)} required />
@@ -291,16 +288,17 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
         <input type="text" placeholder="Punto d'appoggio più vicino" value={puntoAppoggio} onChange={(e) => setPuntoAppoggio(e.target.value)} />
 
         <h2 className="titolo-sezione">Sicurezza</h2>
-        <input type="text" placeholder="Copertura cellulare" value={coperturaCellulare} onChange={(e) => setCoperturaCellulare(e.target.value)} />
         <select
           value={possibilitaRitirata}
           onChange={(e) => setPossibilitaRitirata(e.target.value)}
           className={possibilitaRitirata === '' ? 'campo-vuoto' : ''}
+          required
         >
-          <option value="" disabled hidden>Indica se è possibile ritirarsi a metà via</option>
+          <option value="" disabled hidden>Indica se è possibile ritirarsi a metà via *</option>
           <option value="no">Non è possibile ritirarsi a metà via</option>
           <option value="si">È possibile ritirarsi a metà via</option>
         </select>
+        <input type="text" placeholder="Copertura cellulare" value={coperturaCellulare} onChange={(e) => setCoperturaCellulare(e.target.value)} />
         <textarea placeholder="Pericoli oggettivi" value={pericoliOggettivi} onChange={(e) => setPericoliOggettivi(e.target.value)} rows={3} maxLength={1000} />
 
         <h2 className="titolo-sezione">Esposizione e stagionalità</h2>
@@ -365,6 +363,10 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
           Traccia GPX allontanamento (opzionale)
           <input type="file" accept=".gpx" onChange={(e) => setAllontanamentoGpx(e.target.files[0])} />
         </label>
+
+        <h2 className="titolo-sezione">Storia della via</h2>
+        <input type="number" placeholder="Anno di apertura" value={annoApertura} onChange={(e) => setAnnoApertura(e.target.value)} />
+        <input type="text" placeholder="Apritori" value={apritori} onChange={(e) => setApritori(e.target.value)} maxLength={200} />
 
         {errore && <p className="errore">{errore}</p>}
 
