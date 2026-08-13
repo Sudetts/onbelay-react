@@ -41,7 +41,7 @@ function EditorTiri({ tiri, onChange }) {
           </div>
 
           <textarea
-            placeholder="Descrizione del tiro"
+            placeholder="Descrizione del tiro *"
             value={tiro.descrizione}
             onChange={(e) => aggiornaCampo(indice, 'descrizione', e.target.value)}
             rows={2}
@@ -51,30 +51,31 @@ function EditorTiri({ tiri, onChange }) {
           <div className="riga-campi-tiro">
             <input
               type="text"
-              placeholder="Difficoltà massima"
+              placeholder="Grado tiro *"
+              value={tiro.gradoMedio}
+              onChange={(e) => aggiornaCampo(indice, 'gradoMedio', e.target.value)}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Grado obbligato *"
               value={tiro.difficoltaMax}
               onChange={(e) => aggiornaCampo(indice, 'difficoltaMax', e.target.value)}
               required
             />
             <input
               type="number"
-              placeholder="Lunghezza (m)"
+              placeholder="Lunghezza (m) *"
               value={tiro.lunghezza}
               onChange={(e) => aggiornaCampo(indice, 'lunghezza', e.target.value)}
               required
-            />
-            <input
-              type="text"
-              placeholder="Grado medio (facoltativo)"
-              value={tiro.gradoMedio}
-              onChange={(e) => aggiornaCampo(indice, 'gradoMedio', e.target.value)}
             />
           </div>
 
           <div className="riga-campi-tiro">
             <input
               type="text"
-              placeholder="Sosta (facoltativo)"
+              placeholder="Tipo di sosta (facoltativo)"
               value={tiro.sosta}
               onChange={(e) => aggiornaCampo(indice, 'sosta', e.target.value)}
             />

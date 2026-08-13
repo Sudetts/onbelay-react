@@ -21,7 +21,6 @@ function NuovaVia() {
   const [tipoRoccia, setTipoRoccia] = useState('');
   const [qualitaRoccia, setQualitaRoccia] = useState('');
 
-  const [gradoMedio, setGradoMedio] = useState('');
   const [impegno, setImpegno] = useState('');
 
   const [tipoCorda, setTipoCorda] = useState('');
@@ -117,7 +116,6 @@ async function handleSubmit(e) {
         tempo_rientro: tempoRientro,
         tipo_roccia: tipoRoccia,
         qualita_roccia: qualitaRoccia,
-        grado_medio: gradoMedio,
         impegno,
         tipo_corda: tipoCorda,
         lunghezza_corda: lunghezzaCorda || null,
@@ -256,8 +254,16 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
           required
           maxLength={15}
         />
-        <input type="text" placeholder="Grado medio *" value={gradoMedio} onChange={(e) => setGradoMedio(e.target.value)} required />
-        <input type="text" placeholder="Impegno (es. PD, AD, D, TD, ED)" value={impegno} onChange={(e) => setImpegno(e.target.value)} />
+        <select value={impegno} onChange={(e) => setImpegno(e.target.value)}>
+          <option value="">Impegno (facoltativo)</option>
+          <option value="F">F - Facile</option>
+          <option value="PD">PD - Poco difficile</option>
+          <option value="AD">AD - Abbastanza difficile</option>
+          <option value="D">D - Difficile</option>
+          <option value="TD">TD - Molto difficile</option>
+          <option value="ED">ED - Estremamente difficile</option>
+          <option value="EX">EX - Eccezionalmente difficile</option>
+        </select>
 
         <h2 className="titolo-sezione">Materiale consigliato</h2>
         <input type="text" placeholder="Tipo corda (singola/doppia) *" value={tipoCorda} onChange={(e) => setTipoCorda(e.target.value)} required />

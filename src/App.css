@@ -928,7 +928,7 @@
   padding: 10px 120px;
   border-radius: 999px;
   border: none;
-  background-color: var(--colore-secondario);
+  background-color: #6B6459;
   color: #fff;
   font-weight: 600;
   font-size: 0.9rem;
@@ -940,7 +940,7 @@
 }
 
 .form button.btn-aggiungi-tiro:hover {
-  background-color: #754a6c;
+  background-color: #524C43;
   transform: translateY(-1px);
 }
 
