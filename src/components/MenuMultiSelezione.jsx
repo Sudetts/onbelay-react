@@ -35,13 +35,13 @@ function toggleTutti() {
   const testoBottone =
     selezionati.length === 0
       ? etichetta
-      : `${etichetta} (${selezionati.length})`;
+      : selezionati.join(', ');
 
   return (
     <div className="menu-multi-selezione" ref={contenitoreRef}>
       <button
         type="button"
-        className={selezionati.length > 0 ? 'bottone-menu-multi attivo' : 'bottone-menu-multi'}
+        className={selezionati.length > 0 ? 'bottone-menu-multi attivo' : 'bottone-menu-multi campo-vuoto'}
         onClick={() => setAperto((a) => !a)}
       >
         {testoBottone} ▾
@@ -55,17 +55,14 @@ function toggleTutti() {
             </button>
           )}
           {opzioni.map((opzione) => (
-            <label
+            <div
               key={opzione}
               className={selezionati.includes(opzione) ? 'voce-menu-multi selezionata' : 'voce-menu-multi'}
+              onClick={() => toggleOpzione(opzione)}
             >
-              <input
-                type="checkbox"
-                checked={selezionati.includes(opzione)}
-                onChange={() => toggleOpzione(opzione)}
-              />
-              {opzione}
-            </label>
+              <span>{opzione}</span>
+              {selezionati.includes(opzione) && <span className="spunta-menu-multi">✓</span>}
+            </div>
           ))}
         </div>
       )}

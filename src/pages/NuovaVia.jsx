@@ -5,6 +5,19 @@ import { useAuth } from '../AuthContext';
 import { comprimiImmagine } from '../utils/comprimiImmagine';
 import EditorTiri from '../components/EditorTiri';
 import SelettorePosizione from '../components/SelettorePosizione';
+import MenuMultiSelezione from '../components/MenuMultiSelezione';
+import SelettoreConAltro from '../components/SelettoreConAltro';
+
+const OPZIONI_ESPOSIZIONE = ['Nord', 'Nord-Est', 'Est', 'Sud-Est', 'Sud', 'Sud-Ovest', 'Ovest', 'Nord-Ovest'];
+const OPZIONI_IMPEGNO = [
+  { value: 'F', label: 'F - Facile' },
+  { value: 'PD', label: 'PD - Poco difficile' },
+  { value: 'AD', label: 'AD - Abbastanza difficile' },
+  { value: 'D', label: 'D - Difficile' },
+  { value: 'TD', label: 'TD - Molto difficile' },
+  { value: 'ED', label: 'ED - Estremamente difficile' },
+  { value: 'EX', label: 'EX - Eccezionalmente difficile' },
+];
 
 
 function NuovaVia() {
@@ -40,7 +53,7 @@ function NuovaVia() {
   const [possibilitaRitirata, setPossibilitaRitirata] = useState('');
   const [pericoliOggettivi, setPericoliOggettivi] = useState('');
 
-  const [esposizione, setEsposizione] = useState('');
+  const [esposizioneSelezionata, setEsposizioneSelezionata] = useState([]);
   const [mesiConsigliati, setMesiConsigliati] = useState('');
 
   const [avvicinamentoDescrizione, setAvvicinamentoDescrizione] = useState('');
@@ -79,6 +92,11 @@ async function caricaFile(file, bucket) {
 async function handleSubmit(e) {
     e.preventDefault();
     setErrore('');
+
+if (esposizioneSelezionata.length === 0) {
+      setErrore('Seleziona almeno un\'esposizione.');
+      return;
+    }
 
 //    if (!avvicinamentoFoto && !avvicinamentoGpx) {
 //     setErrore('Per l\'avvicinamento serve almeno una foto o una traccia GPX.');
@@ -130,7 +148,7 @@ async function handleSubmit(e) {
         copertura_cellulare: coperturaCellulare,
         possibilita_ritirata: possibilitaRitirata === '' ? null : possibilitaRitirata === 'si',
         pericoli_oggettivi: pericoliOggettivi,
-        esposizione,
+        esposizione: esposizioneSelezionata.join(', '),
         mesi_consigliati: mesiConsigliati,
         tiri,
         numero_tiri: tiri.length,
@@ -254,16 +272,12 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
           required
           maxLength={15}
         />
-        <select value={impegno} onChange={(e) => setImpegno(e.target.value)}>
-          <option value="">Impegno (facoltativo)</option>
-          <option value="F">F - Facile</option>
-          <option value="PD">PD - Poco difficile</option>
-          <option value="AD">AD - Abbastanza difficile</option>
-          <option value="D">D - Difficile</option>
-          <option value="TD">TD - Molto difficile</option>
-          <option value="ED">ED - Estremamente difficile</option>
-          <option value="EX">EX - Eccezionalmente difficile</option>
-        </select>
+        <SelettoreConAltro
+          placeholder="Impegno (facoltativo)"
+          opzioni={OPZIONI_IMPEGNO}
+          valore={impegno}
+          onCambia={setImpegno}
+        />
 
         <h2 className="titolo-sezione">Materiale consigliato</h2>
         <input type="text" placeholder="Tipo corda (singola/doppia) *" value={tipoCorda} onChange={(e) => setTipoCorda(e.target.value)} required />
@@ -308,7 +322,12 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
         <textarea placeholder="Pericoli oggettivi" value={pericoliOggettivi} onChange={(e) => setPericoliOggettivi(e.target.value)} rows={3} maxLength={1000} />
 
         <h2 className="titolo-sezione">Esposizione e stagionalità</h2>
-        <input type="text" placeholder="Esposizione (es. Nord, Sud-Est) *" value={esposizione} onChange={(e) => setEsposizione(e.target.value)} required />
+        <MenuMultiSelezione
+          etichetta="Esposizione *"
+          opzioni={OPZIONI_ESPOSIZIONE}
+          selezionati={esposizioneSelezionata}
+          onCambia={setEsposizioneSelezionata}
+        />
         <input type="text" placeholder="Mesi consigliati (es. Aprile-Ottobre) *" value={mesiConsigliati} onChange={(e) => setMesiConsigliati(e.target.value)} required />
 
         <h2 className="titolo-sezione">Avvicinamento</h2>

@@ -950,6 +950,18 @@
   border-left: 4px solid #D32F2F;
 }
 
+.form .bottone-menu-multi.campo-vuoto {
+  border-left: 4px solid #D32F2F;
+}.form input:required,
+.form textarea:required,
+.form select:required {
+  border-left: 4px solid #D32F2F;
+}
+
+.form .bottone-menu-multi.campo-vuoto {
+  border-left: 4px solid #D32F2F !important;
+}
+
 .form input:required::placeholder,
 .form textarea:required::placeholder {
   color: #D32F2F;
@@ -1284,12 +1296,36 @@
   cursor: pointer;
   font-family: var(--font-testo);
 }
+.form button.bottone-menu-multi:hover:not(:disabled) {
+  background-color: var(--colore-superficie);
+}
+
+.form .bottone-menu-multi {
+  background-color: var(--colore-superficie);
+  color: var(--colore-testo);
+  width: 100%;
+  display: block;
+  text-align: left;
+}
+
+.form .bottone-menu-multi.campo-vuoto {
+  color: #D32F2F;
+}
+
+.form .voce-seleziona-tutto {
+  background: none;
+  color: var(--colore-accento);
+}
+
+.pannello-scuro .voce-menu-multi {
+  color: var(--colore-testo) !important;
+}
 
 .tendina-menu-multi {
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
-  min-width: 200px;
+  right: 0;
   max-height: 260px;
   overflow-y: auto;
   background-color: #fff;
@@ -1317,19 +1353,24 @@
   font-family: var(--font-testo);
 }
 
-.voce-seleziona-tutto:hover {
-  background-color: var(--colore-superficie);
+.form button.voce-seleziona-tutto:hover:not(:disabled) {
+  background-color: var(--colore-superficie) !important;
 }
 
 .voce-menu-multi {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
   padding: 8px 10px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.9rem;
   color: var(--colore-testo);
+}
+
+.spunta-menu-multi {
+  color: var(--colore-successo);
+  font-weight: 700;
 }
 
 .voce-menu-multi:hover {
@@ -1339,10 +1380,6 @@
 .voce-menu-multi.selezionata {
   background-color: rgba(184, 69, 47, 0.1);
   font-weight: 500;
-}
-
-.voce-menu-multi input[type="checkbox"] {
-  cursor: pointer;
 }
 
 .intestazione-sezione-scomparibile {
@@ -1406,4 +1443,77 @@
 
 .popup-usa-posizione:hover {
   opacity: 0.85;
+}
+
+.selettore-con-altro {
+  position: relative;
+}
+
+.form .bottone-selettore-altro {
+  width: 100%;
+  text-align: left;
+  padding: 11px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--colore-bordo);
+  background-color: var(--colore-superficie);
+  color: var(--colore-testo);
+  font-size: 1rem;
+  font-family: var(--font-testo);
+  cursor: pointer;
+  display: block;
+}
+
+.form .bottone-selettore-altro.campo-vuoto {
+  color: #8a8a8a;
+}
+.form button.bottone-selettore-altro:hover:not(:disabled) {
+  background-color: var(--colore-superficie);
+}
+
+.tendina-selettore-altro {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 260px;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid var(--colore-bordo);
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  padding: 6px;
+  z-index: 100;
+}
+
+.tendina-selettore-altro input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--colore-bordo);
+  font-family: var(--font-testo);
+}
+
+.input-voce-altro {
+  margin-top: 4px;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+}
+
+.voce-selettore-altro {
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--colore-testo);
+}
+
+.voce-selettore-altro:hover {
+  background-color: var(--colore-superficie);
+}
+
+.voce-selettore-altro.voce-altro {
+  margin-top: 4px;
 }
