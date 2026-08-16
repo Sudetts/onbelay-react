@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 
-function SelettoreConAltro({ placeholder, opzioni, valore, onCambia }) {
+function SelettoreConAltro({ placeholder, opzioni, valore, onCambia, obbligatorio = false, mostraAltro = true }) {
   const [aperto, setAperto] = useState(false);
   const [modalitaAltro, setModalitaAltro] = useState(false);
   const contenitoreRef = useRef(null);
@@ -48,7 +48,11 @@ function SelettoreConAltro({ placeholder, opzioni, valore, onCambia }) {
     <div className="selettore-con-altro" ref={contenitoreRef}>
       <button
         type="button"
-        className={valore ? 'bottone-selettore-altro' : 'bottone-selettore-altro campo-vuoto'}
+        className={
+          valore
+            ? 'bottone-selettore-altro'
+            : `bottone-selettore-altro campo-vuoto${obbligatorio ? ' obbligatorio' : ''}`
+        }
         onClick={toggleTendina}
       >
         {valore || placeholder} ▾
@@ -66,28 +70,30 @@ function SelettoreConAltro({ placeholder, opzioni, valore, onCambia }) {
             </div>
           ))}
 
-          {inModalitaAltro ? (
-            <input
-              type="text"
-              autoFocus
-              placeholder="Specifica..."
-              value={valore}
-              onChange={(e) => onCambia(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  chiudiTendina();
-                }
-              }}
-              className="input-voce-altro"
-            />
-          ) : (
-            <div
-              className="voce-selettore-altro voce-altro"
-              onClick={attivaAltro}
-            >
-              Altro (specifica)
-            </div>
+          {mostraAltro && (
+            inModalitaAltro ? (
+              <input
+                type="text"
+                autoFocus
+                placeholder="Specifica..."
+                value={valore}
+                onChange={(e) => onCambia(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    chiudiTendina();
+                  }
+                }}
+                className="input-voce-altro"
+              />
+            ) : (
+              <div
+                className="voce-selettore-altro voce-altro"
+                onClick={attivaAltro}
+              >
+                Altro (specifica)
+              </div>
+            )
           )}
         </div>
       )}

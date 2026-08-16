@@ -9,6 +9,11 @@ import MenuMultiSelezione from '../components/MenuMultiSelezione';
 import SelettoreConAltro from '../components/SelettoreConAltro';
 
 const OPZIONI_ESPOSIZIONE = ['Nord', 'Nord-Est', 'Est', 'Sud-Est', 'Sud', 'Sud-Ovest', 'Ovest', 'Nord-Ovest'];
+const OPZIONI_MESI = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+const OPZIONI_TIPO_ROCCIA = ['Calcare', 'Granito', 'Dolomia', 'Gneiss', 'Arenaria', 'Porfido', 'Basalto', 'Serpentino'];
+const OPZIONI_QUALITA_ROCCIA = ['Ottima', 'Buona', 'Discreta', 'Scarsa'];
+const OPZIONI_TIPO_CORDA = ['Singola', 'Doppia', 'Mezze corde'];
+const OPZIONI_COPERTURA_CELLULARE = ['Buona', 'Parziale', 'Assente', 'Non verificata'];
 const OPZIONI_IMPEGNO = [
   { value: 'F', label: 'F - Facile' },
   { value: 'PD', label: 'PD - Poco difficile' },
@@ -54,7 +59,7 @@ function NuovaVia() {
   const [pericoliOggettivi, setPericoliOggettivi] = useState('');
 
   const [esposizioneSelezionata, setEsposizioneSelezionata] = useState([]);
-  const [mesiConsigliati, setMesiConsigliati] = useState('');
+  const [mesiSelezionati, setMesiSelezionati] = useState([]);
 
   const [avvicinamentoDescrizione, setAvvicinamentoDescrizione] = useState('');
   const [avvicinamentoFoto, setAvvicinamentoFoto] = useState(null);
@@ -95,6 +100,21 @@ async function handleSubmit(e) {
 
 if (esposizioneSelezionata.length === 0) {
       setErrore('Seleziona almeno un\'esposizione.');
+      return;
+    }
+
+if (mesiSelezionati.length === 0) {
+      setErrore('Seleziona almeno un mese consigliato.');
+      return;
+    }
+
+if (!tipoRoccia) {
+      setErrore('Seleziona il tipo di roccia.');
+      return;
+    }
+
+    if (!tipoCorda) {
+      setErrore('Seleziona il tipo di corda.');
       return;
     }
 
@@ -149,7 +169,7 @@ if (esposizioneSelezionata.length === 0) {
         possibilita_ritirata: possibilitaRitirata === '' ? null : possibilitaRitirata === 'si',
         pericoli_oggettivi: pericoliOggettivi,
         esposizione: esposizioneSelezionata.join(', '),
-        mesi_consigliati: mesiConsigliati,
+        mesi_consigliati: mesiSelezionati.join(', '),
         tiri,
         numero_tiri: tiri.length,
         numero_tiri: tiri.length,
@@ -254,9 +274,20 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
 
         <h2 className="titolo-sezione">Caratteristiche del terreno</h2>
         <input type="number" placeholder="Quota inizio via (m) *" value={quotaInizio} onChange={(e) => setQuotaInizio(e.target.value)} required />
-        <input type="text" placeholder="Tipo di roccia (es. calcare, granito) *" value={tipoRoccia} onChange={(e) => setTipoRoccia(e.target.value)} required />
+        <SelettoreConAltro
+          placeholder="Tipo di roccia *"
+          opzioni={OPZIONI_TIPO_ROCCIA.map((v) => ({ value: v, label: v }))}
+          valore={tipoRoccia}
+          onCambia={setTipoRoccia}
+          obbligatorio
+        />
         <input type="number" placeholder="Sviluppo totale (m)" value={svilupploTotale} onChange={(e) => setSviluppoTotale(e.target.value)} />
-        <input type="text" placeholder="Qualità della roccia" value={qualitaRoccia} onChange={(e) => setQualitaRoccia(e.target.value)} />
+        <SelettoreConAltro
+          placeholder="Qualità della roccia (facoltativo)"
+          opzioni={OPZIONI_QUALITA_ROCCIA.map((v) => ({ value: v, label: v }))}
+          valore={qualitaRoccia}
+          onCambia={setQualitaRoccia}
+        />
 
         <h2 className="titolo-sezione">Tempistiche</h2>
         <input type="text" placeholder="Tempo avvicinamento (es. 45 min) *" value={tempoAvvicinamento} onChange={(e) => setTempoAvvicinamento(e.target.value)} required />
@@ -280,7 +311,14 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
         />
 
         <h2 className="titolo-sezione">Materiale consigliato</h2>
-        <input type="text" placeholder="Tipo corda (singola/doppia) *" value={tipoCorda} onChange={(e) => setTipoCorda(e.target.value)} required />
+        <SelettoreConAltro
+          placeholder="Tipo corda *"
+          opzioni={OPZIONI_TIPO_CORDA.map((v) => ({ value: v, label: v }))}
+          valore={tipoCorda}
+          onCambia={setTipoCorda}
+          obbligatorio
+          mostraAltro={false}
+        />
         <input type="number" placeholder="Lunghezza corda consigliata (m) *" value={lunghezzaCorda} onChange={(e) => setLunghezzaCorda(e.target.value)} required />
         <select
           value={protezioniMobili}
@@ -318,7 +356,12 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
           <option value="no">Non è possibile ritirarsi a metà via</option>
           <option value="si">È possibile ritirarsi a metà via</option>
         </select>
-        <input type="text" placeholder="Copertura cellulare" value={coperturaCellulare} onChange={(e) => setCoperturaCellulare(e.target.value)} />
+        <SelettoreConAltro
+          placeholder="Copertura cellulare (facoltativo)"
+          opzioni={OPZIONI_COPERTURA_CELLULARE.map((v) => ({ value: v, label: v }))}
+          valore={coperturaCellulare}
+          onCambia={setCoperturaCellulare}
+        />
         <textarea placeholder="Pericoli oggettivi" value={pericoliOggettivi} onChange={(e) => setPericoliOggettivi(e.target.value)} rows={3} maxLength={1000} />
 
         <h2 className="titolo-sezione">Esposizione e stagionalità</h2>
@@ -328,7 +371,13 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
           selezionati={esposizioneSelezionata}
           onCambia={setEsposizioneSelezionata}
         />
-        <input type="text" placeholder="Mesi consigliati (es. Aprile-Ottobre) *" value={mesiConsigliati} onChange={(e) => setMesiConsigliati(e.target.value)} required />
+        <MenuMultiSelezione
+          etichetta="Mesi consigliati *"
+          opzioni={OPZIONI_MESI}
+          selezionati={mesiSelezionati}
+          onCambia={setMesiSelezionati}
+          mostraSelezionaTutto={false}
+        />
 
         <h2 className="titolo-sezione">Avvicinamento</h2>
         <textarea

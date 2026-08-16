@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 
-function MenuMultiSelezione({ etichetta, opzioni, selezionati, onCambia }) {
+function MenuMultiSelezione({ etichetta, opzioni, selezionati, onCambia, mostraSelezionaTutto = true }) {
   const [aperto, setAperto] = useState(false);
   const contenitoreRef = useRef(null);
 
@@ -49,7 +49,7 @@ function toggleTutti() {
 
         {aperto && (
         <div className="tendina-menu-multi">
-          {opzioni.length > 0 && (
+          {mostraSelezionaTutto && opzioni.length > 0 && (
             <button type="button" className="voce-seleziona-tutto" onClick={toggleTutti}>
               {tuttoSelezionato ? 'Deseleziona tutto' : 'Seleziona tutto'}
             </button>
