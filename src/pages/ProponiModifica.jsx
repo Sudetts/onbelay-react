@@ -106,6 +106,7 @@ async function caricaFile(file, bucket) {
         allontanamento_descrizione: allontanamentoDescrizione,
         allontanamento_foto_url: urlAllFoto,
         allontanamento_gpx_url: urlAllGpx,
+        tiri,
       });
 
       if (error) throw new Error(error.message);

@@ -172,7 +172,6 @@ if (!tipoRoccia) {
         mesi_consigliati: mesiSelezionati.join(', '),
         tiri,
         numero_tiri: tiri.length,
-        numero_tiri: tiri.length,
         avvicinamento_descrizione: avvicinamentoDescrizione,
         avvicinamento_foto_url: avvicinamentoFotoUrl,
         avvicinamento_gpx_url: avvicinamentoGpxUrl,
@@ -410,12 +409,11 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
 <EditorTiri tiri={tiri} onChange={setTiri} />
 
         <label>
-          Topo della via (immagine, obbligatoria)
+          Topo della via (immagine, facoltativa)
           <input
             type="file"
             accept="image/*"
             onChange={(e) => setDiagrammaFile(e.target.files[0])}
-//            required
           />
         </label>
 

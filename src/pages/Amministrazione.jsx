@@ -59,9 +59,35 @@ function Amministrazione() {
     setVieInAttesa((prev) => prev.filter((v) => v.id !== id));
   }
 
-  async function approvaModifica(id) {
-    await supabase.from('modifiche_proposte').update({ stato: 'approvata' }).eq('id', id);
-    setModificheInAttesa((prev) => prev.filter((m) => m.id !== id));
+  async function approvaModifica(modifica) {
+    const { error: erroreVia } = await supabase
+      .from('vie')
+      .update({
+        nome: modifica.nome,
+        zona: modifica.zona,
+        difficolta: modifica.difficolta,
+        latitudine: modifica.latitudine,
+        longitudine: modifica.longitudine,
+        avvicinamento_descrizione: modifica.avvicinamento_descrizione,
+        avvicinamento_foto_url: modifica.avvicinamento_foto_url,
+        avvicinamento_gpx_url: modifica.avvicinamento_gpx_url,
+        descrizione_via: modifica.descrizione_via,
+        diagramma_url: modifica.diagramma_url,
+        allontanamento_descrizione: modifica.allontanamento_descrizione,
+        allontanamento_foto_url: modifica.allontanamento_foto_url,
+        allontanamento_gpx_url: modifica.allontanamento_gpx_url,
+        tiri: modifica.tiri,
+        numero_tiri: modifica.tiri ? modifica.tiri.length : 0,
+      })
+      .eq('id', modifica.via_id);
+
+    if (erroreVia) {
+      alert('Errore durante l\'applicazione della modifica: ' + erroreVia.message);
+      return;
+    }
+
+    await supabase.from('modifiche_proposte').update({ stato: 'approvata' }).eq('id', modifica.id);
+    setModificheInAttesa((prev) => prev.filter((m) => m.id !== modifica.id));
   }
 
   async function rifiutaModifica(id) {
@@ -115,7 +141,7 @@ function Amministrazione() {
             <p>Nuova zona: {modifica.zona} · Nuova difficoltà: {modifica.difficolta}</p>
             <p><Link to={`/via/${modifica.via_id}`}>Vedi via originale →</Link></p>
             <div className="azioni-admin">
-              <button onClick={() => approvaModifica(modifica.id)} className="btn-approva">Approva</button>
+              <button onClick={() => approvaModifica(modifica)} className="btn-approva">Approva</button>
               <button onClick={() => rifiutaModifica(modifica.id)} className="btn-rifiuta">Rifiuta</button>
             </div>
           </div>
