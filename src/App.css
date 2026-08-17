@@ -397,20 +397,6 @@
   font-weight: 600;
 }
 
-.box-diario {
-  background-color: var(--colore-superficie);
-  border: 1px solid var(--colore-bordo);
-  border-radius: 4px;
-  padding: 18px 20px;
-  margin-top: 25px;
-}
-
-.box-diario h2 {
-  margin-top: 0;
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
 .form-inline {
   flex-direction: row;
   align-items: center;
@@ -981,11 +967,12 @@
 }
 
 .scheda-tiro-vista {
-  background-color: var(--colore-superficie);
-  border: 1px solid var(--colore-bordo);
-  border-left: 3px solid var(--colore-secondario);
-  border-radius: 4px;
-  padding: 12px 16px;
+  padding: 10px 0 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.scheda-tiro-vista:last-child {
+  border-bottom: none;
 }
 
 .scheda-tiro-vista h3 {
@@ -1629,4 +1616,79 @@ button.link-button.bottone-differenze:hover {
     border-right: none;
     border-bottom: 2px solid var(--colore-bordo);
   }
+}
+
+/* ViaDettaglio: pagina piatta, testo bianco ovunque */
+
+.pannello-scuro .lista-tiri-vista h3,
+.pannello-scuro .lista-tiri-vista p,
+.pannello-scuro .lista-tiri-vista .dettagli-tiro {
+  color: var(--colore-testo-pannello);
+}
+
+.pannello-scuro .azioni-autore a,
+.pannello-scuro .azioni-autore .link-button {
+  color: var(--colore-testo-pannello);
+}
+
+.link-gpx {
+  color: var(--colore-testo-pannello);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.btn-sblocca {
+  padding: 12px 20px;
+  border-radius: 6px;
+  border: none;
+  background-color: var(--colore-accento);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 6px;
+}
+
+.btn-sblocca:hover:not(:disabled) {
+  background-color: var(--colore-accento-scuro);
+}
+
+.btn-sblocca:disabled {
+  background-color: var(--colore-testo-secondario);
+  cursor: not-allowed;
+}
+
+/* Allineamento "Modifica via" / "Proponi modifica" / "Elimina" */
+.azioni-autore a {
+  margin-bottom: 0;
+}
+
+/* Campo data: niente sfondo bianco pieno, solo bordo, come il resto della pagina */
+.pannello-scuro .form-inline input[type="date"] {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--colore-testo-pannello);
+  color-scheme: dark;
+}
+
+/* Bottone "Segna come fatta": stile leggero, coerente con lo sfondo scuro */
+.btn-diario {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--colore-testo-pannello);
+  background-color: transparent;
+  color: var(--colore-testo-pannello);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.btn-diario:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.btn-diario:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

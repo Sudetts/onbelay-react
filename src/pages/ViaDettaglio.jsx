@@ -145,8 +145,14 @@ async function handleSblocca() {
   const eAutore = utente && utente.id === via.autore_id;
 
   return (
-    <div className="app dettaglio">
-      <Link to="/">← Torna alla lista</Link>
+    <div className="app dettaglio pannello-scuro">
+      <Link to="/" className="link-home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 9.5 12 3l9 6.5" />
+          <path d="M5 9v11a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9" />
+        </svg>
+        HOME
+      </Link>
       <h1>{via.nome}</h1>
       <p>Zona: {via.zona}</p>
       <p>Difficoltà: {via.difficolta}</p>
@@ -166,7 +172,7 @@ async function handleSblocca() {
               {via.avvicinamento_gpx_url && (
                 <>
                   <MappaGpx gpxUrl={via.avvicinamento_gpx_url} />
-                  <p><a href={via.avvicinamento_gpx_url} download>Scarica traccia GPX avvicinamento</a></p>
+                  <p><a href={via.avvicinamento_gpx_url} download className="link-gpx">Scarica traccia GPX avvicinamento</a></p>
                 </>
               )}
             </>
@@ -208,14 +214,14 @@ async function handleSblocca() {
               {via.allontanamento_gpx_url && (
                 <>
                   <MappaGpx gpxUrl={via.allontanamento_gpx_url} />
-                  <p><a href={via.allontanamento_gpx_url} download>Scarica traccia GPX allontanamento</a></p>
+                  <p><a href={via.allontanamento_gpx_url} download className="link-gpx">Scarica traccia GPX allontanamento</a></p>
                 </>
               )}
             </>
           )}
         </>
       ) : (
-        <div className="box-blocco">
+        <>
           <h2>Relazione bloccata</h2>
           <p>Avvicinamento, descrizione della via e allontanamento sono visibili solo dopo lo sblocco.</p>
 
@@ -228,18 +234,18 @@ async function handleSblocca() {
               <button
                 onClick={handleSblocca}
                 disabled={sbloccoInCorso || crediti < 1}
-                className="form button"
+                className="btn-sblocca"
               >
                 {sbloccoInCorso ? 'Sblocco in corso...' : 'Sblocca relazione (-1 credito)'}
               </button>
               {crediti < 1 && <p className="link-piccolo">Non hai crediti sufficienti. Carica una via o proponi una modifica per guadagnarne.</p>}
             </>
           )}
-        </div>
+        </>
       )}
 
 {utente && (
-        <div className="box-diario">
+        <>
           <h2>Hai fatto questa via?</h2>
           {salitaRegistrata ? (
             <p className="messaggio-successo">Salita registrata nel tuo diario!</p>
@@ -252,20 +258,20 @@ async function handleSblocca() {
                 required
               />
               {erroreDiario && <p className="errore">{erroreDiario}</p>}
-              <button type="submit" disabled={salvataggioDiario}>
+              <button type="submit" disabled={salvataggioDiario} className="btn-diario">
                 {salvataggioDiario ? 'Salvataggio...' : 'Segna come fatta'}
               </button>
             </form>
           )}
-        </div>
+        </>
       )}
 
       {utente && (
         <div className="azioni-autore">
           {eAutore && via.stato === 'in_attesa' ? (
-            <Link to={`/via/${via.id}/modifica`}>Modifica via</Link>
+            <Link to={`/via/${via.id}/modifica`} className="link-button">Modifica via</Link>
           ) : (
-            <Link to={`/via/${via.id}/proponi-modifica`}>Proponi una modifica</Link>
+            <Link to={`/via/${via.id}/proponi-modifica`} className="link-button">Aggiorna/Modifica via</Link>
           )}
           {isAdmin && (
             <button onClick={handleElimina} className="link-button">Elimina</button>
