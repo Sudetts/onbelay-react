@@ -80,6 +80,7 @@ function ModificaVia() {
   const [nuovaAllontanamentoGpx, setNuovaAllontanamentoGpx] = useState(null);
 
   const [autoreId, setAutoreId] = useState(null);
+  const [statoVia, setStatoVia] = useState(null);
   const [caricamento, setCaricamento] = useState(true);
   const [salvataggio, setSalvataggio] = useState(false);
   const [errore, setErrore] = useState('');
@@ -103,6 +104,7 @@ function ModificaVia() {
         setZona(data.zona || '');
         setDifficolta(data.difficolta);
         setAutoreId(data.autore_id);
+        setStatoVia(data.stato);
 
         setLatitudine(data.latitudine);
         setLongitudine(data.longitudine);
@@ -272,11 +274,11 @@ function ModificaVia() {
     return <p>Caricamento in corso...</p>;
   }
 
-  if (!utente || utente.id !== autoreId) {
+  if (!utente || utente.id !== autoreId || statoVia !== 'in_attesa') {
     return (
       <div className="app dettaglio">
-        <p>Non hai i permessi per modificare questa via.</p>
-        <Link to="/">Torna alla lista</Link>
+        <p>Non hai i permessi per modificare questa via. Se la via è già stata approvata, puoi proporne una modifica.</p>
+        <Link to={`/via/${id}`}>← Torna alla via</Link>
       </div>
     );
   }

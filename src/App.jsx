@@ -81,7 +81,7 @@ function ListaVie() {
 
   useEffect(() => {
     async function caricaVie() {
-      const { data, error } = await supabase.from('vie').select('*').eq('stato', 'approvata');
+      const { data, error } = await supabase.from('vie').select('*').eq('stato', 'approvata').eq('richiesta_eliminazione', false);
       if (error) {
         console.error('Errore nel caricamento:', error);
       } else {

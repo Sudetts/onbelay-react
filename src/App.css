@@ -1521,3 +1521,112 @@
 .voce-selettore-altro.voce-altro {
   margin-top: 4px;
 }
+
+button.link-button.bottone-differenze {
+  background-color: transparent;
+  color: var(--colore-accento);
+  padding: 0;
+  font-weight: 500;
+}
+
+button.link-button.bottone-differenze:hover {
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+.confronto-modifica {
+  display: flex;
+  gap: 0;
+  margin: 12px 0;
+  background-color: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--colore-bordo);
+}
+
+.colonna-confronto {
+  flex: 1;
+  min-width: 0;
+  padding: 16px;
+  color: var(--colore-testo);
+  font-size: 0.85rem;
+}
+
+.colonna-confronto:first-child {
+  border-right: 2px solid var(--colore-bordo);
+}
+
+.colonna-confronto h3 {
+  font-family: var(--font-titoli);
+  font-size: 1.1rem;
+  margin: 0 0 12px;
+  color: var(--colore-testo);
+}
+
+.titolo-sezione-confronto {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--colore-testo-secondario);
+  margin: 16px 0 6px;
+  border-bottom: 1px solid var(--colore-bordo);
+  padding-bottom: 4px;
+}
+
+.colonna-confronto p {
+  margin: 3px 0;
+  word-break: break-word;
+}
+
+.campo-rimosso {
+  color: #A32D2D;
+  text-decoration: line-through;
+}
+
+.campo-aggiunto {
+  color: var(--colore-successo);
+  font-weight: 600;
+}
+
+.media-confronto {
+  border-radius: 4px;
+}
+
+.media-rimossa {
+  border: 3px solid #A32D2D;
+}
+
+.media-aggiunta {
+  border: 3px solid var(--colore-successo);
+}
+
+.tiro-confronto {
+  background-color: var(--colore-superficie);
+  border-left: 3px solid var(--colore-bordo);
+  border-radius: 4px;
+  padding: 8px 10px;
+  margin: 6px 0;
+}
+
+.tiro-rimosso {
+  border-left-color: #A32D2D;
+  background-color: rgba(163, 45, 45, 0.06);
+  text-decoration: line-through;
+  color: #A32D2D;
+}
+
+.tiro-aggiunto {
+  border-left-color: var(--colore-successo);
+  background-color: rgba(92, 110, 79, 0.06);
+}
+
+@media (max-width: 640px) {
+  .confronto-modifica {
+    flex-direction: column;
+  }
+
+  .colonna-confronto:first-child {
+    border-right: none;
+    border-bottom: 2px solid var(--colore-bordo);
+  }
+}

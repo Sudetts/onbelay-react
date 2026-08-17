@@ -9,6 +9,7 @@ function ViaDettaglio() {
   const { utente } = useAuth();
   const navigate = useNavigate();
   const [via, setVia] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [sbloccata, setSbloccata] = useState(false);
   const [crediti, setCrediti] = useState(null);
   const [erroreSblocco, setErroreSblocco] = useState('');
@@ -43,6 +44,7 @@ if (utente) {
           .single();
 
         setCrediti(profiloData?.crediti ?? 0);
+        setIsAdmin(profiloData?.is_admin || false);
 
         if (utente.id === data.autore_id || profiloData?.is_admin) {
           setSbloccata(true);
@@ -64,13 +66,13 @@ if (utente) {
   }, [id, utente]);
 
 async function handleElimina() {
-    const conferma = window.confirm('Sei sicuro di voler eliminare questa via?');
+    const conferma = window.confirm('Vuoi inviare questa via in eliminazione? Dovrai confermarla dal pannello di amministrazione prima che venga cancellata definitivamente.');
     if (!conferma) return;
 
-    const { error } = await supabase.from('vie').delete().eq('id', id);
+    const { error } = await supabase.from('vie').update({ richiesta_eliminazione: true }).eq('id', id);
 
     if (error) {
-      alert('Errore durante l\'eliminazione: ' + error.message);
+      alert('Errore durante la richiesta di eliminazione: ' + error.message);
       return;
     }
 
@@ -123,6 +125,15 @@ async function handleSblocca() {
   }
 
   if (!via) {
+    return (
+      <div className="app dettaglio">
+        <p>Via non trovata.</p>
+        <Link to="/">Torna alla lista</Link>
+      </div>
+    );
+  }
+
+  if (via.richiesta_eliminazione && !isAdmin) {
     return (
       <div className="app dettaglio">
         <p>Via non trovata.</p>
@@ -251,8 +262,12 @@ async function handleSblocca() {
 
       {utente && (
         <div className="azioni-autore">
-          <Link to={`/via/${via.id}/proponi-modifica`}>Proponi una modifica</Link>
-          {eAutore && (
+          {eAutore && via.stato === 'in_attesa' ? (
+            <Link to={`/via/${via.id}/modifica`}>Modifica via</Link>
+          ) : (
+            <Link to={`/via/${via.id}/proponi-modifica`}>Proponi una modifica</Link>
+          )}
+          {isAdmin && (
             <button onClick={handleElimina} className="link-button">Elimina</button>
           )}
         </div>
