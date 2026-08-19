@@ -145,7 +145,7 @@ async function handleSblocca() {
   const eAutore = utente && utente.id === via.autore_id;
 
   return (
-    <div className="app dettaglio pannello-scuro">
+        <div className="app dettaglio pannello-scuro pagina-via">
       <Link to="/" className="link-home">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 9.5 12 3l9 6.5" />
@@ -154,14 +154,65 @@ async function handleSblocca() {
         HOME
       </Link>
       <h1>{via.nome}</h1>
-      <p>Zona: {via.zona}</p>
-      <p>Difficoltà: {via.difficolta}</p>
-      {via.ultimo_aggiornamento && (
-        <p className="link-piccolo">Aggiornato in data {new Date(via.ultimo_aggiornamento).toLocaleDateString('it-IT')}</p>
+            <p>Zona: {via.zona}</p>
+      <p>
+        Difficoltà: {via.difficolta}
+        {via.impegno && ` · Impegno: ${via.impegno}`}
+      </p>
+
+      {(via.nazione || via.regione || via.provincia) && (
+        <p>
+          Posizione: {[via.provincia, via.regione, via.nazione].filter(Boolean).join(', ')}
+        </p>
       )}
 
 {sbloccata ? (
         <>
+                            <h2>Caratteristiche del terreno</h2>
+          <p className="dati-compatti">
+            {via.quota_inizio && <span>Quota: {via.quota_inizio} m</span>}
+            {via.tipo_roccia && <span>Roccia: {via.tipo_roccia}</span>}
+            {via.sviluppo_totale && <span>Sviluppo: {via.sviluppo_totale} m</span>}
+            {via.qualita_roccia && <span>Qualità: {via.qualita_roccia}</span>}
+          </p>
+
+                    <h2>Tempistiche</h2>
+          <p className="dati-compatti">
+            {via.tempo_avvicinamento && <span>Avvicinamento: {via.tempo_avvicinamento}</span>}
+            {via.tempo_via && <span>Sulla via: {via.tempo_via}</span>}
+            {via.tempo_rientro && <span>Rientro: {via.tempo_rientro}</span>}
+          </p>
+                    <h2>Materiale consigliato</h2>
+          <p className="dati-compatti">
+            {via.tipo_corda && <span>Corda: {via.tipo_corda}</span>}
+            {via.lunghezza_corda && <span>Lunghezza corda: {via.lunghezza_corda} m</span>}
+            {via.rinvii_consigliati && <span>Rinvii: {via.rinvii_consigliati}</span>}
+          </p>
+          {via.protezioni_mobili !== null && via.protezioni_mobili !== undefined && (
+            <p>Protezioni mobili: {via.protezioni_mobili ? 'Necessarie' : 'Non necessarie'}</p>
+          )}
+          {via.tipo_protezioni_mobili && <p>Quali protezioni: {via.tipo_protezioni_mobili}</p>}
+
+          <h2>Accesso e parcheggio</h2>
+          {via.permessi && <p>Permessi/autorizzazioni: {via.permessi}</p>}
+          {via.parcheggio && <p>Parcheggio: {via.parcheggio}</p>}
+          {via.punto_appoggio && <p>Punto d'appoggio più vicino: {via.punto_appoggio}</p>}
+
+          <h2>Sicurezza</h2>
+          {via.possibilita_ritirata !== null && via.possibilita_ritirata !== undefined && (
+            <p>Possibilità di ritirata a metà via: {via.possibilita_ritirata ? 'Sì' : 'No'}</p>
+          )}
+          {via.copertura_cellulare && <p>Copertura cellulare: {via.copertura_cellulare}</p>}
+          {via.pericoli_oggettivi && <p>Pericoli oggettivi: {via.pericoli_oggettivi}</p>}
+
+          {(via.esposizione || via.mesi_consigliati) && (
+            <>
+              <h2>Esposizione e stagionalità</h2>
+              {via.esposizione && <p>Esposizione: {via.esposizione}</p>}
+              {via.mesi_consigliati && <p>Mesi consigliati: {via.mesi_consigliati}</p>}
+            </>
+          )}
+
           {via.avvicinamento_descrizione && (
             <>
               <h2>Avvicinamento</h2>
@@ -204,7 +255,7 @@ async function handleSblocca() {
           )}
         </>
       )}    
-          {via.allontanamento_descrizione && (
+                    {via.allontanamento_descrizione && (
             <>
               <h2>Allontanamento</h2>
               <p>{via.allontanamento_descrizione}</p>
@@ -217,6 +268,19 @@ async function handleSblocca() {
                   <p><a href={via.allontanamento_gpx_url} download className="link-gpx">Scarica traccia GPX allontanamento</a></p>
                 </>
               )}
+            </>
+          )}
+
+                    {via.ultimo_aggiornamento && (
+                      <p className="link-piccolo">Aggiornato in data {new Date(via.ultimo_aggiornamento).toLocaleDateString('it-IT')}</p>
+                    )}
+                    {(via.anno_apertura || via.apritori) && (
+            <>
+              <h2>Storia della via</h2>
+              <p className="dati-compatti">
+                {via.anno_apertura && <span>Apertura: {via.anno_apertura}</span>}
+                {via.apritori && <span>Apritori: {via.apritori}</span>}
+              </p>
             </>
           )}
         </>

@@ -32,10 +32,10 @@ function toggleTutti() {
     }
   }
 
-  const testoBottone =
+    const testoBottone =
     selezionati.length === 0
       ? etichetta
-      : selezionati.join(', ');
+      : `${etichetta} (${selezionati.length})`;
 
   return (
     <div className="menu-multi-selezione" ref={contenitoreRef}>
@@ -47,8 +47,7 @@ function toggleTutti() {
         {testoBottone} ▾
       </button>
 
-        {aperto && (
-        <div className="tendina-menu-multi">
+                <div className={`tendina-menu-multi${aperto ? ' tendina-aperta' : ''}`}>
           {mostraSelezionaTutto && opzioni.length > 0 && (
             <button type="button" className="voce-seleziona-tutto" onClick={toggleTutti}>
               {tuttoSelezionato ? 'Deseleziona tutto' : 'Seleziona tutto'}
@@ -65,7 +64,6 @@ function toggleTutti() {
             </div>
           ))}
         </div>
-      )}
     </div>
   );
 }

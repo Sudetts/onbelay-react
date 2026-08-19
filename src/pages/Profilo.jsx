@@ -296,8 +296,8 @@ async function confermaRitaglioECarica() {
               <Link to="/pannello-controllo-onbelay" className="azione-profilo-voce link-admin">Admin</Link>
             )}
 
-            {profilo?.is_admin && (
-              <Link to="/sicurezza-account" className="azione-profilo-voce">Gestisci sicurezza account (autenticazione a due fattori)</Link>
+                        {profilo?.is_admin && (
+              <Link to="/sicurezza-account" className="azione-profilo-voce">Sicurezza account</Link>
             )}
 
            <button

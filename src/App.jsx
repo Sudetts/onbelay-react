@@ -77,6 +77,10 @@ function ListaVie() {
   const [filtroZona, setFiltroZona] = useState([]);
   const [filtroDifficolta, setFiltroDifficolta] = useState([]);
   const [ricerca, setRicerca] = useState('');
+  const [filtroRoccia, setFiltroRoccia] = useState([]);
+  const [filtroCorda, setFiltroCorda] = useState([]);
+  const [filtroEsposizione, setFiltroEsposizione] = useState([]);
+  const [filtroRitirata, setFiltroRitirata] = useState([]);
   
 
   useEffect(() => {
@@ -98,12 +102,25 @@ function ListaVie() {
 
   const zoneDisponibili = [...new Set(vie.map((via) => via.zona))];
   const difficoltaDisponibili = [...new Set(vie.map((via) => via.difficolta))];
+  const rocciaDisponibili = [...new Set(vie.map((via) => via.tipo_roccia).filter(Boolean))];
+  const cordaDisponibili = [...new Set(vie.map((via) => via.tipo_corda).filter(Boolean))];
+  const esposizioneDisponibili = [...new Set(
+    vie.flatMap((via) => (via.esposizione ? via.esposizione.split(', ') : []))
+  )];
 
-  const vieFiltrate = vie.filter((via) => {
+    const vieFiltrate = vie.filter((via) => {
   const passaZona = filtroZona.length === 0 || filtroZona.includes(via.zona);
   const passaDifficolta = filtroDifficolta.length === 0 || filtroDifficolta.includes(via.difficolta);
   const passaRicerca = via.nome.toLowerCase().includes(ricerca.toLowerCase());
-  return passaZona && passaDifficolta && passaRicerca;
+  const passaRoccia = filtroRoccia.length === 0 || filtroRoccia.includes(via.tipo_roccia);
+  const passaCorda = filtroCorda.length === 0 || filtroCorda.includes(via.tipo_corda);
+  const passaEsposizione = filtroEsposizione.length === 0 || (
+    via.esposizione && filtroEsposizione.some((e) => via.esposizione.split(', ').includes(e))
+  );
+  const passaRitirata = filtroRitirata.length === 0 || (
+    filtroRitirata.includes(via.possibilita_ritirata ? 'Sì' : 'No')
+  );
+  return passaZona && passaDifficolta && passaRicerca && passaRoccia && passaCorda && passaEsposizione && passaRitirata;
 });
 
   return (
@@ -115,7 +132,7 @@ function ListaVie() {
 
         <MappaVie vie={vieFiltrate} />
 
-<div className="filtri">
+<div className="gruppo-filtri">
   <input
     type="text"
     placeholder="Cerca per nome via..."
@@ -123,25 +140,46 @@ function ListaVie() {
     onChange={(e) => setRicerca(e.target.value)}
     className="campo-ricerca"
   />
-</div>
-
-<div className="gruppo-filtri">
   <MenuMultiSelezione
     etichetta="Zona"
     opzioni={zoneDisponibili}
     selezionati={filtroZona}
     onCambia={setFiltroZona}
   />
-  <MenuMultiSelezione
+    <MenuMultiSelezione
     etichetta="Difficoltà"
     opzioni={difficoltaDisponibili}
     selezionati={filtroDifficolta}
     onCambia={setFiltroDifficolta}
   />
+  <MenuMultiSelezione
+    etichetta="Tipo roccia"
+    opzioni={rocciaDisponibili}
+    selezionati={filtroRoccia}
+    onCambia={setFiltroRoccia}
+  />
+  <MenuMultiSelezione
+    etichetta="Tipo corda"
+    opzioni={cordaDisponibili}
+    selezionati={filtroCorda}
+    onCambia={setFiltroCorda}
+  />
+  <MenuMultiSelezione
+    etichetta="Esposizione"
+    opzioni={esposizioneDisponibili}
+    selezionati={filtroEsposizione}
+    onCambia={setFiltroEsposizione}
+  />
+  <MenuMultiSelezione
+    etichetta="Ritirata possibile"
+    opzioni={['Sì', 'No']}
+    selezionati={filtroRitirata}
+    onCambia={setFiltroRitirata}
+  />
 </div>
 
 {filtroZona.length === 0 && filtroDifficolta.length === 0 && ricerca === '' ? null : vieFiltrate.length === 0 ? (
-          <p>Nessuna via corrisponde ai filtri scelti.</p>
+          <p className="nessun-risultato">Nessuna via corrisponde ai filtri scelti.</p>
         ) : (
           <div className="grid">
             {vieFiltrate.map((via) => (

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import L from 'leaflet';
 import 'leaflet.markercluster';
@@ -10,19 +10,26 @@ function MappaVie({ vie }) {
   const mappaRef = useRef(null);
   const contenitoreRef = useRef(null);
   const navigate = useNavigate();
+  const [ricercaLuogo, setRicercaLuogo] = useState('');
+  const [risultatiLuogo, setRisultatiLuogo] = useState([]);
+  const [cercandoLuogo, setCercandoLuogo] = useState(false);
 
   useEffect(() => {
     if (!contenitoreRef.current) return;
 
 if (!mappaRef.current) {
-      mappaRef.current = L.map(contenitoreRef.current);
+      mappaRef.current = L.map(contenitoreRef.current, { zoomControl: false });
 
       const confiniItalia = L.latLngBounds([36.5, 6.0], [47.3, 18.6]);
       mappaRef.current.fitBounds(confiniItalia);
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors',
       }).addTo(mappaRef.current);
+
+      setTimeout(() => {
+        mappaRef.current.invalidateSize();
+      }, 100);
     }
 
     const gruppoMarker = L.markerClusterGroup();
@@ -79,7 +86,68 @@ return () => {
     };
   }, [vie]);
 
-  return <div ref={contenitoreRef} className="mappa-vie" />;
+  async function cercaLuogo(testoRicerca) {
+    setCercandoLuogo(true);
+    setRisultatiLuogo([]);
+
+    try {
+      const risposta = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(testoRicerca)}&limit=5`
+      );
+      const dati = await risposta.json();
+      setRisultatiLuogo(dati);
+    } catch (err) {
+      console.error('Errore nella ricerca:', err);
+    }
+
+    setCercandoLuogo(false);
+  }
+
+    function selezionaLuogo(risultato) {
+    const lat = parseFloat(risultato.lat);
+    const lng = parseFloat(risultato.lon);
+    mappaRef.current.setView([lat, lng], 12);
+    setRisultatiLuogo([]);
+    setRicercaLuogo(risultato.display_name);
+  }
+
+  useEffect(() => {
+    if (ricercaLuogo.trim().length < 3) {
+      setRisultatiLuogo([]);
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      cercaLuogo(ricercaLuogo);
+    }, 120);
+
+    return () => clearTimeout(timeoutId);
+  }, [ricercaLuogo]);
+
+  return (
+    <div className="contenitore-mappa-vie">
+            <div className="ricerca-posizione ricerca-posizione-overlay ricerca-posizione-stretta">
+        <input
+          type="text"
+          placeholder="Cerca un luogo (es. Arco, Trento)"
+          value={ricercaLuogo}
+          onChange={(e) => setRicercaLuogo(e.target.value)}
+        />
+      </div>
+
+      {risultatiLuogo.length > 0 && (
+        <ul className="risultati-ricerca risultati-ricerca-overlay">
+          {risultatiLuogo.map((risultato) => (
+            <li key={risultato.place_id} onClick={() => selezionaLuogo(risultato)}>
+              {risultato.display_name}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div ref={contenitoreRef} className="mappa-vie" />
+    </div>
+  );
 }
 
 export default MappaVie;

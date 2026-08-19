@@ -168,9 +168,15 @@ async function confermaEliminazione(id) {
     );
   }
 
-  return (
-    <div className="app dettaglio">
-      <Link to="/">← Torna alla lista</Link>
+    return (
+    <div className="app dettaglio pannello-scuro">
+      <Link to="/profilo" className="link-home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+        </svg>
+        PROFILO
+      </Link>
       <h1>Pannello di amministrazione</h1>
 
       <h2>Vie in attesa ({vieInAttesa.length})</h2>

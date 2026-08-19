@@ -203,7 +203,7 @@
 
 .foto-via {
   width: 100%;
-  max-width: 500px;
+  max-width: 350px;
   border-radius: 4px;
   margin: 15px 0;
   display: block;
@@ -1321,6 +1321,16 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   padding: 6px;
   z-index: 100;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.3s ease;
+}
+
+.tendina-menu-multi.tendina-aperta {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .voce-seleziona-tutto {
@@ -1672,7 +1682,7 @@ button.link-button.bottone-differenze:hover {
 }
 
 /* Bottone "Segna come fatta": stile leggero, coerente con lo sfondo scuro */
-.btn-diario {
+.form button.btn-diario {
   padding: 12px;
   border-radius: 6px;
   border: 1px solid var(--colore-testo-pannello);
@@ -1684,11 +1694,202 @@ button.link-button.bottone-differenze:hover {
   transition: background-color 0.15s ease;
 }
 
-.btn-diario:hover:not(:disabled) {
+.form button.btn-diario:hover:not(:disabled) {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-.btn-diario:disabled {
+.form button.btn-diario:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Righe di dati compatte: carattere più piccolo, in riga, separate da un rombo */
+.dati-compatti {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  margin: 4px 0;
+}
+
+.pannello-scuro .dati-compatti {
+  color: var(--colore-testo-pannello);
+  opacity: 0.85;
+}
+
+.dati-compatti span:not(:first-child)::before {
+  content: '◆';
+  margin-right: 8px;
+  font-size: 0.5rem;
+  color: var(--colore-secondario);
+  vertical-align: middle;
+}
+
+/* Solo nella pagina della via: titoli di sezione più piccoli e più compatti */
+.pagina-via h2 {
+  font-size: 1.15rem;
+  margin-top: 14px;
+  margin-bottom: 2px;
+  padding-bottom: 2px;
+}
+
+.pagina-via p {
+  margin: 3px 0;
+}
+
+.pagina-via .dati-compatti {
+  margin: 3px 0;
+}
+
+/* Solo nella pagina della via: campo data e bottone "Segna come fatta" più compatti */
+.pagina-via .form-inline input[type="date"] {
+  padding: 8px 10px;
+  font-size: 0.9rem;
+}
+
+.pagina-via .form-inline .btn-diario {
+  padding: 8px 14px;
+  font-size: 0.9rem;
+}
+
+/* Pagina Amministrazione: testo bianco fuori dalle schede,
+   ma dentro le schede chiare il testo resta scuro e i colori
+   delle differenze (verde/rosso) restano leggibili */
+.pannello-scuro .scheda-admin p:not(.campo-aggiunto):not(.campo-rimosso) {
+  color: var(--colore-testo);
+}
+
+.pannello-scuro .scheda-admin p.campo-aggiunto {
+  color: var(--colore-successo);
+}
+
+.pannello-scuro .scheda-admin p.campo-rimosso {
+  color: #A32D2D;
+}
+
+/* Pagina Amministrazione: testo bianco fuori dalle schede,
+   ma dentro le schede chiare il testo resta scuro e i colori
+   delle differenze (verde/rosso) restano leggibili */
+.pannello-scuro .scheda-admin p:not(.campo-aggiunto):not(.campo-rimosso) {
+  color: var(--colore-testo);
+}
+
+.pannello-scuro .scheda-admin p.campo-aggiunto {
+  color: var(--colore-successo);
+}
+
+.pannello-scuro .scheda-admin p.campo-rimosso {
+  color: #A32D2D;
+}
+
+/* Voci del menu profilo: mai andare a capo */
+.azione-profilo-voce {
+  white-space: nowrap;
+}
+
+/* Contenitore per la mappa della home con la ricerca sovrapposta */
+.contenitore-mappa-vie {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.contenitore-mappa-vie .mappa-vie {
+  margin-bottom: 0;
+}
+
+/* Barra di ricerca luogo nella home: più stretta della mappa, attaccata a sinistra */
+.ricerca-posizione-stretta {
+  width: 100%;
+  max-width: 370px;
+  right: auto;
+}
+
+.nessun-risultato {
+  color: var(--colore-testo-pannello);
+}
+
+/* Selettore durata (ore + minuti) usato per i tempi di avvicinamento/via/rientro */
+.selettore-durata {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.etichetta-durata {
+  font-size: 0.9rem;
+  color: var(--colore-testo-secondario);
+}
+
+.pannello-scuro .etichetta-durata {
+  color: var(--colore-testo-pannello);
+}
+
+.banner-durata {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--colore-bordo);
+  background-color: var(--colore-superficie);
+}
+
+.banner-durata input {
+  width: 44px;
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 1rem;
+  font-family: var(--font-testo);
+  color: var(--colore-testo);
+  text-align: right;
+}
+
+.banner-durata input:focus {
+  outline: none;
+}
+
+.banner-durata input::-webkit-inner-spin-button,
+.banner-durata input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.banner-durata span {
+  font-size: 0.9rem;
+  color: var(--colore-testo-secondario);
+}
+
+.banner-durata span:last-child {
+  margin-right: auto;
+}
+
+/* Le 3 tempistiche affiancate su una riga, ognuna con etichetta sopra e pillola sotto */
+.riga-tempistiche {
+  display: flex;
+  gap: 12px;
+}
+
+.riga-tempistiche .selettore-durata {
+  flex: 1;
+  align-items: center;
+  text-align: center;
+}
+
+.riga-tempistiche .banner-durata {
+  width: 200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .riga-tempistiche {
+    gap: 8px;
+  }
+
+  .banner-durata input {
+    width: 30px;
+  }
 }
