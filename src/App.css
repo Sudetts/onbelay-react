@@ -1893,3 +1893,12 @@ button.link-button.bottone-differenze:hover {
     width: 30px;
   }
 }
+
+/* Il banner durata ha un unico bordo rosso esterno (non uno per ogni casella interna) */
+.banner-durata input:required {
+  border-left: none;
+}
+
+.banner-durata:has(input:required) {
+  border-left: 4px solid #D32F2F;
+}

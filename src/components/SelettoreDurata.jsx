@@ -19,26 +19,25 @@ function SelettoreDurata({ etichetta, minutiTotali, onCambia, obbligatorio = fal
             <label className="etichetta-durata">
         {etichetta}{obbligatorio && '*'}
       </label>
-      <div className="banner-durata">
+            <div className="banner-durata">
         <input
           type="number"
           min="0"
-          placeholder="0"
+          placeholder="00"
           value={ore}
           onChange={(e) => aggiornaOre(e.target.value)}
           required={obbligatorio}
         />
-        <span>h</span>
+        <span>:</span>
         <input
           type="number"
           min="0"
           max="59"
-          placeholder="0"
+          placeholder="00"
           value={minuti}
           onChange={(e) => aggiornaMinuti(e.target.value)}
           required={obbligatorio}
         />
-        <span>min</span>
       </div>
     </div>
   );
