@@ -7,6 +7,7 @@ import EditorTiri from '../components/EditorTiri';
 import SelettorePosizione from '../components/SelettorePosizione';
 import MenuMultiSelezione from '../components/MenuMultiSelezione';
 import SelettoreConAltro from '../components/SelettoreConAltro';
+import SelettoreDurata from '../components/SelettoreDurata';
 
 const OPZIONI_ESPOSIZIONE = ['Nord', 'Nord-Est', 'Est', 'Sud-Est', 'Sud', 'Sud-Ovest', 'Ovest', 'Nord-Ovest'];
 const OPZIONI_MESI = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
@@ -35,9 +36,9 @@ function ModificaVia() {
 
   const [svilupploTotale, setSviluppoTotale] = useState('');
   const [quotaInizio, setQuotaInizio] = useState('');
-  const [tempoAvvicinamento, setTempoAvvicinamento] = useState('');
-  const [tempoVia, setTempoVia] = useState('');
-  const [tempoRientro, setTempoRientro] = useState('');
+    const [tempoAvvicinamento, setTempoAvvicinamento] = useState(null);
+  const [tempoVia, setTempoVia] = useState(null);
+  const [tempoRientro, setTempoRientro] = useState(null);
   const [tipoRoccia, setTipoRoccia] = useState('');
   const [qualitaRoccia, setQualitaRoccia] = useState('');
 
@@ -114,9 +115,9 @@ function ModificaVia() {
 
         setSviluppoTotale(data.sviluppo_totale ?? '');
         setQuotaInizio(data.quota_inizio ?? '');
-        setTempoAvvicinamento(data.tempo_avvicinamento || '');
-        setTempoVia(data.tempo_via || '');
-        setTempoRientro(data.tempo_rientro || '');
+        setTempoAvvicinamento(data.tempo_avvicinamento ?? null);
+        setTempoVia(data.tempo_via ?? null);
+        setTempoRientro(data.tempo_rientro ?? null);
         setTipoRoccia(data.tipo_roccia || '');
         setQualitaRoccia(data.qualita_roccia || '');
 
@@ -372,10 +373,27 @@ function ModificaVia() {
           onCambia={setQualitaRoccia}
         />
 
-        <h2 className="titolo-sezione">Tempistiche</h2>
-        <input type="text" placeholder="Tempo avvicinamento (es. 45 min) *" value={tempoAvvicinamento} onChange={(e) => setTempoAvvicinamento(e.target.value)} required />
-        <input type="text" placeholder="Tempo rientro (es. 30 min) *" value={tempoRientro} onChange={(e) => setTempoRientro(e.target.value)} required />
-        <input type="text" placeholder="Tempo sulla via (es. 3-4 ore)" value={tempoVia} onChange={(e) => setTempoVia(e.target.value)} />
+                <h2 className="titolo-sezione">Tempistiche</h2>
+        <div className="riga-tempistiche">
+          <SelettoreDurata
+            etichetta="Avvicinamento"
+            minutiTotali={tempoAvvicinamento}
+            onCambia={setTempoAvvicinamento}
+            obbligatorio
+          />
+          <SelettoreDurata
+            etichetta="Sulla via"
+            minutiTotali={tempoVia}
+            onCambia={setTempoVia}
+            obbligatorio
+          />
+          <SelettoreDurata
+            etichetta="Allontanamento"
+            minutiTotali={tempoRientro}
+            onCambia={setTempoRientro}
+            obbligatorio
+          />
+        </div>
 
         <h2 className="titolo-sezione">Difficoltà e impegno</h2>
         <input

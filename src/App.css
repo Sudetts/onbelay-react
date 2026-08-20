@@ -1837,25 +1837,24 @@ button.link-button.bottone-differenze:hover {
   background-color: var(--colore-superficie);
 }
 
-.banner-durata input {
-  width: 44px;
+.banner-durata select {
+  width: 40px;
   border: none;
   background: none;
   padding: 0;
   font-size: 1rem;
   font-family: var(--font-testo);
   color: var(--colore-testo);
-  text-align: right;
-}
-
-.banner-durata input:focus {
-  outline: none;
-}
-
-.banner-durata input::-webkit-inner-spin-button,
-.banner-durata input::-webkit-outer-spin-button {
+  text-align: center;
+  text-align-last: center;
+  appearance: none;
   -webkit-appearance: none;
-  margin: 0;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+.banner-durata select:focus {
+  outline: none;
 }
 
 .banner-durata span {
@@ -1895,10 +1894,151 @@ button.link-button.bottone-differenze:hover {
 }
 
 /* Il banner durata ha un unico bordo rosso esterno (non uno per ogni casella interna) */
-.banner-durata input:required {
+.banner-durata select:required {
   border-left: none;
 }
 
-.banner-durata:has(input:required) {
+.banner-durata:has(select:required) {
   border-left: 4px solid #D32F2F;
+}
+
+/* Piccolo effetto quando il banner durata è selezionato/al passaggio del mouse */
+.banner-durata:hover,
+.banner-durata:focus-within {
+  border-color: var(--colore-accento);
+  transition: border-color 0.2s ease;
+}
+
+/* Filtro range (slider doppio min-max) */
+.tendina-filtro-range {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 260px;
+  background-color: #fff;
+  border: 1px solid var(--colore-bordo);
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  z-index: 100;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.3s ease;
+}
+
+.tendina-filtro-range.tendina-aperta {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.valori-filtro-range {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.input-valore-range {
+  width: 70px;
+  padding: 4px 2px;
+  border: none;
+  background: none;
+  font-family: var(--font-tecnico);
+  font-size: 0.85rem;
+  color: var(--colore-testo);
+  text-align: center;
+}
+
+.input-valore-range:focus {
+  outline: none;
+}
+
+.input-valore-range::-webkit-inner-spin-button,
+.input-valore-range::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.doppio-slider {
+  position: relative;
+  height: 24px;
+}
+
+.doppio-slider input[type="range"] {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  width: 100%;
+  height: 4px;
+  background: none;
+  pointer-events: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.doppio-slider input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  pointer-events: auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--colore-accento);
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.doppio-slider input[type="range"]::-moz-range-thumb {
+  pointer-events: auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--colore-accento);
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.doppio-slider::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 4px;
+  background-color: var(--colore-bordo);
+  border-radius: 2px;
+}
+
+.doppio-slider::after {
+  content: '';
+  position: absolute;
+  left: var(--percento-min);
+  right: calc(100% - var(--percento-max));
+  top: 50%;
+  transform: translateY(-50%);
+  height: 4px;
+  background-color: var(--colore-accento-scuro);
+  border-radius: 2px;
+}
+
+.bottone-menu-multi.attivo {
+  border-color: var(--colore-accento);
+  background-color: var(--colore-superficie);
+  color: var(--colore-testo);
+}
+
+/* Larghezza fissa per i bottoni degli slider, evita che il testo che cambia
+   (es. "1h - 3h15min") faccia traboccare/sfarfallare gli altri filtri in fila */
+.bottone-filtro-range {
+  min-width: 190px;
+  text-align: left;
 }

@@ -19,6 +19,7 @@ import Footer from './components/Footer';
 import SicurezzaAccount from './pages/SicurezzaAccount';
 import MappaVie from './components/MappaVie';
 import MenuMultiSelezione from './components/MenuMultiSelezione';
+import FiltroRange from './components/FiltroRange';
 import './App.css';
 
 
@@ -71,6 +72,13 @@ supabase
   );
 }
 
+function formattaOre(oreDecimali) {
+  const ore = Math.floor(oreDecimali);
+  const min = Math.round((oreDecimali - ore) * 60);
+  if (ore === 0) return `${min}min`;
+  if (min === 0) return `${ore}h`;
+  return `${ore}h${min}min`;
+}
 function ListaVie() {
   const [vie, setVie] = useState([]);
   const [caricamento, setCaricamento] = useState(true);
@@ -81,6 +89,17 @@ function ListaVie() {
   const [filtroCorda, setFiltroCorda] = useState([]);
   const [filtroEsposizione, setFiltroEsposizione] = useState([]);
   const [filtroRitirata, setFiltroRitirata] = useState([]);
+  const [filtroMesi, setFiltroMesi] = useState([]);
+  const [filtroQuotaMin, setFiltroQuotaMin] = useState(0);
+  const [filtroQuotaMax, setFiltroQuotaMax] = useState(4500);
+  const [filtroCordaMin, setFiltroCordaMin] = useState(30);
+  const [filtroCordaMax, setFiltroCordaMax] = useState(80);
+    const [filtroAvvicinamentoMin, setFiltroAvvicinamentoMin] = useState(0);
+  const [filtroAvvicinamentoMax, setFiltroAvvicinamentoMax] = useState(7);
+  const [filtroViaMin, setFiltroViaMin] = useState(0);
+  const [filtroViaMax, setFiltroViaMax] = useState(20);
+  const [filtroRientroMin, setFiltroRientroMin] = useState(0);
+  const [filtroRientroMax, setFiltroRientroMax] = useState(7);
   
 
   useEffect(() => {
@@ -107,6 +126,9 @@ function ListaVie() {
   const esposizioneDisponibili = [...new Set(
     vie.flatMap((via) => (via.esposizione ? via.esposizione.split(', ') : []))
   )];
+    const mesiDisponibili = [...new Set(
+    vie.flatMap((via) => (via.mesi_consigliati ? via.mesi_consigliati.split(', ') : []))
+  )];
 
     const vieFiltrate = vie.filter((via) => {
   const passaZona = filtroZona.length === 0 || filtroZona.includes(via.zona);
@@ -117,10 +139,18 @@ function ListaVie() {
   const passaEsposizione = filtroEsposizione.length === 0 || (
     via.esposizione && filtroEsposizione.some((e) => via.esposizione.split(', ').includes(e))
   );
-  const passaRitirata = filtroRitirata.length === 0 || (
+    const passaRitirata = filtroRitirata.length === 0 || (
     filtroRitirata.includes(via.possibilita_ritirata ? 'Sì' : 'No')
   );
-  return passaZona && passaDifficolta && passaRicerca && passaRoccia && passaCorda && passaEsposizione && passaRitirata;
+    const passaMesi = filtroMesi.length === 0 || (
+    via.mesi_consigliati && filtroMesi.some((m) => via.mesi_consigliati.split(', ').includes(m))
+  );
+    const passaQuota = !via.quota_inizio || (via.quota_inizio >= filtroQuotaMin && via.quota_inizio <= filtroQuotaMax);
+    const passaLunghezzaCorda = !via.lunghezza_corda || (via.lunghezza_corda >= filtroCordaMin && via.lunghezza_corda <= filtroCordaMax);
+    const passaAvvicinamento = !via.tempo_avvicinamento || (via.tempo_avvicinamento >= filtroAvvicinamentoMin * 60 && via.tempo_avvicinamento <= filtroAvvicinamentoMax * 60);
+  const passaVia = !via.tempo_via || (via.tempo_via >= filtroViaMin * 60 && via.tempo_via <= filtroViaMax * 60);
+  const passaRientro = !via.tempo_rientro || (via.tempo_rientro >= filtroRientroMin * 60 && via.tempo_rientro <= filtroRientroMax * 60);
+  return passaZona && passaDifficolta && passaRicerca && passaRoccia && passaCorda && passaEsposizione && passaRitirata && passaMesi && passaQuota && passaLunghezzaCorda && passaAvvicinamento && passaVia && passaRientro;
 });
 
   return (
@@ -170,11 +200,80 @@ function ListaVie() {
     selezionati={filtroEsposizione}
     onCambia={setFiltroEsposizione}
   />
-  <MenuMultiSelezione
+    <MenuMultiSelezione
     etichetta="Ritirata possibile"
     opzioni={['Sì', 'No']}
     selezionati={filtroRitirata}
     onCambia={setFiltroRitirata}
+  />
+    <MenuMultiSelezione
+    etichetta="Mesi consigliati"
+    opzioni={mesiDisponibili}
+    selezionati={filtroMesi}
+    onCambia={setFiltroMesi}
+  />
+    <FiltroRange
+    etichetta="Quota"
+    min={0}
+    max={4500}
+    valoreMin={filtroQuotaMin}
+    valoreMax={filtroQuotaMax}
+    onCambia={(nuovoMin, nuovoMax) => {
+      setFiltroQuotaMin(nuovoMin);
+      setFiltroQuotaMax(nuovoMax);
+    }}
+    formatta={(v) => `${v}m`}
+  />
+    <FiltroRange
+    etichetta="Lunghezza corda"
+    min={30}
+    max={80}
+    valoreMin={filtroCordaMin}
+    valoreMax={filtroCordaMax}
+    onCambia={(nuovoMin, nuovoMax) => {
+      setFiltroCordaMin(nuovoMin);
+      setFiltroCordaMax(nuovoMax);
+    }}
+    formatta={(v) => `${v}m`}
+  />
+    <FiltroRange
+    etichetta="Avvicinamento"
+    min={0}
+    max={7}
+    step={0.25}
+    valoreMin={filtroAvvicinamentoMin}
+    valoreMax={filtroAvvicinamentoMax}
+    onCambia={(nuovoMin, nuovoMax) => {
+      setFiltroAvvicinamentoMin(nuovoMin);
+      setFiltroAvvicinamentoMax(nuovoMax);
+    }}
+    formatta={formattaOre}
+  />
+  <FiltroRange
+    etichetta="Sulla via"
+    min={0}
+    max={20}
+    step={0.25}
+    valoreMin={filtroViaMin}
+    valoreMax={filtroViaMax}
+    onCambia={(nuovoMin, nuovoMax) => {
+      setFiltroViaMin(nuovoMin);
+      setFiltroViaMax(nuovoMax);
+    }}
+    formatta={formattaOre}
+  />
+  <FiltroRange
+    etichetta="Allontanamento"
+    min={0}
+    max={7}
+    step={0.25}
+    valoreMin={filtroRientroMin}
+    valoreMax={filtroRientroMax}
+    onCambia={(nuovoMin, nuovoMax) => {
+      setFiltroRientroMin(nuovoMin);
+      setFiltroRientroMax(nuovoMax);
+    }}
+    formatta={formattaOre}
   />
 </div>
 
