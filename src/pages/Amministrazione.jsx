@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
 import DifferenzeModifica from '../components/DifferenzeModifica';
+import Popup from '../components/Popup';
 
 function Amministrazione() {
   const { utente } = useAuth();
@@ -11,7 +12,9 @@ function Amministrazione() {
   const [vieDaEliminare, setVieDaEliminare] = useState([]);
   const [modificheInAttesa, setModificheInAttesa] = useState([]);
   const [modificheEspanse, setModificheEspanse] = useState(new Set());
-  const [caricamento, setCaricamento] = useState(true);
+    const [caricamento, setCaricamento] = useState(true);
+  const [viaDaEliminare, setViaDaEliminare] = useState(null);
+  const [erroreAzione, setErroreAzione] = useState('');
 
   useEffect(() => {
     async function verificaECarica() {
@@ -69,9 +72,7 @@ function Amministrazione() {
   }
 
 async function confermaEliminazione(id) {
-    const conferma = window.confirm('Questa azione è irreversibile. Eliminare definitivamente questa via?');
-    if (!conferma) return;
-
+    setViaDaEliminare(null);
     await supabase.from('vie').delete().eq('id', id);
     setVieDaEliminare((prev) => prev.filter((v) => v.id !== id));
   }
@@ -129,8 +130,8 @@ async function confermaEliminazione(id) {
       })
       .eq('id', modifica.via_id);
 
-    if (erroreVia) {
-      alert('Errore durante l\'applicazione della modifica: ' + erroreVia.message);
+        if (erroreVia) {
+      setErroreAzione('Errore durante l\'applicazione della modifica: ' + erroreVia.message);
       return;
     }
 
@@ -207,7 +208,7 @@ async function confermaEliminazione(id) {
             <p>Zona: {via.zona} · Difficoltà: {via.difficolta}</p>
             <p><Link to={`/via/${via.id}`}>Vedi dettagli completi →</Link></p>
             <div className="azioni-admin">
-              <button onClick={() => confermaEliminazione(via.id)} className="btn-rifiuta">Elimina definitivamente</button>
+                            <button onClick={() => setViaDaEliminare(via.id)} className="btn-rifiuta">Elimina definitivamente</button>
               <button onClick={() => annullaEliminazione(via.id)} className="btn-approva">Annulla, mantieni la via</button>
             </div>
           </div>
@@ -241,6 +242,28 @@ async function confermaEliminazione(id) {
             </div>
           </div>
         ))
+      )}
+        </div>
+
+      {viaDaEliminare && (
+        <Popup
+          titolo="Elimina via"
+          messaggio="Questa azione è irreversibile. Eliminare definitivamente questa via?"
+          testoConferma="Elimina"
+          pericoloso
+          onConferma={() => confermaEliminazione(viaDaEliminare)}
+          onAnnulla={() => setViaDaEliminare(null)}
+        />
+      )}
+
+      {erroreAzione && (
+        <Popup
+          titolo="Errore"
+          messaggio={erroreAzione}
+          soloOk
+          onConferma={() => setErroreAzione('')}
+          onAnnulla={() => setErroreAzione('')}
+        />
       )}
     </div>
   );

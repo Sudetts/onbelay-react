@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
 import MappaGpx from '../components/MappaGpx';
+import Popup from '../components/Popup';
 
 function ViaDettaglio() {
   const { id } = useParams();
@@ -18,7 +19,9 @@ function ViaDettaglio() {
   const [dataSalita, setDataSalita] = useState('');
   const [salvataggioDiario, setSalvataggioDiario] = useState(false);
   const [erroreDiario, setErroreDiario] = useState('');
-  const [salitaRegistrata, setSalitaRegistrata] = useState(false);
+    const [salitaRegistrata, setSalitaRegistrata] = useState(false);
+    const [mostraPopupElimina, setMostraPopupElimina] = useState(false);
+  const [mostraPopupSblocca, setMostraPopupSblocca] = useState(false);
 
 useEffect(() => {
     async function caricaVia() {
@@ -69,8 +72,7 @@ if (utente) {
   }, [id, utente]);
 
 async function handleElimina() {
-    const conferma = window.confirm('Vuoi inviare questa via in eliminazione? Dovrai confermarla dal pannello di amministrazione prima che venga cancellata definitivamente.');
-    if (!conferma) return;
+    setMostraPopupElimina(false);
 
     const { error } = await supabase.from('vie').update({ richiesta_eliminazione: true }).eq('id', id);
 
@@ -83,9 +85,7 @@ async function handleElimina() {
   }
 
 async function handleSblocca() {
-    const conferma = window.confirm('Vuoi sbloccare questa via spendendo 1 credito?');
-    if (!conferma) return;
-
+    setMostraPopupSblocca(false);
     setErroreSblocco('');
     setSbloccoInCorso(true);
 
@@ -347,10 +347,21 @@ async function handleSblocca() {
           ) : (
             <Link to={`/via/${via.id}/proponi-modifica`} className="link-button">Aggiorna/Modifica via</Link>
           )}
-          {isAdmin && (
-            <button onClick={handleElimina} className="link-button">Elimina</button>
+                    {isAdmin && (
+            <button onClick={() => setMostraPopupElimina(true)} className="link-button">Elimina</button>
           )}
         </div>
+      )}
+
+      {mostraPopupElimina && (
+        <Popup
+          titolo="Elimina via"
+          messaggio="Vuoi inviare questa via in eliminazione? Dovrai confermarla dal pannello di amministrazione prima che venga cancellata definitivamente."
+          testoConferma="Elimina"
+          pericoloso
+          onConferma={handleElimina}
+          onAnnulla={() => setMostraPopupElimina(false)}
+        />
       )}
     </div>
   );

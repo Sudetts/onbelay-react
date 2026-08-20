@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
+import Popup from '../components/Popup';
 
 function SicurezzaAccount() {
   const { utente } = useAuth();
@@ -11,7 +12,8 @@ function SicurezzaAccount() {
   const [codice, setCodice] = useState('');
   const [errore, setErrore] = useState('');
   const [messaggio, setMessaggio] = useState('');
-  const [caricamento, setCaricamento] = useState(true);
+    const [caricamento, setCaricamento] = useState(true);
+  const [fattoreDaRimuovere, setFattoreDaRimuovere] = useState(null);
 
   useEffect(() => {
     caricaFattori();
@@ -69,9 +71,8 @@ function SicurezzaAccount() {
     caricaFattori();
   }
 
-  async function rimuoviFattore(id) {
-    const conferma = window.confirm('Sei sicuro di voler disattivare l\'autenticazione a due fattori?');
-    if (!conferma) return;
+    async function rimuoviFattore(id) {
+    setFattoreDaRimuovere(null);
 
     const { error } = await supabase.auth.mfa.unenroll({ factorId: id });
     if (error) {
@@ -110,9 +111,9 @@ function SicurezzaAccount() {
         <div className="scheda-admin">
           <p>✅ Autenticazione a due fattori attiva.</p>
           {fattori.map((fattore) => (
-            <button
+                        <button
               key={fattore.id}
-              onClick={() => rimuoviFattore(fattore.id)}
+              onClick={() => setFattoreDaRimuovere(fattore.id)}
               className="link-button"
             >
               Disattiva
@@ -143,6 +144,17 @@ function SicurezzaAccount() {
             Attiva autenticazione a due fattori
           </button>
         </div>
+            )}
+
+      {fattoreDaRimuovere && (
+        <Popup
+          titolo="Disattiva autenticazione a due fattori"
+          messaggio="Sei sicuro di voler disattivare l'autenticazione a due fattori?"
+          testoConferma="Disattiva"
+          pericoloso
+          onConferma={() => rimuoviFattore(fattoreDaRimuovere)}
+          onAnnulla={() => setFattoreDaRimuovere(null)}
+        />
       )}
     </div>
   );
