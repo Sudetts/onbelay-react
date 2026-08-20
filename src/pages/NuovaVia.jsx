@@ -192,9 +192,9 @@ if (!tipoRoccia) {
       setCaricamento(false);
     }
   }
-  if (!utente) {
+    if (!utente) {
     return (
-      <div className="app dettaglio">
+      <div className="app dettaglio pannello-scuro">
         <p>Devi accedere per aggiungere una via.</p>
         <Link to="/login">Vai al login</Link>
       </div>

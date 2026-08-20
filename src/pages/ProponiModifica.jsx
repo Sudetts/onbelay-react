@@ -307,31 +307,31 @@ function ProponiModifica() {
     }
   }
 
-  if (caricamento) {
-    return <p>Caricamento in corso...</p>;
+    if (caricamento) {
+    return <p className="messaggio-caricamento">Caricamento in corso...</p>;
   }
 
-  if (!utente) {
+    if (!utente) {
     return (
-      <div className="app dettaglio">
+      <div className="app dettaglio pannello-scuro">
         <p>Devi accedere per proporre una modifica.</p>
         <Link to="/login">Vai al login</Link>
       </div>
     );
   }
 
-  if (bloccatoDaAltro) {
+    if (bloccatoDaAltro) {
     return (
-      <div className="app dettaglio">
+      <div className="app dettaglio pannello-scuro">
         <p>C'è già una modifica in attesa di approvazione per questa via. Riprova più tardi.</p>
         <Link to={`/via/${id}`}>← Torna alla via</Link>
       </div>
     );
   }
 
-  if (inviato) {
+    if (inviato) {
     return (
-      <div className="app dettaglio">
+      <div className="app dettaglio pannello-scuro">
         <p className="messaggio-successo">
           La tua proposta di modifica è stata inviata ed è in attesa di revisione. Grazie per il contributo!
         </p>

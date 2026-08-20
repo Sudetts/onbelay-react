@@ -46,17 +46,20 @@ if (utente) {
         setCrediti(profiloData?.crediti ?? 0);
         setIsAdmin(profiloData?.is_admin || false);
 
-        if (utente.id === data.autore_id || profiloData?.is_admin) {
-          setSbloccata(true);
-        } else {
-          const { data: sblocco } = await supabase
-            .from('sblocchi')
-            .select('id')
-            .eq('utente_id', utente.id)
-            .eq('via_id', id)
-            .maybeSingle();
-          setSbloccata(!!sblocco);
-        }
+                // NOTA: per ora, chiunque sia loggato vede tutto senza bisogno di crediti.
+        // Quando riattiveremo il sistema crediti, ripristinare la logica commentata sotto.
+        setSbloccata(true);
+        // if (utente.id === data.autore_id || profiloData?.is_admin) {
+        //   setSbloccata(true);
+        // } else {
+        //   const { data: sblocco } = await supabase
+        //     .from('sblocchi')
+        //     .select('id')
+        //     .eq('utente_id', utente.id)
+        //     .eq('via_id', id)
+        //     .maybeSingle();
+        //   setSbloccata(!!sblocco);
+        // }
       }
 
       setCaricamento(false);
@@ -120,22 +123,22 @@ async function handleSblocca() {
     setSalitaRegistrata(true);
   }
 
-  if (caricamento) {
-    return <p>Caricamento in corso...</p>;
+    if (caricamento) {
+    return <p className="messaggio-caricamento">Caricamento in corso...</p>;
   }
 
-  if (!via) {
+    if (!via) {
     return (
-      <div className="app dettaglio">
+      <div className="app dettaglio pannello-scuro">
         <p>Via non trovata.</p>
         <Link to="/">Torna alla lista</Link>
       </div>
     );
   }
 
-  if (via.richiesta_eliminazione && !isAdmin) {
+    if (via.richiesta_eliminazione && !isAdmin) {
     return (
-      <div className="app dettaglio">
+      <div className="app dettaglio pannello-scuro">
         <p>Via non trovata.</p>
         <Link to="/">Torna alla lista</Link>
       </div>
@@ -166,53 +169,54 @@ async function handleSblocca() {
         </p>
       )}
 
+      <h2>Caratteristiche del terreno</h2>
+      <p className="dati-compatti">
+        {via.quota_inizio && <span>Quota: {via.quota_inizio} m</span>}
+        {via.tipo_roccia && <span>Roccia: {via.tipo_roccia}</span>}
+        {via.sviluppo_totale && <span>Sviluppo: {via.sviluppo_totale} m</span>}
+        {via.qualita_roccia && <span>Qualità: {via.qualita_roccia}</span>}
+      </p>
+
+      <h2>Tempistiche</h2>
+      <p className="dati-compatti">
+        {via.tempo_avvicinamento && <span>Avvicinamento: {via.tempo_avvicinamento}</span>}
+        {via.tempo_via && <span>Sulla via: {via.tempo_via}</span>}
+        {via.tempo_rientro && <span>Rientro: {via.tempo_rientro}</span>}
+      </p>
+
+      <h2>Materiale consigliato</h2>
+      <p className="dati-compatti">
+        {via.tipo_corda && <span>Corda: {via.tipo_corda}</span>}
+        {via.lunghezza_corda && <span>Lunghezza corda: {via.lunghezza_corda} m</span>}
+        {via.rinvii_consigliati && <span>Rinvii: {via.rinvii_consigliati}</span>}
+      </p>
+      {via.protezioni_mobili !== null && via.protezioni_mobili !== undefined && (
+        <p>Protezioni mobili: {via.protezioni_mobili ? 'Necessarie' : 'Non necessarie'}</p>
+      )}
+      {via.tipo_protezioni_mobili && <p>Quali protezioni: {via.tipo_protezioni_mobili}</p>}
+
+      <h2>Accesso e parcheggio</h2>
+      {via.permessi && <p>Permessi/autorizzazioni: {via.permessi}</p>}
+      {via.parcheggio && <p>Parcheggio: {via.parcheggio}</p>}
+      {via.punto_appoggio && <p>Punto d'appoggio più vicino: {via.punto_appoggio}</p>}
+
+      <h2>Sicurezza</h2>
+      {via.possibilita_ritirata !== null && via.possibilita_ritirata !== undefined && (
+        <p>Possibilità di ritirata a metà via: {via.possibilita_ritirata ? 'Sì' : 'No'}</p>
+      )}
+      {via.copertura_cellulare && <p>Copertura cellulare: {via.copertura_cellulare}</p>}
+      {via.pericoli_oggettivi && <p>Pericoli oggettivi: {via.pericoli_oggettivi}</p>}
+
+      {(via.esposizione || via.mesi_consigliati) && (
+        <>
+          <h2>Esposizione e stagionalità</h2>
+          {via.esposizione && <p>Esposizione: {via.esposizione}</p>}
+          {via.mesi_consigliati && <p>Mesi consigliati: {via.mesi_consigliati}</p>}
+        </>
+      )}
+
 {sbloccata ? (
         <>
-                            <h2>Caratteristiche del terreno</h2>
-          <p className="dati-compatti">
-            {via.quota_inizio && <span>Quota: {via.quota_inizio} m</span>}
-            {via.tipo_roccia && <span>Roccia: {via.tipo_roccia}</span>}
-            {via.sviluppo_totale && <span>Sviluppo: {via.sviluppo_totale} m</span>}
-            {via.qualita_roccia && <span>Qualità: {via.qualita_roccia}</span>}
-          </p>
-
-                    <h2>Tempistiche</h2>
-          <p className="dati-compatti">
-            {via.tempo_avvicinamento && <span>Avvicinamento: {via.tempo_avvicinamento}</span>}
-            {via.tempo_via && <span>Sulla via: {via.tempo_via}</span>}
-            {via.tempo_rientro && <span>Rientro: {via.tempo_rientro}</span>}
-          </p>
-                    <h2>Materiale consigliato</h2>
-          <p className="dati-compatti">
-            {via.tipo_corda && <span>Corda: {via.tipo_corda}</span>}
-            {via.lunghezza_corda && <span>Lunghezza corda: {via.lunghezza_corda} m</span>}
-            {via.rinvii_consigliati && <span>Rinvii: {via.rinvii_consigliati}</span>}
-          </p>
-          {via.protezioni_mobili !== null && via.protezioni_mobili !== undefined && (
-            <p>Protezioni mobili: {via.protezioni_mobili ? 'Necessarie' : 'Non necessarie'}</p>
-          )}
-          {via.tipo_protezioni_mobili && <p>Quali protezioni: {via.tipo_protezioni_mobili}</p>}
-
-          <h2>Accesso e parcheggio</h2>
-          {via.permessi && <p>Permessi/autorizzazioni: {via.permessi}</p>}
-          {via.parcheggio && <p>Parcheggio: {via.parcheggio}</p>}
-          {via.punto_appoggio && <p>Punto d'appoggio più vicino: {via.punto_appoggio}</p>}
-
-          <h2>Sicurezza</h2>
-          {via.possibilita_ritirata !== null && via.possibilita_ritirata !== undefined && (
-            <p>Possibilità di ritirata a metà via: {via.possibilita_ritirata ? 'Sì' : 'No'}</p>
-          )}
-          {via.copertura_cellulare && <p>Copertura cellulare: {via.copertura_cellulare}</p>}
-          {via.pericoli_oggettivi && <p>Pericoli oggettivi: {via.pericoli_oggettivi}</p>}
-
-          {(via.esposizione || via.mesi_consigliati) && (
-            <>
-              <h2>Esposizione e stagionalità</h2>
-              {via.esposizione && <p>Esposizione: {via.esposizione}</p>}
-              {via.mesi_consigliati && <p>Mesi consigliati: {via.mesi_consigliati}</p>}
-            </>
-          )}
-
           {via.avvicinamento_descrizione && (
             <>
               <h2>Avvicinamento</h2>
@@ -270,41 +274,47 @@ async function handleSblocca() {
               )}
             </>
           )}
-
-                    {via.ultimo_aggiornamento && (
-                      <p className="link-piccolo">Aggiornato in data {new Date(via.ultimo_aggiornamento).toLocaleDateString('it-IT')}</p>
-                    )}
-                    {(via.anno_apertura || via.apritori) && (
-            <>
-              <h2>Storia della via</h2>
-              <p className="dati-compatti">
-                {via.anno_apertura && <span>Apertura: {via.anno_apertura}</span>}
-                {via.apritori && <span>Apritori: {via.apritori}</span>}
-              </p>
-            </>
-          )}
         </>
-      ) : (
-        <>
-          <h2>Relazione bloccata</h2>
-          <p>Avvicinamento, descrizione della via e allontanamento sono visibili solo dopo lo sblocco.</p>
+            ) : (
+        <div className="contenuto-sfocato-wrapper">
+          <div className="contenuto-sfocato">
+            <h2>Avvicinamento</h2>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud
+              exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            </p>
+            <h2>Via</h2>
+            <p>
+              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+              fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa
+              qui officia deserunt mollit anim id est laborum.
+            </p>
+            <h2>Allontanamento</h2>
+            <p>
+              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
+              doloremque laudantium totam rem aperiam eaque ipsa quae ab illo inventore veritatis.
+            </p>
+          </div>
+                    <div className="overlay-registrazione">
+            <p className="testo-overlay-registrazione">
+              Registrati gratuitamente per leggere la relazione completa
+            </p>
+            <p className="link-piccolo-overlay">Nessun pagamento richiesto, solo una registrazione</p>
+          </div>
+        </div>
+      )}
 
-          {!utente ? (
-            <p><Link to="/login">Accedi</Link> per sbloccare questa via.</p>
-          ) : (
-            <>
-              <p>Hai <strong>{crediti}</strong> {crediti === 1 ? 'credito' : 'crediti'} disponibili.</p>
-              {erroreSblocco && <p className="errore">{erroreSblocco}</p>}
-              <button
-                onClick={handleSblocca}
-                disabled={sbloccoInCorso || crediti < 1}
-                className="btn-sblocca"
-              >
-                {sbloccoInCorso ? 'Sblocco in corso...' : 'Sblocca relazione (-1 credito)'}
-              </button>
-              {crediti < 1 && <p className="link-piccolo">Non hai crediti sufficienti. Carica una via o proponi una modifica per guadagnarne.</p>}
-            </>
-          )}
+      {via.ultimo_aggiornamento && (
+        <p className="link-piccolo">Aggiornato in data {new Date(via.ultimo_aggiornamento).toLocaleDateString('it-IT')}</p>
+      )}
+      {(via.anno_apertura || via.apritori) && (
+        <>
+          <h2>Storia della via</h2>
+          <p className="dati-compatti">
+            {via.anno_apertura && <span>Apertura: {via.anno_apertura}</span>}
+            {via.apritori && <span>Apritori: {via.apritori}</span>}
+          </p>
         </>
       )}
 

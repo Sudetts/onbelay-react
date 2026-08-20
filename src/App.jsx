@@ -130,8 +130,8 @@ function ListaVie() {
     osservatore.observe(sentinellaRef.current);
     return () => osservatore.disconnect();
   }, [caricamento]);
-  if (caricamento) {
-    return <p>Caricamento vie in corso...</p>;
+    if (caricamento) {
+    return <p className="messaggio-caricamento">Caricamento vie in corso...</p>;
   }
 
   const zoneDisponibili = [...new Set(vie.map((via) => via.zona))];
@@ -400,8 +400,8 @@ function VerificaMfaObbligatoria() {
 function App() {
   const { mfaNonVerificato, caricamento } = useAuth();
 
-  if (caricamento) {
-    return <p>Caricamento in corso...</p>;
+    if (caricamento) {
+    return <p className="messaggio-caricamento">Caricamento in corso...</p>;
   }
 
   if (mfaNonVerificato) {

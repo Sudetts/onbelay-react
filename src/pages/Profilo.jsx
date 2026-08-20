@@ -158,17 +158,17 @@ async function confermaRitaglioECarica() {
   setCaricamentoAvatar(false);
 }
 
-  if (!utente) {
+    if (!utente) {
     return (
-      <div className="app dettaglio">
+      <div className="app dettaglio pannello-scuro">
         <p>Devi accedere per vedere il tuo profilo.</p>
         <Link to="/login">Vai al login</Link>
       </div>
     );
   }
 
-  if (caricamento) {
-    return <p>Caricamento in corso...</p>;
+    if (caricamento) {
+    return <p className="messaggio-caricamento">Caricamento in corso...</p>;
   }
 
   const vieApprovate = vieUtente.filter((via) => via.stato === 'approvata');

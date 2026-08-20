@@ -155,13 +155,13 @@ async function confermaEliminazione(id) {
     setModificheInAttesa((prev) => prev.filter((m) => m.id !== id));
   }
 
-  if (caricamento) {
-    return <p>Caricamento in corso...</p>;
+    if (caricamento) {
+    return <p className="messaggio-caricamento">Caricamento in corso...</p>;
   }
 
-  if (!utente || !isAdmin) {
+    if (!utente || !isAdmin) {
     return (
-      <div className="app dettaglio">
+      <div className="app dettaglio pannello-scuro">
         <p>Pagina non trovata.</p>
         <Link to="/">Torna alla home</Link>
       </div>

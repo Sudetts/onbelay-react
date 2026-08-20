@@ -271,13 +271,13 @@ function ModificaVia() {
     }
   }
 
-  if (caricamento) {
-    return <p>Caricamento in corso...</p>;
+    if (caricamento) {
+    return <p className="messaggio-caricamento">Caricamento in corso...</p>;
   }
 
-  if (!utente || utente.id !== autoreId || statoVia !== 'in_attesa') {
+    if (!utente || utente.id !== autoreId || statoVia !== 'in_attesa') {
     return (
-      <div className="app dettaglio">
+      <div className="app dettaglio pannello-scuro">
         <p>Non hai i permessi per modificare questa via. Se la via è già stata approvata, puoi proporne una modifica.</p>
         <Link to={`/via/${id}`}>← Torna alla via</Link>
       </div>

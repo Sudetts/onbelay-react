@@ -84,16 +84,16 @@ function SicurezzaAccount() {
   }
 
   if (!utente) {
-    return (
-      <div className="app dettaglio">
+        return (
+      <div className="app dettaglio pannello-scuro">
         <p>Devi accedere per gestire la sicurezza del tuo account.</p>
         <Link to="/login">Vai al login</Link>
       </div>
     );
   }
 
-  if (caricamento) {
-    return <p>Caricamento in corso...</p>;
+    if (caricamento) {
+    return <p className="messaggio-caricamento">Caricamento in corso...</p>;
   }
 
   return (

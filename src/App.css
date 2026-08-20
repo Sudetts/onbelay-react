@@ -2111,3 +2111,59 @@ button.link-button.bottone-differenze:hover {
   margin-top: 12px;
   margin-bottom: 0;
 }
+
+/* Messaggi di caricamento "nudi" (senza contenitore), sempre bianchi su sfondo scuro */
+.messaggio-caricamento {
+  color: var(--colore-testo-pannello);
+  padding: 20px;
+}
+
+/* Contenuto sfocato per chi non è loggato: invito alla registrazione */
+.contenuto-sfocato-wrapper {
+  position: relative;
+  margin-top: 20px;
+}
+
+.contenuto-sfocato {
+  filter: blur(3px);
+  user-select: none;
+  pointer-events: none;
+  max-height: 420px;
+  overflow: hidden;
+}
+
+.overlay-registrazione {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  background: linear-gradient(to bottom, rgba(20, 18, 15, 0.3), rgba(20, 18, 15, 0.85));
+  padding: 20px;
+}
+
+.testo-overlay-registrazione {
+  font-family: var(--font-titoli);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--colore-testo-pannello);
+  max-width: 320px;
+}
+
+.link-piccolo-overlay {
+  font-size: 0.85rem;
+  color: var(--colore-testo-pannello);
+  opacity: 0.85;
+  margin-bottom: 8px;
+}
+
+.overlay-registrazione .btn-sblocca {
+  text-decoration: none;
+  display: inline-block;
+}
