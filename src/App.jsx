@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from './supabaseClient';
 import { useAuth } from './AuthContext';
 import ViaDettaglio from './pages/ViaDettaglio';
@@ -98,8 +98,10 @@ function ListaVie() {
   const [filtroAvvicinamentoMax, setFiltroAvvicinamentoMax] = useState(7);
   const [filtroViaMin, setFiltroViaMin] = useState(0);
   const [filtroViaMax, setFiltroViaMax] = useState(20);
-  const [filtroRientroMin, setFiltroRientroMin] = useState(0);
+    const [filtroRientroMin, setFiltroRientroMin] = useState(0);
   const [filtroRientroMax, setFiltroRientroMax] = useState(7);
+    const [filtriAvanzatiAperti, setFiltriAvanzatiAperti] = useState(false);
+  const [filtriAgganciati, setFiltriAgganciati] = useState(false);
   
 
   useEffect(() => {
@@ -115,6 +117,19 @@ function ListaVie() {
     caricaVie();
   }, []);
 
+      const sentinellaRef = useRef(null);
+
+    useEffect(() => {
+    if (!sentinellaRef.current) return;
+
+    const osservatore = new IntersectionObserver(
+      ([voce]) => setFiltriAgganciati(!voce.isIntersecting),
+      { threshold: 0 }
+    );
+
+    osservatore.observe(sentinellaRef.current);
+    return () => osservatore.disconnect();
+  }, [caricamento]);
   if (caricamento) {
     return <p>Caricamento vie in corso...</p>;
   }
@@ -160,12 +175,15 @@ function ListaVie() {
       <main className="main">
         <h2>Dove vuoi scalare?</h2>
 
-        <MappaVie vie={vieFiltrate} />
+                        <MappaVie vie={vieFiltrate} />
 
+<div ref={sentinellaRef} style={{ height: '1px' }} />
+
+<div className={`barra-filtri-sticky${filtriAgganciati ? ' agganciata' : ''}`}>
 <div className="gruppo-filtri">
-  <input
+    <input
     type="text"
-    placeholder="Cerca per nome via..."
+    placeholder="Nome via ..."
     value={ricerca}
     onChange={(e) => setRicerca(e.target.value)}
     className="campo-ricerca"
@@ -182,6 +200,37 @@ function ListaVie() {
     selezionati={filtroDifficolta}
     onCambia={setFiltroDifficolta}
   />
+        <MenuMultiSelezione
+    etichetta="Mesi"
+    opzioni={mesiDisponibili}
+    selezionati={filtroMesi}
+    onCambia={setFiltroMesi}
+  />
+            <button
+    type="button"
+    className="bottone-filtri-avanzati"
+    onClick={() => setFiltriAvanzatiAperti((a) => !a)}
+  >
+    Avanzati
+    <svg className={`icona-freccia-filtri${filtriAvanzatiAperti ? ' aperta' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  </button>
+</div>
+
+<div className={`gruppo-filtri gruppo-filtri-avanzati${filtriAvanzatiAperti ? ' aperto' : ''}`}>
+  <FiltroRange
+    etichetta="Quota"
+    min={0}
+    max={4500}
+    valoreMin={filtroQuotaMin}
+    valoreMax={filtroQuotaMax}
+    onCambia={(nuovoMin, nuovoMax) => {
+      setFiltroQuotaMin(nuovoMin);
+      setFiltroQuotaMax(nuovoMax);
+    }}
+    formatta={(v) => `${v}m`}
+  />
   <MenuMultiSelezione
     etichetta="Tipo roccia"
     opzioni={rocciaDisponibili}
@@ -194,37 +243,19 @@ function ListaVie() {
     selezionati={filtroCorda}
     onCambia={setFiltroCorda}
   />
-  <MenuMultiSelezione
-    etichetta="Esposizione"
-    opzioni={esposizioneDisponibili}
-    selezionati={filtroEsposizione}
-    onCambia={setFiltroEsposizione}
-  />
     <MenuMultiSelezione
     etichetta="Ritirata possibile"
     opzioni={['Sì', 'No']}
     selezionati={filtroRitirata}
     onCambia={setFiltroRitirata}
   />
-    <MenuMultiSelezione
-    etichetta="Mesi consigliati"
-    opzioni={mesiDisponibili}
-    selezionati={filtroMesi}
-    onCambia={setFiltroMesi}
+  <MenuMultiSelezione
+    etichetta="Esposizione"
+    opzioni={esposizioneDisponibili}
+    selezionati={filtroEsposizione}
+    onCambia={setFiltroEsposizione}
   />
-    <FiltroRange
-    etichetta="Quota"
-    min={0}
-    max={4500}
-    valoreMin={filtroQuotaMin}
-    valoreMax={filtroQuotaMax}
-    onCambia={(nuovoMin, nuovoMax) => {
-      setFiltroQuotaMin(nuovoMin);
-      setFiltroQuotaMax(nuovoMax);
-    }}
-    formatta={(v) => `${v}m`}
-  />
-    <FiltroRange
+  <FiltroRange
     etichetta="Lunghezza corda"
     min={30}
     max={80}
@@ -236,7 +267,7 @@ function ListaVie() {
     }}
     formatta={(v) => `${v}m`}
   />
-    <FiltroRange
+  <FiltroRange
     etichetta="Avvicinamento"
     min={0}
     max={7}
@@ -275,6 +306,7 @@ function ListaVie() {
     }}
     formatta={formattaOre}
   />
+</div>
 </div>
 
 {filtroZona.length === 0 && filtroDifficolta.length === 0 && ricerca === '' ? null : vieFiltrate.length === 0 ? (

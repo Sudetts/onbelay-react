@@ -367,7 +367,7 @@
   font-family: var(--font-testo);
   font-size: 0.9rem;
   color: var(--colore-testo);
-  min-width: 200px;
+  width: 140px;
 }
 
 .titolo-sezione {
@@ -2041,4 +2041,73 @@ button.link-button.bottone-differenze:hover {
 .bottone-filtro-range {
   min-width: 190px;
   text-align: left;
+}
+
+/* Pulsante "Filtri avanzati" e seconda fila nascondibile */
+.bottone-filtri-avanzati {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--colore-testo-pannello);
+  background: none;
+  color: var(--colore-testo-pannello);
+  font-size: 0.9rem;
+  font-family: var(--font-testo);
+  cursor: pointer;
+}
+
+.bottone-filtri-avanzati:hover {
+  border-color: var(--colore-accento);
+}
+
+.icona-freccia-filtri {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.icona-freccia-filtri.aperta {
+  transform: rotate(180deg);
+}
+
+.gruppo-filtri-avanzati {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  margin-bottom: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease, margin-bottom 0.3s ease, overflow 0s linear 0.3s;
+}
+
+.gruppo-filtri-avanzati.aperto {
+  max-height: 500px;
+  overflow: visible;
+  opacity: 1;
+  margin-bottom: 30px;
+}
+
+/* I filtri restano agganciati in cima quando si scorre la pagina */
+.barra-filtri-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding: 14px 0;
+  margin-bottom: 16px;
+  transition: background-color 0.25s ease;
+}
+
+.barra-filtri-sticky.agganciata {
+  background-color: rgba(20, 18, 15, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.barra-filtri-sticky .gruppo-filtri {
+  margin-bottom: 0;
+}
+
+.barra-filtri-sticky .gruppo-filtri-avanzati.aperto {
+  margin-top: 12px;
+  margin-bottom: 0;
 }
