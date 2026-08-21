@@ -242,8 +242,7 @@ async function confermaEliminazione(id) {
             </div>
           </div>
         ))
-      )}
-        </div>
+            )}
 
       {viaDaEliminare && (
         <Popup
