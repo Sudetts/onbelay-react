@@ -2242,3 +2242,58 @@ button.link-button.bottone-differenze:hover {
 .btn-popup-pericolo:hover {
   background-color: #7a2020;
 }
+
+.griglia-galleria-foto {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 15px 0;
+}
+
+.scheda-foto-galleria {
+  margin: 0;
+  background-color: var(--colore-superficie);
+  border: 1px solid var(--colore-bordo);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.foto-galleria {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.scheda-foto-galleria figcaption {
+  padding: 10px 12px;
+}
+
+.badge-categoria-foto {
+  display: inline-block;
+  background-color: rgba(91, 122, 140, 0.15);
+  color: #1d5f8a;
+  font-family: var(--font-tecnico);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+}
+
+.didascalia-foto {
+  color: var(--colore-testo);
+  font-size: 0.9rem;
+  margin: 4px 0;
+}
+
+.meta-foto-galleria {
+  color: var(--colore-testo-secondario);
+  font-size: 0.75rem;
+  margin: 4px 0 6px;
+}
+
+.form-aggiungi-foto {
+  max-width: 420px;
+  margin-top: 10px;
+}
