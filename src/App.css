@@ -549,6 +549,12 @@
     height: 38px;
   }
 
+  .mini-avatar.mini-avatar-ospite {
+    width: 44px;
+    height: 44px;
+    font-size: 1.6rem;
+  }
+
   .colonna-destra {
     padding-left: 0;
   }
@@ -559,8 +565,12 @@
   }
 
   .mini-nome {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
   }
+  }
+
+  .mini-profilo {
+    max-width: 90px;
   }
 
   .mappa-vie {
@@ -569,7 +579,7 @@
 
   .header-immagine {
     min-height: 25vh;
-    padding: 25px 15px;
+    padding: 60px 15px 25px;
   }
 
   .header h1 {

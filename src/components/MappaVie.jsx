@@ -18,7 +18,10 @@ function MappaVie({ vie }) {
     if (!contenitoreRef.current) return;
 
 if (!mappaRef.current) {
-      mappaRef.current = L.map(contenitoreRef.current, { zoomControl: false });
+      mappaRef.current = L.map(contenitoreRef.current, {
+        zoomControl: false,
+        dragging: !L.Browser.mobile,
+      });
 
       const confiniItalia = L.latLngBounds([36.5, 6.0], [47.3, 18.6]);
       mappaRef.current.fitBounds(confiniItalia);
