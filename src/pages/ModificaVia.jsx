@@ -8,6 +8,10 @@ import SelettorePosizione from '../components/SelettorePosizione';
 import MenuMultiSelezione from '../components/MenuMultiSelezione';
 import SelettoreConAltro from '../components/SelettoreConAltro';
 import SelettoreDurata from '../components/SelettoreDurata';
+import GalleriaFotoVia from '../components/GalleriaFotoVia';
+import EditorFotoExtra, { fotoExtraSonoValide } from '../components/EditorFotoExtra';
+import { caricaFotoExtra } from '../utils/caricaFotoExtra';
+
 
 const OPZIONI_ESPOSIZIONE = ['Nord', 'Nord-Est', 'Est', 'Sud-Est', 'Sud', 'Sud-Ovest', 'Ovest', 'Nord-Ovest'];
 const OPZIONI_MESI = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
@@ -94,6 +98,9 @@ function ModificaVia() {
 
   const [tiri, setTiri] = useState([]);
 
+  const [fotoEsistenti, setFotoEsistenti] = useState([]);
+const [fotoExtra, setFotoExtra] = useState([]);
+
   useEffect(() => {
     async function caricaVia() {
       const { data, error } = await supabase.from('vie').select('*').eq('id', id).single();
@@ -156,6 +163,12 @@ function ModificaVia() {
 
         setTiri(data.tiri || []);
       }
+              const { data: fotoData } = await supabase
+          .from('foto_via')
+          .select('*, profili(nome, cognome)')
+          .eq('via_id', id)
+          .order('creato_il', { ascending: false });
+        setFotoEsistenti(fotoData || []);
       setCaricamento(false);
     }
 
@@ -175,6 +188,11 @@ function ModificaVia() {
   async function handleSubmit(e) {
     e.preventDefault();
     setErrore('');
+
+    if (!fotoExtraSonoValide(fotoExtra)) {
+  setErrore('Completa categoria e didascalia per ogni foto extra che hai iniziato ad aggiungere (oppure rimuovila).');
+  return;
+}
 
     if (esposizioneSelezionata.length === 0) {
       setErrore('Seleziona almeno un\'esposizione.');
@@ -260,9 +278,13 @@ function ModificaVia() {
           allontanamento_foto_url: nuovoAllontanamentoFotoUrl,
           allontanamento_gpx_url: nuovoAllontanamentoGpxUrl,
         })
-        .eq('id', id);
+                .eq('id', id);
 
       if (error) throw new Error(error.message);
+
+      if (fotoExtra.length > 0) {
+        await caricaFotoExtra(fotoExtra, id, utente.id);
+      }
 
       navigate(`/via/${id}`);
     } catch (err) {
@@ -539,6 +561,14 @@ function ModificaVia() {
         <input type="text" placeholder="Apritori" value={apritori} onChange={(e) => setApritori(e.target.value)} maxLength={200} />
 
         {errore && <p className="errore">{errore}</p>}
+
+        <h2 className="titolo-sezione">Foto aggiuntive</h2>
+<GalleriaFotoVia
+  foto={fotoEsistenti}
+  onFotoEliminata={(idFoto) => setFotoEsistenti((prev) => prev.filter((f) => f.id !== idFoto))}
+/>
+<p className="link-piccolo">Aggiungi altre foto (facoltativo):</p>
+<EditorFotoExtra fotoExtra={fotoExtra} onChange={setFotoExtra} />
 
         <button type="submit" disabled={salvataggio}>
           {salvataggio ? 'Salvataggio in corso...' : 'Salva modifiche'}

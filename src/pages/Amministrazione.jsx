@@ -4,6 +4,7 @@ import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
 import DifferenzeModifica from '../components/DifferenzeModifica';
 import Popup from '../components/Popup';
+import { ETICHETTE_CATEGORIA } from '../utils/categorieFoto';
 
 function Amministrazione() {
   const { utente } = useAuth();
@@ -49,9 +50,9 @@ function Amministrazione() {
         .eq('richiesta_eliminazione', true);
       setVieDaEliminare(daEliminare || []);
 
-      const { data: modifiche } = await supabase
+            const { data: modifiche } = await supabase
         .from('modifiche_proposte')
-        .select('*, vie(*)')
+        .select('*, vie(*), foto_via(*, profili(nome, cognome))')
         .eq('stato', 'in_attesa');
       setModificheInAttesa(modifiche || []);
 
@@ -135,7 +136,13 @@ async function confermaEliminazione(id) {
       return;
     }
 
-    await supabase.from('modifiche_proposte').update({ stato: 'approvata' }).eq('id', modifica.id);
+        await supabase.from('modifiche_proposte').update({ stato: 'approvata' }).eq('id', modifica.id);
+
+    await supabase
+      .from('foto_via')
+      .update({ stato: 'approvata' })
+      .eq('modifica_proposta_id', modifica.id);
+
     setModificheInAttesa((prev) => prev.filter((m) => m.id !== modifica.id));
   }
 
@@ -151,8 +158,14 @@ async function confermaEliminazione(id) {
     });
   }
 
-  async function rifiutaModifica(id) {
+    async function rifiutaModifica(id) {
     await supabase.from('modifiche_proposte').update({ stato: 'rifiutata' }).eq('id', id);
+
+    await supabase
+      .from('foto_via')
+      .update({ stato: 'rifiutata' })
+      .eq('modifica_proposta_id', id);
+
     setModificheInAttesa((prev) => prev.filter((m) => m.id !== id));
   }
 
@@ -232,8 +245,30 @@ async function confermaEliminazione(id) {
               {modificheEspanse.has(modifica.id) ? 'Nascondi confronto' : 'Confronta le due versioni'}
             </button>
 
+            
             {modificheEspanse.has(modifica.id) && (
               <DifferenzeModifica via={modifica.vie} modifica={modifica} />
+            )}
+
+            {modifica.foto_via && modifica.foto_via.length > 0 && (
+              <>
+                <p className="link-piccolo">Foto proposte insieme a questa modifica:</p>
+                <div className="griglia-galleria-foto">
+                  {modifica.foto_via.map((f) => (
+                    <figure className="scheda-foto-galleria" key={f.id}>
+                      <img src={f.url} alt={f.didascalia} className="foto-galleria" />
+                      <figcaption>
+                        <span className="badge-categoria-foto">{ETICHETTE_CATEGORIA[f.categoria] || f.categoria}</span>
+                        <p className="didascalia-foto">{f.didascalia}</p>
+                        <p className="meta-foto-galleria">
+                          Caricata da {f.profili?.nome || 'un utente'} il{' '}
+                          {new Date(f.creato_il).toLocaleDateString('it-IT')}
+                        </p>
+                      </figcaption>
+                    </figure>
+                  ))}
+                </div>
+              </>
             )}
 
             <div className="azioni-admin">

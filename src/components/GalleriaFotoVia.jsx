@@ -2,16 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
 import Popup from './Popup';
-
-const ETICHETTE_CATEGORIA = {
-  attacco: 'Attacco',
-  tiro: 'Tiro/parete',
-  sosta: 'Sosta',
-  calata: 'Calata/discesa',
-  avvicinamento: 'Avvicinamento',
-  panorama: 'Vista panoramica',
-  altro: 'Altro',
-};
+import { ETICHETTE_CATEGORIA } from '../utils/categorieFoto';
 
 function GalleriaFotoVia({ foto, onFotoEliminata, isAdmin }) {
   const { utente } = useAuth();
@@ -38,7 +29,9 @@ function GalleriaFotoVia({ foto, onFotoEliminata, isAdmin }) {
               <span className="badge-categoria-foto">
                 {ETICHETTE_CATEGORIA[f.categoria] || f.categoria}
               </span>
-              <p className="didascalia-foto">{f.didascalia}</p>
+                            <p className="didascalia-foto">{f.didascalia}</p>
+              {f.stato === 'in_attesa' && <span className="badge-attesa">In attesa di approvazione</span>}
+              {f.stato === 'rifiutata' && <span className="badge-rifiutata">Rifiutata</span>}
               <p className="meta-foto-galleria">
                 Caricata da {f.profili?.nome || 'un utente'} il{' '}
                 {new Date(f.creato_il).toLocaleDateString('it-IT')}

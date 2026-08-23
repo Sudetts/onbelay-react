@@ -8,6 +8,8 @@ import SelettorePosizione from '../components/SelettorePosizione';
 import MenuMultiSelezione from '../components/MenuMultiSelezione';
 import SelettoreConAltro from '../components/SelettoreConAltro';
 import SelettoreDurata from '../components/SelettoreDurata';
+import EditorFotoExtra, { fotoExtraSonoValide } from '../components/EditorFotoExtra';
+import { caricaFotoExtra } from '../utils/caricaFotoExtra';
 
 const OPZIONI_ESPOSIZIONE = ['Nord', 'Nord-Est', 'Est', 'Sud-Est', 'Sud', 'Sud-Ovest', 'Ovest', 'Nord-Ovest'];
 const OPZIONI_MESI = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
@@ -85,6 +87,8 @@ function NuovaVia() {
 
   const [tiri, setTiri] = useState([]);
 
+const [fotoExtra, setFotoExtra] = useState([]);
+
 async function caricaFile(file, bucket) {
   if (!file) return null;
   const fileFinale = await comprimiImmagine(file);
@@ -129,6 +133,11 @@ if (!tipoRoccia) {
 //      return;
 //    }
 
+if (!fotoExtraSonoValide(fotoExtra)) {
+  setErrore('Completa categoria e didascalia per ogni foto extra che hai iniziato ad aggiungere (oppure rimuovila).');
+  return;
+}
+
     setCaricamento(true);
 
     try {
@@ -138,52 +147,60 @@ if (!tipoRoccia) {
       const allontanamentoFotoUrl = await caricaFile(allontanamentoFoto, 'foto-vie');
       const allontanamentoGpxUrl = await caricaFile(allontanamentoGpx, 'gpx-vie');
 
-      const { error } = await supabase.from('vie').insert({
-        nome,
-        zona,
-        difficolta,
-        autore_id: utente.id,
-        latitudine,
-        longitudine,
-        nazione,
-        regione,
-        provincia,
-        sviluppo_totale: svilupploTotale || null,
-        quota_inizio: quotaInizio || null,
-        tempo_avvicinamento: tempoAvvicinamento,
-        tempo_via: tempoVia,
-        tempo_rientro: tempoRientro,
-        tipo_roccia: tipoRoccia,
-        qualita_roccia: qualitaRoccia,
-        impegno,
-        tipo_corda: tipoCorda,
-        lunghezza_corda: lunghezzaCorda || null,
-        protezioni_mobili: protezioniMobili === '' ? null : protezioniMobili === 'si',
-        tipo_protezioni_mobili: tipoProtezioniMobili || null,
-        rinvii_consigliati: rinviiConsigliati || null,
-        anno_apertura: annoApertura || null,
-        apritori,
-        permessi,
-        parcheggio,
-        punto_appoggio: puntoAppoggio,
-        copertura_cellulare: coperturaCellulare,
-        possibilita_ritirata: possibilitaRitirata === '' ? null : possibilitaRitirata === 'si',
-        pericoli_oggettivi: pericoliOggettivi,
-        esposizione: esposizioneSelezionata.join(', '),
-        mesi_consigliati: mesiSelezionati.join(', '),
-        tiri,
-        numero_tiri: tiri.length,
-        avvicinamento_descrizione: avvicinamentoDescrizione,
-        avvicinamento_foto_url: avvicinamentoFotoUrl,
-        avvicinamento_gpx_url: avvicinamentoGpxUrl,
-        descrizione_via: descrizioneVia,
-        diagramma_url: diagrammaUrl,
-        allontanamento_descrizione: allontanamentoDescrizione,
-        allontanamento_foto_url: allontanamentoFotoUrl,
-        allontanamento_gpx_url: allontanamentoGpxUrl,
-      });
+            const { data: nuovaVia, error } = await supabase
+        .from('vie')
+        .insert({
+          nome,
+          zona,
+          difficolta,
+          autore_id: utente.id,
+          latitudine,
+          longitudine,
+          nazione,
+          regione,
+          provincia,
+          sviluppo_totale: svilupploTotale || null,
+          quota_inizio: quotaInizio || null,
+          tempo_avvicinamento: tempoAvvicinamento,
+          tempo_via: tempoVia,
+          tempo_rientro: tempoRientro,
+          tipo_roccia: tipoRoccia,
+          qualita_roccia: qualitaRoccia,
+          impegno,
+          tipo_corda: tipoCorda,
+          lunghezza_corda: lunghezzaCorda || null,
+          protezioni_mobili: protezioniMobili === '' ? null : protezioniMobili === 'si',
+          tipo_protezioni_mobili: tipoProtezioniMobili || null,
+          rinvii_consigliati: rinviiConsigliati || null,
+          anno_apertura: annoApertura || null,
+          apritori,
+          permessi,
+          parcheggio,
+          punto_appoggio: puntoAppoggio,
+          copertura_cellulare: coperturaCellulare,
+          possibilita_ritirata: possibilitaRitirata === '' ? null : possibilitaRitirata === 'si',
+          pericoli_oggettivi: pericoliOggettivi,
+          esposizione: esposizioneSelezionata.join(', '),
+          mesi_consigliati: mesiSelezionati.join(', '),
+          tiri,
+          numero_tiri: tiri.length,
+          avvicinamento_descrizione: avvicinamentoDescrizione,
+          avvicinamento_foto_url: avvicinamentoFotoUrl,
+          avvicinamento_gpx_url: avvicinamentoGpxUrl,
+          descrizione_via: descrizioneVia,
+          diagramma_url: diagrammaUrl,
+          allontanamento_descrizione: allontanamentoDescrizione,
+          allontanamento_foto_url: allontanamentoFotoUrl,
+          allontanamento_gpx_url: allontanamentoGpxUrl,
+        })
+        .select()
+        .single();
 
       if (error) throw new Error(error.message);
+
+      if (fotoExtra.length > 0) {
+        await caricaFotoExtra(fotoExtra, nuovaVia.id, utente.id);
+      }
 
       setCaricamento(false);
       navigate('/');
@@ -459,6 +476,10 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
         <input type="text" placeholder="Apritori" value={apritori} onChange={(e) => setApritori(e.target.value)} maxLength={200} />
 
         {errore && <p className="errore">{errore}</p>}
+
+        <h2 className="titolo-sezione">Foto aggiuntive (facoltativo)</h2>
+<p className="link-piccolo">Es. dettagli dell'attacco, delle soste, dei fix. Non è obbligatorio aggiungerne.</p>
+<EditorFotoExtra fotoExtra={fotoExtra} onChange={setFotoExtra} />
 
         <button type="submit" disabled={caricamento}>
           {caricamento ? 'Salvataggio in corso...' : 'Aggiungi via'}

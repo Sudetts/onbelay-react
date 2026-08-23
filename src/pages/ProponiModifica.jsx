@@ -8,6 +8,9 @@ import SelettorePosizione from '../components/SelettorePosizione';
 import MenuMultiSelezione from '../components/MenuMultiSelezione';
 import SelettoreConAltro from '../components/SelettoreConAltro';
 import SelettoreDurata from '../components/SelettoreDurata';
+import GalleriaFotoVia from '../components/GalleriaFotoVia';
+import EditorFotoExtra, { fotoExtraSonoValide } from '../components/EditorFotoExtra';
+import { caricaFotoExtra } from '../utils/caricaFotoExtra';
 
 const OPZIONI_ESPOSIZIONE = ['Nord', 'Nord-Est', 'Est', 'Sud-Est', 'Sud', 'Sud-Ovest', 'Ovest', 'Nord-Ovest'];
 const OPZIONI_MESI = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
@@ -95,6 +98,9 @@ function ProponiModifica() {
 
   const [tiri, setTiri] = useState([]);
 
+  const [fotoEsistentiProposta, setFotoEsistentiProposta] = useState([]);
+const [fotoExtra, setFotoExtra] = useState([]);
+
   function popolaCampi(dati) {
     setNome(dati.nome);
     setZona(dati.zona || '');
@@ -172,9 +178,17 @@ function ProponiModifica() {
         return;
       }
 
-      if (propostaPropria) {
+            if (propostaPropria) {
         setPropostaId(propostaPropria.id);
         popolaCampi(propostaPropria);
+
+        const { data: fotoPendenti } = await supabase
+          .from('foto_via')
+          .select('*, profili(nome, cognome)')
+          .eq('modifica_proposta_id', propostaPropria.id)
+          .order('creato_il', { ascending: false });
+        setFotoEsistentiProposta(fotoPendenti || []);
+
         setCaricamento(false);
         return;
       }
@@ -203,6 +217,11 @@ function ProponiModifica() {
   async function handleSubmit(e) {
     e.preventDefault();
     setErrore('');
+
+    if (!fotoExtraSonoValide(fotoExtra)) {
+      setErrore('Completa categoria e didascalia per ogni foto extra che hai iniziato ad aggiungere (oppure rimuovila).');
+      return;
+    }
 
     if (esposizioneSelezionata.length === 0) {
       setErrore('Seleziona almeno un\'esposizione.');
@@ -279,6 +298,8 @@ function ProponiModifica() {
         numero_tiri: tiri.length,
       };
 
+            let idProposta = propostaId;
+
       if (propostaId) {
         const { data: propostaAttuale } = await supabase
           .from('modifiche_proposte')
@@ -295,8 +316,17 @@ function ProponiModifica() {
         const { error } = await supabase.from('modifiche_proposte').update(datiProposta).eq('id', propostaId);
         if (error) throw new Error(error.message);
       } else {
-        const { error } = await supabase.from('modifiche_proposte').insert(datiProposta);
+        const { data: nuovaProposta, error } = await supabase
+          .from('modifiche_proposte')
+          .insert(datiProposta)
+          .select()
+          .single();
         if (error) throw new Error(error.message);
+        idProposta = nuovaProposta.id;
+      }
+
+      if (fotoExtra.length > 0) {
+        await caricaFotoExtra(fotoExtra, id, utente.id, { stato: 'in_attesa', propostaId: idProposta });
       }
 
       setInvio(false);
@@ -595,9 +625,21 @@ function ProponiModifica() {
           <input type="file" accept=".gpx" onChange={(e) => setNuovaAllontanamentoGpx(e.target.files[0])} />
         </label>
 
-        <h2 className="titolo-sezione">Storia della via</h2>
+                <h2 className="titolo-sezione">Storia della via</h2>
         <input type="number" placeholder="Anno di apertura" value={annoApertura} onChange={(e) => setAnnoApertura(e.target.value)} />
         <input type="text" placeholder="Apritori" value={apritori} onChange={(e) => setApritori(e.target.value)} maxLength={200} />
+
+        <h2 className="titolo-sezione">Foto aggiuntive</h2>
+        <p className="link-piccolo">
+          Le foto che aggiungi qui saranno visibili sulla via solo dopo che un amministratore avrà approvato questa proposta.
+        </p>
+        {fotoEsistentiProposta.length > 0 && (
+          <GalleriaFotoVia
+            foto={fotoEsistentiProposta}
+            onFotoEliminata={(idFoto) => setFotoEsistentiProposta((prev) => prev.filter((f) => f.id !== idFoto))}
+          />
+        )}
+        <EditorFotoExtra fotoExtra={fotoExtra} onChange={setFotoExtra} />
 
         {errore && <p className="errore">{errore}</p>}
 
