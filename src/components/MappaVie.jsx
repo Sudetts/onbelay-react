@@ -5,6 +5,11 @@ import 'leaflet.markercluster';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+import 'leaflet-gesture-handling/dist/leaflet-gesture-handling.css';
+import { GestureHandling } from 'leaflet-gesture-handling';
+
+L.Map.addInitHook('addHandler', 'gestureHandling', GestureHandling);
+
 
 function MappaVie({ vie }) {
   const mappaRef = useRef(null);
@@ -20,7 +25,7 @@ function MappaVie({ vie }) {
 if (!mappaRef.current) {
       mappaRef.current = L.map(contenitoreRef.current, {
         zoomControl: false,
-        dragging: !L.Browser.mobile,
+        gestureHandling: true,
       });
 
       const confiniItalia = L.latLngBounds([36.5, 6.0], [47.3, 18.6]);
