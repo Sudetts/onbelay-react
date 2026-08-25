@@ -31,11 +31,11 @@ function Profilo() {
 const [genere, setGenere] = useState('');
 const [annoNascita, setAnnoNascita] = useState('');
 const [stilePreferito, setStilePreferito] = useState([]);
-const [residenza, setResidenza] = useState(null);
 const [sezioneDettagliAperta, setSezioneDettagliAperta] = useState(false);
 const [salvataggioDettagli, setSalvataggioDettagli] = useState(false);
 const [erroreDettagli, setErroreDettagli] = useState('');
 const [messaggioDettagli, setMessaggioDettagli] = useState('');
+const [mostraResidenza, setMostraResidenza] = useState(false);
 
   useEffect(() => {
     if (!utente) return;
@@ -55,14 +55,7 @@ const [messaggioDettagli, setMessaggioDettagli] = useState('');
         setGenere(datiProfilo.genere || '');
         setAnnoNascita(datiProfilo.anno_nascita ?? '');
         setStilePreferito(datiProfilo.stile_preferito ? datiProfilo.stile_preferito.split(', ').filter(Boolean) : []);
-        if (datiProfilo.residenza_lat && datiProfilo.residenza_lng) {
-          setResidenza({
-            lat: datiProfilo.residenza_lat,
-            lng: datiProfilo.residenza_lng,
-            nome: datiProfilo.residenza_nome,
-          });
         }
-      }
 
 // Carica le vie inserite da questo utente
       const { data: vie, error: erroreVie } = await supabase
@@ -186,15 +179,12 @@ async function salvaDettagliProfilo(e) {
   setMessaggioDettagli('');
   setSalvataggioDettagli(true);
 
-  const { error } = await supabase
+    const { error } = await supabase
     .from('profili')
     .update({
       genere: genere || null,
       anno_nascita: annoNascita || null,
       stile_preferito: stilePreferito.join(', '),
-      residenza_lat: residenza?.lat ?? null,
-      residenza_lng: residenza?.lng ?? null,
-      residenza_nome: residenza?.nome ?? null,
     })
     .eq('id', utente.id);
 
@@ -317,10 +307,13 @@ async function salvaDettagliProfilo(e) {
                 </div>
               )}
 
-              <p><strong>Nome:</strong> {profilo.nome}</p>
+                            <p><strong>Nome:</strong> {profilo.nome}</p>
               <p><strong>Cognome:</strong> {profilo.cognome}</p>
               <p><strong>Città:</strong> {profilo.citta}</p>
               <p><strong>Email:</strong> {utente.email}</p>
+              {profilo.residenza_nome && (
+                <p><strong>Residenza:</strong> {profilo.residenza_nome}</p>
+              )}
             </div>
           )}
         </div>
@@ -345,9 +338,17 @@ async function salvaDettagliProfilo(e) {
               <Link to="/pannello-controllo-onbelay" className="azione-profilo-voce link-admin">Admin</Link>
             )}
 
-                        {profilo?.is_admin && (
+                                                {profilo?.is_admin && (
               <Link to="/sicurezza-account" className="azione-profilo-voce">Sicurezza account</Link>
             )}
+
+            <button
+              type="button"
+              onClick={() => setMostraResidenza(true)}
+              className="azione-profilo-voce link-button"
+            >
+              Facci sapere chi sei
+            </button>
 
            <button
   onClick={async () => {
@@ -412,12 +413,7 @@ async function salvaDettagliProfilo(e) {
             />
           </label>
 
-          <label>
-            Città di residenza
-            <SelettoreResidenza valoreAttuale={residenza} onCambia={setResidenza} />
-          </label>
-
-          {erroreDettagli && <p className="errore">{erroreDettagli}</p>}
+                    {erroreDettagli && <p className="errore">{erroreDettagli}</p>}
           {messaggioDettagli && <p className="messaggio-successo">{messaggioDettagli}</p>}
 
           <button type="submit" disabled={salvataggioDettagli}>
@@ -426,9 +422,7 @@ async function salvaDettagliProfilo(e) {
         </form>
       )}
 
-      <h2>Il mio diario ({diarioUtente.length})</h2>
-
-<h2>Il mio diario ({diarioUtente.length})</h2>
+            <h2>Il mio diario ({diarioUtente.length})</h2>
       {diarioUtente.length === 0 ? (
         <p>Non hai ancora registrato nessuna salita.</p>
       ) : (
@@ -550,7 +544,23 @@ async function salvaDettagliProfilo(e) {
               ))}
             </div>
           )}
-        </>
+                </>
+      )}
+
+      {mostraResidenza && (
+        <SelettoreResidenza
+          utenteId={utente.id}
+          onSalvato={(dati) => {
+            setProfilo((prev) => ({
+              ...prev,
+              residenza_lat: dati.lat,
+              residenza_lng: dati.lng,
+              residenza_nome: dati.nome,
+            }));
+            setMostraResidenza(false);
+          }}
+          onAnnulla={() => setMostraResidenza(false)}
+        />
       )}
     </div>
   );

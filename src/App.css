@@ -2403,3 +2403,15 @@ button.link-button.bottone-differenze:hover {
   font-family: var(--font-testo);
   font-size: 1rem;
 }
+
+.input-residenza {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--colore-bordo);
+  background-color: var(--colore-superficie);
+  font-family: var(--font-testo);
+  font-size: 1rem;
+  color: var(--colore-testo);
+  margin-bottom: 10px;
+}
