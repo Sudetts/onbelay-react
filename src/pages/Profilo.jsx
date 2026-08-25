@@ -4,6 +4,9 @@ import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
 import { comprimiImmagine } from '../utils/comprimiImmagine';
 import Cropper from 'react-easy-crop';
+import MenuMultiSelezione from '../components/MenuMultiSelezione';
+import SelettoreResidenza from '../components/SelettoreResidenza';
+
 
 function Profilo() {
   const { utente, logout } = useAuth();
@@ -25,6 +28,15 @@ function Profilo() {
   const [vieModificateAperte, setVieModificateAperte] = useState(false);
   const [attesaNuoveAperte, setAttesaNuoveAperte] = useState(false);
   const [attesaModificateAperte, setAttesaModificateAperte] = useState(false);
+const [genere, setGenere] = useState('');
+const [annoNascita, setAnnoNascita] = useState('');
+const [stilePreferito, setStilePreferito] = useState([]);
+const [residenza, setResidenza] = useState(null);
+const [sezioneDettagliAperta, setSezioneDettagliAperta] = useState(false);
+const [salvataggioDettagli, setSalvataggioDettagli] = useState(false);
+const [erroreDettagli, setErroreDettagli] = useState('');
+const [messaggioDettagli, setMessaggioDettagli] = useState('');
+
   useEffect(() => {
     if (!utente) return;
 
@@ -36,10 +48,20 @@ function Profilo() {
         .eq('id', utente.id)
         .single();
 
-      if (erroreProfilo) {
+            if (erroreProfilo) {
         console.error('Errore nel caricamento del profilo:', erroreProfilo);
       } else {
         setProfilo(datiProfilo);
+        setGenere(datiProfilo.genere || '');
+        setAnnoNascita(datiProfilo.anno_nascita ?? '');
+        setStilePreferito(datiProfilo.stile_preferito ? datiProfilo.stile_preferito.split(', ').filter(Boolean) : []);
+        if (datiProfilo.residenza_lat && datiProfilo.residenza_lng) {
+          setResidenza({
+            lat: datiProfilo.residenza_lat,
+            lng: datiProfilo.residenza_lng,
+            nome: datiProfilo.residenza_nome,
+          });
+        }
       }
 
 // Carica le vie inserite da questo utente
@@ -156,6 +178,33 @@ async function confermaRitaglioECarica() {
   }
 
   setCaricamentoAvatar(false);
+}
+
+async function salvaDettagliProfilo(e) {
+  e.preventDefault();
+  setErroreDettagli('');
+  setMessaggioDettagli('');
+  setSalvataggioDettagli(true);
+
+  const { error } = await supabase
+    .from('profili')
+    .update({
+      genere: genere || null,
+      anno_nascita: annoNascita || null,
+      stile_preferito: stilePreferito.join(', '),
+      residenza_lat: residenza?.lat ?? null,
+      residenza_lng: residenza?.lng ?? null,
+      residenza_nome: residenza?.nome ?? null,
+    })
+    .eq('id', utente.id);
+
+  if (error) {
+    setErroreDettagli(error.message);
+  } else {
+    setMessaggioDettagli('Dati salvati, grazie!');
+  }
+
+  setSalvataggioDettagli(false);
 }
 
     if (!utente) {
@@ -312,6 +361,72 @@ async function confermaRitaglioECarica() {
           </div>
         </div>
       </div>
+
+      <button
+        type="button"
+        className="intestazione-sezione-scomparibile"
+        onClick={() => setSezioneDettagliAperta((a) => !a)}
+      >
+        <span>Completa il tuo profilo (facoltativo)</span>
+        <svg className={`icona-freccia-sezione${sezioneDettagliAperta ? ' aperta' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+
+      {sezioneDettagliAperta && (
+        <form onSubmit={salvaDettagliProfilo} className="form" style={{ marginBottom: '30px' }}>
+          <p className="link-piccolo">
+            Nessuno di questi dati è obbligatorio. Ci aiutano a capire meglio la community e, per la
+            località, a mostrarti la mappa già centrata vicino a casa tua.
+          </p>
+
+          <label>
+            Genere
+            <select value={genere} onChange={(e) => setGenere(e.target.value)}>
+              <option value="">Preferisco non specificarlo</option>
+              <option value="femmina">Femmina</option>
+              <option value="maschio">Maschio</option>
+              <option value="altro">Altro</option>
+            </select>
+          </label>
+
+          <label>
+            Anno di nascita
+            <input
+              type="number"
+              placeholder="Es. 1990"
+              value={annoNascita}
+              onChange={(e) => setAnnoNascita(e.target.value)}
+              min={1900}
+              max={new Date().getFullYear()}
+            />
+          </label>
+
+          <label>
+            Cosa preferisci scalare
+            <MenuMultiSelezione
+              etichetta="Stile preferito"
+              opzioni={['Falesia', 'Vie lunghe', 'Boulder', 'Alpinismo']}
+              selezionati={stilePreferito}
+              onCambia={setStilePreferito}
+            />
+          </label>
+
+          <label>
+            Città di residenza
+            <SelettoreResidenza valoreAttuale={residenza} onCambia={setResidenza} />
+          </label>
+
+          {erroreDettagli && <p className="errore">{erroreDettagli}</p>}
+          {messaggioDettagli && <p className="messaggio-successo">{messaggioDettagli}</p>}
+
+          <button type="submit" disabled={salvataggioDettagli}>
+            {salvataggioDettagli ? 'Salvataggio...' : 'Salva'}
+          </button>
+        </form>
+      )}
+
+      <h2>Il mio diario ({diarioUtente.length})</h2>
 
 <h2>Il mio diario ({diarioUtente.length})</h2>
       {diarioUtente.length === 0 ? (

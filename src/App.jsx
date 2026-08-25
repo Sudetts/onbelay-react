@@ -80,7 +80,9 @@ function formattaOre(oreDecimali) {
   return `${ore}h${min}min`;
 }
 function ListaVie() {
+  const { utente } = useAuth();
   const [vie, setVie] = useState([]);
+  const [centroUtente, setCentroUtente] = useState(null);
   const [caricamento, setCaricamento] = useState(true);
   const [filtroZona, setFiltroZona] = useState([]);
   const [filtroDifficolta, setFiltroDifficolta] = useState([]);
@@ -104,7 +106,7 @@ function ListaVie() {
   const [filtriAgganciati, setFiltriAgganciati] = useState(false);
   
 
-  useEffect(() => {
+    useEffect(() => {
     async function caricaVie() {
       const { data, error } = await supabase.from('vie').select('*').eq('stato', 'approvata').eq('richiesta_eliminazione', false);
       if (error) {
@@ -116,6 +118,20 @@ function ListaVie() {
     }
     caricaVie();
   }, []);
+
+  useEffect(() => {
+    if (!utente) return;
+    supabase
+      .from('profili')
+      .select('residenza_lat, residenza_lng')
+      .eq('id', utente.id)
+      .single()
+      .then(({ data }) => {
+        if (data?.residenza_lat && data?.residenza_lng) {
+          setCentroUtente({ lat: data.residenza_lat, lng: data.residenza_lng });
+        }
+      });
+  }, [utente]);
 
       const sentinellaRef = useRef(null);
 
@@ -175,7 +191,7 @@ function ListaVie() {
       <main className="main">
         <h2>Dove vuoi scalare?</h2>
 
-                        <MappaVie vie={vieFiltrate} />
+                        <MappaVie vie={vieFiltrate} centroIniziale={centroUtente} />
 
 <div ref={sentinellaRef} style={{ height: '1px' }} />
 

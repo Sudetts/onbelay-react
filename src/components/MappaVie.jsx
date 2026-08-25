@@ -11,7 +11,7 @@ import { GestureHandling } from 'leaflet-gesture-handling';
 L.Map.addInitHook('addHandler', 'gestureHandling', GestureHandling);
 
 
-function MappaVie({ vie }) {
+function MappaVie({ vie, centroIniziale }) {
   const mappaRef = useRef(null);
   const contenitoreRef = useRef(null);
   const navigate = useNavigate();
@@ -27,6 +27,16 @@ if (!mappaRef.current) {
         zoomControl: false,
         gestureHandling: true,
       });
+
+//if (!mappaRef.current) {
+//      mappaRef.current = L.map(contenitoreRef.current, { zoomControl: false });
+//
+//      if (centroIniziale) {
+//        mappaRef.current.setView([centroIniziale.lat, centroIniziale.lng], 10);
+//      } else {
+//        const confiniItalia = L.latLngBounds([36.5, 6.0], [47.3, 18.6]);
+//        mappaRef.current.fitBounds(confiniItalia);
+//      }
 
       const confiniItalia = L.latLngBounds([36.5, 6.0], [47.3, 18.6]);
       mappaRef.current.fitBounds(confiniItalia);

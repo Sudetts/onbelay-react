@@ -18,7 +18,12 @@ function Privacy() {
       <p>Raccogliamo i seguenti dati personali:</p>
       <ul>
         <li>Email, utilizzata per la registrazione e l'accesso all'account</li>
-        <li>Nome, cognome e città, forniti volontariamente in fase di registrazione</li>
+                <li>Nome, cognome e città, forniti volontariamente in fase di registrazione</li>
+        <li>
+          Dati di profilo facoltativi (genere, anno di nascita, città di residenza, stile di
+          arrampicata preferito), forniti solo se e quando l'utente sceglie di compilarli dalla
+          pagina del proprio profilo
+        </li>
         <li>Contenuti caricati dall'utente: vie, descrizioni, foto, tracce GPX</li>
         <li>Dati tecnici di navigazione (indirizzo IP, tipo di browser) raccolti automaticamente dal servizio di hosting</li>
       </ul>
@@ -28,7 +33,15 @@ function Privacy() {
         <li>Creazione e gestione dell'account utente (esecuzione del contratto d'uso del servizio)</li>
         <li>Pubblicazione dei contenuti che scegli di condividere sul sito (esecuzione del contratto)</li>
         <li>Comunicazioni relative al servizio, come conferme email o notifiche di approvazione (esecuzione del contratto)</li>
-        <li>Sicurezza e prevenzione di abusi (legittimo interesse)</li>
+                <li>Sicurezza e prevenzione di abusi (legittimo interesse)</li>
+        <li>
+          Personalizzazione dell'esperienza, ad esempio mostrare la mappa già centrata vicino alla
+          tua città di residenza (consenso, dato facoltativo)
+        </li>
+        <li>
+          Statistiche aggregate e anonime sulla community (consenso, dati facoltativi come genere,
+          età, stile di arrampicata preferito)
+        </li>
       </ul>
 
       <h2>4. Con chi condividiamo i dati</h2>
