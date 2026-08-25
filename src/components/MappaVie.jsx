@@ -28,18 +28,12 @@ if (!mappaRef.current) {
         gestureHandling: true,
       });
 
-//if (!mappaRef.current) {
-//      mappaRef.current = L.map(contenitoreRef.current, { zoomControl: false });
-//
-//      if (centroIniziale) {
-//        mappaRef.current.setView([centroIniziale.lat, centroIniziale.lng], 10);
-//      } else {
-//        const confiniItalia = L.latLngBounds([36.5, 6.0], [47.3, 18.6]);
-//        mappaRef.current.fitBounds(confiniItalia);
-//      }
-
-      const confiniItalia = L.latLngBounds([36.5, 6.0], [47.3, 18.6]);
-      mappaRef.current.fitBounds(confiniItalia);
+      if (centroIniziale) {
+        mappaRef.current.setView([centroIniziale.lat, centroIniziale.lng], 10);
+      } else {
+        const confiniItalia = L.latLngBounds([36.5, 6.0], [47.3, 18.6]);
+        mappaRef.current.fitBounds(confiniItalia);
+      }
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors',
