@@ -68,13 +68,34 @@ function Amministrazione() {
   }
 
   async function rifiutaVia(id) {
-    await supabase.from('vie').update({ stato: 'rifiutata' }).eq('id', id);
+    const { error } = await supabase.from('vie').delete().eq('id', id);
+
+    if (error) {
+      setErroreAzione('Errore durante il rifiuto della via: ' + error.message);
+      return;
+    }
+
     setVieInAttesa((prev) => prev.filter((v) => v.id !== id));
-  }
+}
 
 async function confermaEliminazione(id) {
     setViaDaEliminare(null);
-    await supabase.from('vie').delete().eq('id', id);
+
+    const { error, count } = await supabase
+      .from('vie')
+      .delete({ count: 'exact' })
+      .eq('id', id);
+
+    if (error) {
+      setErroreAzione('Errore durante l\'eliminazione: ' + error.message);
+      return;
+    }
+
+    if (count === 0) {
+      setErroreAzione('La via non è stata eliminata: probabilmente non hai i permessi necessari (controlla di essere admin).');
+      return;
+    }
+
     setVieDaEliminare((prev) => prev.filter((v) => v.id !== id));
   }
 
@@ -83,7 +104,7 @@ async function confermaEliminazione(id) {
     setVieDaEliminare((prev) => prev.filter((v) => v.id !== id));
   }
 
-  async function approvaModifica(modifica) {
+    async function approvaModifica(modifica) {
     const { error: erroreVia } = await supabase
       .from('vie')
       .update({
@@ -131,17 +152,27 @@ async function confermaEliminazione(id) {
       })
       .eq('id', modifica.via_id);
 
-        if (erroreVia) {
+    if (erroreVia) {
       setErroreAzione('Errore durante l\'applicazione della modifica: ' + erroreVia.message);
       return;
     }
 
-        await supabase.from('modifiche_proposte').update({ stato: 'approvata' }).eq('id', modifica.id);
-
+    // Stacca le foto approvate dalla proposta, così restano anche dopo che la cancelliamo
     await supabase
       .from('foto_via')
-      .update({ stato: 'approvata' })
+      .update({ stato: 'approvata', modifica_proposta_id: null })
       .eq('modifica_proposta_id', modifica.id);
+
+    // Ora la proposta è stata applicata: cancelliamola, non serve più tenerla
+    const { error: erroreCancellazione } = await supabase
+      .from('modifiche_proposte')
+      .delete()
+      .eq('id', modifica.id);
+
+    if (erroreCancellazione) {
+      setErroreAzione('Modifica applicata, ma non sono riuscito a cancellare la proposta: ' + erroreCancellazione.message);
+      return;
+    }
 
     setModificheInAttesa((prev) => prev.filter((m) => m.id !== modifica.id));
   }
@@ -158,13 +189,13 @@ async function confermaEliminazione(id) {
     });
   }
 
-    async function rifiutaModifica(id) {
-    await supabase.from('modifiche_proposte').update({ stato: 'rifiutata' }).eq('id', id);
+        async function rifiutaModifica(id) {
+    const { error } = await supabase.from('modifiche_proposte').delete().eq('id', id);
 
-    await supabase
-      .from('foto_via')
-      .update({ stato: 'rifiutata' })
-      .eq('modifica_proposta_id', id);
+    if (error) {
+      setErroreAzione('Errore durante il rifiuto della proposta: ' + error.message);
+      return;
+    }
 
     setModificheInAttesa((prev) => prev.filter((m) => m.id !== id));
   }
