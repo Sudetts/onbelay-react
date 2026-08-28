@@ -161,28 +161,52 @@ function ListaVie() {
     vie.flatMap((via) => (via.mesi_consigliati ? via.mesi_consigliati.split(', ') : []))
   )];
 
-    const vieFiltrate = vie.filter((via) => {
-  const passaZona = filtroZona.length === 0 || filtroZona.includes(via.zona);
-  const passaDifficolta = filtroDifficolta.length === 0 || filtroDifficolta.includes(via.difficolta);
-  const passaRicerca = via.nome.toLowerCase().includes(ricerca.toLowerCase());
-  const passaRoccia = filtroRoccia.length === 0 || filtroRoccia.includes(via.tipo_roccia);
-  const passaCorda = filtroCorda.length === 0 || filtroCorda.includes(via.tipo_corda);
-  const passaEsposizione = filtroEsposizione.length === 0 || (
-    via.esposizione && filtroEsposizione.some((e) => via.esposizione.split(', ').includes(e))
-  );
+      // Un filtro "a intervallo" è considerato attivo solo se l'utente lo ha
+  // effettivamente spostato dal suo range di default. Finché resta al
+  // valore iniziale, non deve escludere nessuna via.
+  const quotaFiltroAttivo = filtroQuotaMin !== 0 || filtroQuotaMax !== 4500;
+  const cordaFiltroAttivo = filtroCordaMin !== 30 || filtroCordaMax !== 80;
+  const avvicinamentoFiltroAttivo = filtroAvvicinamentoMin !== 0 || filtroAvvicinamentoMax !== 7;
+  const viaFiltroAttivo = filtroViaMin !== 0 || filtroViaMax !== 20;
+  const rientroFiltroAttivo = filtroRientroMin !== 0 || filtroRientroMax !== 7;
+
+  const vieFiltrate = vie.filter((via) => {
+    const passaZona = filtroZona.length === 0 || filtroZona.includes(via.zona);
+    const passaDifficolta = filtroDifficolta.length === 0 || filtroDifficolta.includes(via.difficolta);
+    const passaRicerca = via.nome.toLowerCase().includes(ricerca.toLowerCase());
+    const passaRoccia = filtroRoccia.length === 0 || filtroRoccia.includes(via.tipo_roccia);
+    const passaCorda = filtroCorda.length === 0 || filtroCorda.includes(via.tipo_corda);
+    const passaEsposizione = filtroEsposizione.length === 0 || (
+      via.esposizione && filtroEsposizione.some((e) => via.esposizione.split(', ').includes(e))
+    );
     const passaRitirata = filtroRitirata.length === 0 || (
-    filtroRitirata.includes(via.possibilita_ritirata ? 'Sì' : 'No')
-  );
+      filtroRitirata.includes(via.possibilita_ritirata ? 'Sì' : 'No')
+    );
     const passaMesi = filtroMesi.length === 0 || (
-    via.mesi_consigliati && filtroMesi.some((m) => via.mesi_consigliati.split(', ').includes(m))
-  );
-    const passaQuota = !via.quota_inizio || (via.quota_inizio >= filtroQuotaMin && via.quota_inizio <= filtroQuotaMax);
-    const passaLunghezzaCorda = !via.lunghezza_corda || (via.lunghezza_corda >= filtroCordaMin && via.lunghezza_corda <= filtroCordaMax);
-    const passaAvvicinamento = !via.tempo_avvicinamento || (via.tempo_avvicinamento >= filtroAvvicinamentoMin * 60 && via.tempo_avvicinamento <= filtroAvvicinamentoMax * 60);
-  const passaVia = !via.tempo_via || (via.tempo_via >= filtroViaMin * 60 && via.tempo_via <= filtroViaMax * 60);
-  const passaRientro = !via.tempo_rientro || (via.tempo_rientro >= filtroRientroMin * 60 && via.tempo_rientro <= filtroRientroMax * 60);
-  return passaZona && passaDifficolta && passaRicerca && passaRoccia && passaCorda && passaEsposizione && passaRitirata && passaMesi && passaQuota && passaLunghezzaCorda && passaAvvicinamento && passaVia && passaRientro;
-});
+      via.mesi_consigliati && filtroMesi.some((m) => via.mesi_consigliati.split(', ').includes(m))
+    );
+    const passaQuota = !quotaFiltroAttivo || !via.quota_inizio || (via.quota_inizio >= filtroQuotaMin && via.quota_inizio <= filtroQuotaMax);
+    const passaLunghezzaCorda = !cordaFiltroAttivo || !via.lunghezza_corda || (via.lunghezza_corda >= filtroCordaMin && via.lunghezza_corda <= filtroCordaMax);
+    const passaAvvicinamento = !avvicinamentoFiltroAttivo || !via.tempo_avvicinamento || (via.tempo_avvicinamento >= filtroAvvicinamentoMin * 60 && via.tempo_avvicinamento <= filtroAvvicinamentoMax * 60);
+    const passaVia = !viaFiltroAttivo || !via.tempo_via || (via.tempo_via >= filtroViaMin * 60 && via.tempo_via <= filtroViaMax * 60);
+    const passaRientro = !rientroFiltroAttivo || !via.tempo_rientro || (via.tempo_rientro >= filtroRientroMin * 60 && via.tempo_rientro <= filtroRientroMax * 60);
+    return passaZona && passaDifficolta && passaRicerca && passaRoccia && passaCorda && passaEsposizione && passaRitirata && passaMesi && passaQuota && passaLunghezzaCorda && passaAvvicinamento && passaVia && passaRientro;
+  });
+
+  const alcunFiltroAttivo =
+    filtroZona.length > 0 ||
+    filtroDifficolta.length > 0 ||
+    ricerca !== '' ||
+    filtroRoccia.length > 0 ||
+    filtroCorda.length > 0 ||
+    filtroEsposizione.length > 0 ||
+    filtroRitirata.length > 0 ||
+    filtroMesi.length > 0 ||
+    quotaFiltroAttivo ||
+    cordaFiltroAttivo ||
+    avvicinamentoFiltroAttivo ||
+    viaFiltroAttivo ||
+    rientroFiltroAttivo;
 
   return (
     <div className="app">
@@ -325,7 +349,7 @@ function ListaVie() {
 </div>
 </div>
 
-{filtroZona.length === 0 && filtroDifficolta.length === 0 && ricerca === '' ? null : vieFiltrate.length === 0 ? (
+{!alcunFiltroAttivo ? null : vieFiltrate.length === 0 ? (
           <p className="nessun-risultato">Nessuna via corrisponde ai filtri scelti.</p>
         ) : (
           <div className="grid">
