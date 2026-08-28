@@ -84,7 +84,7 @@ function ListaVie() {
   const [vie, setVie] = useState([]);
   const [centroUtente, setCentroUtente] = useState(null);
   const [caricamento, setCaricamento] = useState(true);
-  const [filtroZona, setFiltroZona] = useState([]);
+    const [filtroRegione, setFiltroRegione] = useState([]);
   const [filtroDifficolta, setFiltroDifficolta] = useState([]);
   const [ricerca, setRicerca] = useState('');
   const [filtroRoccia, setFiltroRoccia] = useState([]);
@@ -150,7 +150,7 @@ function ListaVie() {
     return <p className="messaggio-caricamento">Caricamento vie in corso...</p>;
   }
 
-  const zoneDisponibili = [...new Set(vie.map((via) => via.zona))];
+    const regioniDisponibili = [...new Set(vie.map((via) => via.regione).filter(Boolean))];
   const difficoltaDisponibili = [...new Set(vie.map((via) => via.difficolta))];
   const rocciaDisponibili = [...new Set(vie.map((via) => via.tipo_roccia).filter(Boolean))];
   const cordaDisponibili = [...new Set(vie.map((via) => via.tipo_corda).filter(Boolean))];
@@ -171,7 +171,7 @@ function ListaVie() {
   const rientroFiltroAttivo = filtroRientroMin !== 0 || filtroRientroMax !== 7;
 
   const vieFiltrate = vie.filter((via) => {
-    const passaZona = filtroZona.length === 0 || filtroZona.includes(via.zona);
+      const passaRegione = filtroRegione.length === 0 || filtroRegione.includes(via.regione);
     const passaDifficolta = filtroDifficolta.length === 0 || filtroDifficolta.includes(via.difficolta);
     const passaRicerca = via.nome.toLowerCase().includes(ricerca.toLowerCase());
     const passaRoccia = filtroRoccia.length === 0 || filtroRoccia.includes(via.tipo_roccia);
@@ -190,23 +190,23 @@ function ListaVie() {
     const passaAvvicinamento = !avvicinamentoFiltroAttivo || !via.tempo_avvicinamento || (via.tempo_avvicinamento >= filtroAvvicinamentoMin * 60 && via.tempo_avvicinamento <= filtroAvvicinamentoMax * 60);
     const passaVia = !viaFiltroAttivo || !via.tempo_via || (via.tempo_via >= filtroViaMin * 60 && via.tempo_via <= filtroViaMax * 60);
     const passaRientro = !rientroFiltroAttivo || !via.tempo_rientro || (via.tempo_rientro >= filtroRientroMin * 60 && via.tempo_rientro <= filtroRientroMax * 60);
-    return passaZona && passaDifficolta && passaRicerca && passaRoccia && passaCorda && passaEsposizione && passaRitirata && passaMesi && passaQuota && passaLunghezzaCorda && passaAvvicinamento && passaVia && passaRientro;
-  });
+      return passaRegione && passaDifficolta && passaRicerca && passaRoccia && passaCorda && passaEsposizione && passaRitirata && passaMesi && passaQuota && passaLunghezzaCorda && passaAvvicinamento && passaVia && passaRientro;
+});
 
-  const alcunFiltroAttivo =
-    filtroZona.length > 0 ||
-    filtroDifficolta.length > 0 ||
-    ricerca !== '' ||
-    filtroRoccia.length > 0 ||
-    filtroCorda.length > 0 ||
-    filtroEsposizione.length > 0 ||
-    filtroRitirata.length > 0 ||
-    filtroMesi.length > 0 ||
-    quotaFiltroAttivo ||
-    cordaFiltroAttivo ||
-    avvicinamentoFiltroAttivo ||
-    viaFiltroAttivo ||
-    rientroFiltroAttivo;
+const alcunFiltroAttivo =
+  filtroRegione.length > 0 ||
+  filtroDifficolta.length > 0 ||
+  ricerca !== '' ||
+  filtroRoccia.length > 0 ||
+  filtroCorda.length > 0 ||
+  filtroEsposizione.length > 0 ||
+  filtroRitirata.length > 0 ||
+  filtroMesi.length > 0 ||
+  quotaFiltroAttivo ||
+  cordaFiltroAttivo ||
+  avvicinamentoFiltroAttivo ||
+  viaFiltroAttivo ||
+  rientroFiltroAttivo;
 
   return (
     <div className="app">
@@ -228,11 +228,11 @@ function ListaVie() {
     onChange={(e) => setRicerca(e.target.value)}
     className="campo-ricerca"
   />
-  <MenuMultiSelezione
-    etichetta="Zona"
-    opzioni={zoneDisponibili}
-    selezionati={filtroZona}
-    onCambia={setFiltroZona}
+    <MenuMultiSelezione
+    etichetta="Regione"
+    opzioni={regioniDisponibili}
+    selezionati={filtroRegione}
+    onCambia={setFiltroRegione}
   />
     <MenuMultiSelezione
     etichetta="Difficoltà"

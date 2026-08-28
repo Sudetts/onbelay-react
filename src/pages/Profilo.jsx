@@ -28,14 +28,7 @@ function Profilo() {
   const [vieModificateAperte, setVieModificateAperte] = useState(false);
   const [attesaNuoveAperte, setAttesaNuoveAperte] = useState(false);
   const [attesaModificateAperte, setAttesaModificateAperte] = useState(false);
-const [genere, setGenere] = useState('');
-const [annoNascita, setAnnoNascita] = useState('');
-const [stilePreferito, setStilePreferito] = useState([]);
-const [sezioneDettagliAperta, setSezioneDettagliAperta] = useState(false);
-const [salvataggioDettagli, setSalvataggioDettagli] = useState(false);
-const [erroreDettagli, setErroreDettagli] = useState('');
-const [messaggioDettagli, setMessaggioDettagli] = useState('');
-const [mostraResidenza, setMostraResidenza] = useState(false);
+  const [mostraResidenza, setMostraResidenza] = useState(false);
 
   useEffect(() => {
     if (!utente) return;
@@ -51,10 +44,7 @@ const [mostraResidenza, setMostraResidenza] = useState(false);
             if (erroreProfilo) {
         console.error('Errore nel caricamento del profilo:', erroreProfilo);
       } else {
-        setProfilo(datiProfilo);
-        setGenere(datiProfilo.genere || '');
-        setAnnoNascita(datiProfilo.anno_nascita ?? '');
-        setStilePreferito(datiProfilo.stile_preferito ? datiProfilo.stile_preferito.split(', ').filter(Boolean) : []);
+                setProfilo(datiProfilo);
         }
 
 // Carica le vie inserite da questo utente
@@ -171,30 +161,6 @@ async function confermaRitaglioECarica() {
   }
 
   setCaricamentoAvatar(false);
-}
-
-async function salvaDettagliProfilo(e) {
-  e.preventDefault();
-  setErroreDettagli('');
-  setMessaggioDettagli('');
-  setSalvataggioDettagli(true);
-
-    const { error } = await supabase
-    .from('profili')
-    .update({
-      genere: genere || null,
-      anno_nascita: annoNascita || null,
-      stile_preferito: stilePreferito.join(', '),
-    })
-    .eq('id', utente.id);
-
-  if (error) {
-    setErroreDettagli(error.message);
-  } else {
-    setMessaggioDettagli('Dati salvati, grazie!');
-  }
-
-  setSalvataggioDettagli(false);
 }
 
     if (!utente) {
@@ -363,65 +329,6 @@ async function salvaDettagliProfilo(e) {
         </div>
       </div>
 
-      <button
-        type="button"
-        className="intestazione-sezione-scomparibile"
-        onClick={() => setSezioneDettagliAperta((a) => !a)}
-      >
-        <span>Completa il tuo profilo (facoltativo)</span>
-        <svg className={`icona-freccia-sezione${sezioneDettagliAperta ? ' aperta' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M6 9l6 6 6-6" />
-        </svg>
-      </button>
-
-      {sezioneDettagliAperta && (
-        <form onSubmit={salvaDettagliProfilo} className="form" style={{ marginBottom: '30px' }}>
-          <p className="link-piccolo">
-            Nessuno di questi dati è obbligatorio. Ci aiutano a capire meglio la community e, per la
-            località, a mostrarti la mappa già centrata vicino a casa tua.
-          </p>
-
-          <label>
-            Genere
-            <select value={genere} onChange={(e) => setGenere(e.target.value)}>
-              <option value="">Preferisco non specificarlo</option>
-              <option value="femmina">Femmina</option>
-              <option value="maschio">Maschio</option>
-              <option value="altro">Altro</option>
-            </select>
-          </label>
-
-          <label>
-            Anno di nascita
-            <input
-              type="number"
-              placeholder="Es. 1990"
-              value={annoNascita}
-              onChange={(e) => setAnnoNascita(e.target.value)}
-              min={1900}
-              max={new Date().getFullYear()}
-            />
-          </label>
-
-          <label>
-            Cosa preferisci scalare
-            <MenuMultiSelezione
-              etichetta="Stile preferito"
-              opzioni={['Falesia', 'Vie lunghe', 'Boulder', 'Alpinismo']}
-              selezionati={stilePreferito}
-              onCambia={setStilePreferito}
-            />
-          </label>
-
-                    {erroreDettagli && <p className="errore">{erroreDettagli}</p>}
-          {messaggioDettagli && <p className="messaggio-successo">{messaggioDettagli}</p>}
-
-          <button type="submit" disabled={salvataggioDettagli}>
-            {salvataggioDettagli ? 'Salvataggio...' : 'Salva'}
-          </button>
-        </form>
-      )}
-
             <h2>Il mio diario ({diarioUtente.length})</h2>
       {diarioUtente.length === 0 ? (
         <p>Non hai ancora registrato nessuna salita.</p>
@@ -547,15 +454,28 @@ async function salvaDettagliProfilo(e) {
                 </>
       )}
 
-      {mostraResidenza && (
+            {mostraResidenza && (
         <SelettoreResidenza
           utenteId={utente.id}
+          datiIniziali={{
+            genere: profilo.genere,
+            annoNascita: profilo.anno_nascita,
+            stilePreferito: profilo.stile_preferito ? profilo.stile_preferito.split(', ').filter(Boolean) : [],
+            residenzaNome: profilo.residenza_nome,
+          }}
           onSalvato={(dati) => {
             setProfilo((prev) => ({
               ...prev,
-              residenza_lat: dati.lat,
-              residenza_lng: dati.lng,
-              residenza_nome: dati.nome,
+              genere: dati.genere,
+              anno_nascita: dati.annoNascita,
+              stile_preferito: dati.stilePreferito.join(', '),
+              ...(dati.residenza
+                ? {
+                    residenza_lat: dati.residenza.lat,
+                    residenza_lng: dati.residenza.lng,
+                    residenza_nome: dati.residenza.nome,
+                  }
+                : {}),
             }));
             setMostraResidenza(false);
           }}
