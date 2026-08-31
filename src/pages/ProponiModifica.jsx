@@ -11,6 +11,8 @@ import SelettoreDurata from '../components/SelettoreDurata';
 import GalleriaFotoVia from '../components/GalleriaFotoVia';
 import EditorFotoExtra, { fotoExtraSonoValide } from '../components/EditorFotoExtra';
 import { caricaFotoExtra } from '../utils/caricaFotoExtra';
+import DisegnaTracciaGpx from '../components/DisegnaTracciaGpx';
+
 
 const OPZIONI_ESPOSIZIONE = ['Nord', 'Nord-Est', 'Est', 'Sud-Est', 'Sud', 'Sud-Ovest', 'Ovest', 'Nord-Ovest'];
 const OPZIONI_MESI = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
@@ -72,6 +74,8 @@ function ProponiModifica() {
   const [avvicinamentoGpxUrl, setAvvicinamentoGpxUrl] = useState(null);
   const [nuovaAvvicinamentoFoto, setNuovaAvvicinamentoFoto] = useState(null);
   const [nuovaAvvicinamentoGpx, setNuovaAvvicinamentoGpx] = useState(null);
+    const [modalitaAvvGpx, setModalitaAvvGpx] = useState('file');
+  const [mostraDisegnoAvv, setMostraDisegnoAvv] = useState(false);
 
   const [descrizioneVia, setDescrizioneVia] = useState('');
   const [diagrammaUrl, setDiagrammaUrl] = useState(null);
@@ -82,6 +86,8 @@ function ProponiModifica() {
   const [allontanamentoGpxUrl, setAllontanamentoGpxUrl] = useState(null);
   const [nuovaAllontanamentoFoto, setNuovaAllontanamentoFoto] = useState(null);
   const [nuovaAllontanamentoGpx, setNuovaAllontanamentoGpx] = useState(null);
+    const [modalitaAllGpx, setModalitaAllGpx] = useState('file');
+  const [mostraDisegnoAll, setMostraDisegnoAll] = useState(false);
 
   const [caricamento, setCaricamento] = useState(true);
   const [invio, setInvio] = useState(false);
@@ -359,11 +365,11 @@ const [fotoExtra, setFotoExtra] = useState([]);
     );
   }
 
-    if (inviato) {
+        if (inviato) {
     return (
       <div className="app dettaglio pannello-scuro">
         <p className="messaggio-successo">
-          La tua proposta di modifica è stata inviata ed è in attesa di revisione. Grazie per il contributo!
+          Abbiamo ricevuto le tue modifiche/integrazioni{fotoExtra.length > 0 ? ` (comprese le ${fotoExtra.length} foto che hai aggiunto)` : ''}. Ora dovranno essere validate da un amministratore prima di essere pubblicate. Grazie per il contributo!
         </p>
         <Link to={`/via/${id}`}>← Torna alla via</Link>
       </div>
@@ -585,10 +591,40 @@ const [fotoExtra, setFotoExtra] = useState([]);
           {avvicinamentoFotoUrl ? 'Sostituisci foto avvicinamento' : 'Foto avvicinamento (opzionale)'}
           <input type="file" accept="image/*" onChange={(e) => setNuovaAvvicinamentoFoto(e.target.files[0])} />
         </label>
-        <label>
-          {avvicinamentoGpxUrl ? 'Sostituisci traccia GPX avvicinamento' : 'Traccia GPX avvicinamento (opzionale)'}
-          <input type="file" accept=".gpx" onChange={(e) => setNuovaAvvicinamentoGpx(e.target.files[0])} />
-        </label>
+                <div className="campo-gpx-scelta">
+          <p className="link-piccolo">
+            {avvicinamentoGpxUrl ? 'Sostituisci traccia GPX avvicinamento' : 'Traccia GPX avvicinamento (opzionale)'}
+          </p>
+          <div className="selettore-modalita-gpx">
+            <button
+              type="button"
+              className={`bottone-modalita-gpx${modalitaAvvGpx === 'file' ? ' attiva' : ''}`}
+              onClick={() => setModalitaAvvGpx('file')}
+            >
+              Carica file
+            </button>
+            <button
+              type="button"
+              className={`bottone-modalita-gpx${modalitaAvvGpx === 'disegna' ? ' attiva' : ''}`}
+              onClick={() => setModalitaAvvGpx('disegna')}
+            >
+              Disegna su mappa
+            </button>
+          </div>
+
+          {modalitaAvvGpx === 'file' ? (
+            <input type="file" accept=".gpx" onChange={(e) => setNuovaAvvicinamentoGpx(e.target.files[0])} />
+          ) : (
+            <div>
+              <button type="button" onClick={() => setMostraDisegnoAvv(true)} className="link-button">
+                {nuovaAvvicinamentoGpx ? 'Ridisegna il tracciato' : 'Apri mappa e disegna il tracciato'}
+              </button>
+              {nuovaAvvicinamentoGpx && (
+                <p className="messaggio-successo">Tracciato pronto: verrà caricato al salvataggio.</p>
+              )}
+            </div>
+          )}
+        </div>
 
         <h2 className="titolo-sezione">Via</h2>
         <textarea
@@ -620,10 +656,40 @@ const [fotoExtra, setFotoExtra] = useState([]);
           {allontanamentoFotoUrl ? 'Sostituisci foto allontanamento' : 'Foto allontanamento (opzionale)'}
           <input type="file" accept="image/*" onChange={(e) => setNuovaAllontanamentoFoto(e.target.files[0])} />
         </label>
-        <label>
-          {allontanamentoGpxUrl ? 'Sostituisci traccia GPX allontanamento' : 'Traccia GPX allontanamento (opzionale)'}
-          <input type="file" accept=".gpx" onChange={(e) => setNuovaAllontanamentoGpx(e.target.files[0])} />
-        </label>
+                <div className="campo-gpx-scelta">
+          <p className="link-piccolo">
+            {allontanamentoGpxUrl ? 'Sostituisci traccia GPX allontanamento' : 'Traccia GPX allontanamento (opzionale)'}
+          </p>
+          <div className="selettore-modalita-gpx">
+            <button
+              type="button"
+              className={`bottone-modalita-gpx${modalitaAllGpx === 'file' ? ' attiva' : ''}`}
+              onClick={() => setModalitaAllGpx('file')}
+            >
+              Carica file
+            </button>
+            <button
+              type="button"
+              className={`bottone-modalita-gpx${modalitaAllGpx === 'disegna' ? ' attiva' : ''}`}
+              onClick={() => setModalitaAllGpx('disegna')}
+            >
+              Disegna su mappa
+            </button>
+          </div>
+
+          {modalitaAllGpx === 'file' ? (
+            <input type="file" accept=".gpx" onChange={(e) => setNuovaAllontanamentoGpx(e.target.files[0])} />
+          ) : (
+            <div>
+              <button type="button" onClick={() => setMostraDisegnoAll(true)} className="link-button">
+                {nuovaAllontanamentoGpx ? 'Ridisegna il tracciato' : 'Apri mappa e disegna il tracciato'}
+              </button>
+              {nuovaAllontanamentoGpx && (
+                <p className="messaggio-successo">Tracciato pronto: verrà caricato al salvataggio.</p>
+              )}
+            </div>
+          )}
+        </div>
 
                 <h2 className="titolo-sezione">Storia della via</h2>
         <input type="number" placeholder="Anno di apertura" value={annoApertura} onChange={(e) => setAnnoApertura(e.target.value)} />
@@ -643,10 +709,36 @@ const [fotoExtra, setFotoExtra] = useState([]);
 
         {errore && <p className="errore">{errore}</p>}
 
-        <button type="submit" disabled={invio}>
+                <button type="submit" disabled={invio}>
           {invio ? 'Salvataggio in corso...' : propostaId ? 'Aggiorna proposta' : 'Invia proposta'}
         </button>
       </form>
+
+      {mostraDisegnoAvv && (
+        <DisegnaTracciaGpx
+          titolo="Disegna la traccia dell'avvicinamento"
+          nomeFile="avvicinamento"
+          centroIniziale={latitudine && longitudine ? [latitudine, longitudine] : null}
+          onConferma={(file) => {
+            setNuovaAvvicinamentoGpx(file);
+            setMostraDisegnoAvv(false);
+          }}
+          onAnnulla={() => setMostraDisegnoAvv(false)}
+        />
+      )}
+
+      {mostraDisegnoAll && (
+        <DisegnaTracciaGpx
+          titolo="Disegna la traccia dell'allontanamento"
+          nomeFile="allontanamento"
+          centroIniziale={latitudine && longitudine ? [latitudine, longitudine] : null}
+          onConferma={(file) => {
+            setNuovaAllontanamentoGpx(file);
+            setMostraDisegnoAll(false);
+          }}
+          onAnnulla={() => setMostraDisegnoAll(false)}
+        />
+      )}
     </div>
   );
 }

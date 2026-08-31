@@ -16,6 +16,7 @@ function Amministrazione() {
     const [caricamento, setCaricamento] = useState(true);
   const [viaDaEliminare, setViaDaEliminare] = useState(null);
   const [erroreAzione, setErroreAzione] = useState('');
+    const [erroreCaricamento, setErroreCaricamento] = useState('');
 
   useEffect(() => {
     async function verificaECarica() {
@@ -50,10 +51,14 @@ function Amministrazione() {
         .eq('richiesta_eliminazione', true);
       setVieDaEliminare(daEliminare || []);
 
-            const { data: modifiche } = await supabase
+                                    const { data: modifiche, error: erroreModifiche } = await supabase
         .from('modifiche_proposte')
         .select('*, vie(*), foto_via(*, profili(nome, cognome))')
         .eq('stato', 'in_attesa');
+      if (erroreModifiche) {
+        console.error('Errore nel caricamento delle modifiche in attesa:', erroreModifiche);
+        setErroreCaricamento(erroreModifiche.message);
+      }
       setModificheInAttesa(modifiche || []);
 
       setCaricamento(false);
@@ -259,7 +264,10 @@ async function confermaEliminazione(id) {
         ))
       )}
 
-      <h2>Modifiche in attesa ({modificheInAttesa.length})</h2>
+            <h2>Modifiche in attesa ({modificheInAttesa.length})</h2>
+      {erroreCaricamento && (
+        <p className="errore">Errore nel caricamento: {erroreCaricamento}</p>
+      )}
       {modificheInAttesa.length === 0 ? (
         <p>Nessuna modifica in attesa.</p>
       ) : (

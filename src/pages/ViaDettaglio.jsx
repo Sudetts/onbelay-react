@@ -4,6 +4,7 @@ import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
 import MappaGpx from '../components/MappaGpx';
 import Popup from '../components/Popup';
+import GalleriaFotoVia from '../components/GalleriaFotoVia';
 
 function ViaDettaglio() {
   const { id } = useParams();
@@ -22,6 +23,7 @@ function ViaDettaglio() {
   const [salitaRegistrata, setSalitaRegistrata] = useState(false);
   const [mostraPopupElimina, setMostraPopupElimina] = useState(false);
   const [mostraPopupSblocca, setMostraPopupSblocca] = useState(false);
+  const [fotoVia, setFotoVia] = useState([]);
   
 useEffect(() => {
     async function caricaVia() {
@@ -37,7 +39,15 @@ useEffect(() => {
         return;
       }
 
-      setVia(data);
+            setVia(data);
+
+      const { data: fotoData } = await supabase
+        .from('foto_via')
+        .select('*, profili(nome, cognome)')
+        .eq('via_id', id)
+        .eq('stato', 'approvata')
+        .order('creato_il', { ascending: false });
+      setFotoVia(fotoData || []);
 
 if (utente) {
         const { data: profiloData } = await supabase
@@ -315,6 +325,17 @@ async function handleSblocca() {
             {via.anno_apertura && <span>Apertura: {via.anno_apertura}</span>}
             {via.apritori && <span>Apritori: {via.apritori}</span>}
           </p>
+        </>
+      )}
+
+      {sbloccata && (
+        <>
+          <h2>Foto della community</h2>
+          <GalleriaFotoVia
+            foto={fotoVia}
+            isAdmin={isAdmin}
+            onFotoEliminata={(idFoto) => setFotoVia((prev) => prev.filter((f) => f.id !== idFoto))}
+          />
         </>
       )}
 

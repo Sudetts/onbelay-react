@@ -57,7 +57,7 @@ if (error) {
 
 if (registrazioneCompletata) {
     return (
-      <div className="app dettaglio">
+      <div className="app dettaglio pannello-scuro">
         <h1>Controlla la tua email</h1>
         <p className="messaggio-successo">
           Ti abbiamo inviato un'email di conferma. Clicca sul link contenuto nel messaggio per attivare
@@ -68,9 +68,15 @@ if (registrazioneCompletata) {
     );
   }
 
-  return (
-    <div className="app dettaglio">
-      <Link to="/">← Torna alla lista</Link>
+    return (
+    <div className="app dettaglio pannello-scuro">
+      <Link to="/" className="link-home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 9.5 12 3l9 6.5" />
+          <path d="M5 9v11a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9" />
+        </svg>
+        HOME
+      </Link>
       <h1>Registrati</h1>
 
       <form onSubmit={handleSubmit} className="form">

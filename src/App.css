@@ -315,7 +315,7 @@
 }
 
 .messaggio-successo {
-  color: var(--colore-successo);
+  color: #4CD671;
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -547,6 +547,10 @@
   .mini-avatar-segnaposto {
     width: 38px;
     height: 38px;
+  }
+
+    .mappa-disegno-gpx {
+    height: 320px;
   }
 
   .mini-avatar.mini-avatar-ospite {
@@ -2315,6 +2319,14 @@ button.link-button.bottone-differenze:hover {
   margin: 4px 0 6px;
 }
 
+/* Dentro le schede foto chiare, il testo deve restare scuro anche se la
+   pagina attorno (.pannello-scuro) forza il testo bianco sui paragrafi */
+.pannello-scuro .scheda-foto-galleria .didascalia-foto,
+.pannello-scuro .scheda-foto-galleria .meta-foto-galleria,
+.pannello-scuro .scheda-foto-galleria .link-button {
+  color: var(--colore-testo) !important;
+}
+
 .form-aggiungi-foto {
   max-width: 420px;
   margin-top: 10px;
@@ -2426,4 +2438,53 @@ button.link-button.bottone-differenze:hover {
   font-size: 1rem;
   color: var(--colore-testo);
   margin-bottom: 10px;
+}
+
+.finestra-popup-mappa {
+  max-width: 700px;
+  width: 100%;
+}
+
+.mappa-disegno-gpx {
+  width: 100%;
+  height: 420px;
+  border-radius: 6px;
+  border: 1px solid var(--colore-bordo);
+  margin: 10px 0;
+  z-index: 1;
+}
+
+.azioni-disegno-gpx {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.campo-gpx-scelta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.selettore-modalita-gpx {
+  display: flex;
+  gap: 8px;
+}
+
+.bottone-modalita-gpx {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--colore-bordo);
+  background-color: var(--colore-superficie);
+  color: var(--colore-testo);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.bottone-modalita-gpx.attiva {
+  background-color: var(--colore-accento);
+  color: #fff;
+  border-color: var(--colore-accento);
 }
