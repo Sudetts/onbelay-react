@@ -11,8 +11,8 @@ function MappaGpx({ gpxUrl }) {
     if (!gpxUrl || !contenitoreRef.current) return;
 
     // Crea la mappa una sola volta
-    if (!mappaRef.current) {
-      mappaRef.current = L.map(contenitoreRef.current).setView([45.5, 10.5], 6);
+        if (!mappaRef.current) {
+      mappaRef.current = L.map(contenitoreRef.current, { zoomControl: false }).setView([45.5, 10.5], 6);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors',

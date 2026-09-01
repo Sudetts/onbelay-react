@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 
 function Termini() {
-  return (
-    <div className="app dettaglio pagina-legale">
+    return (
+    <div className="app dettaglio pagina-legale pannello-scuro">
       <Link to="/">← Torna alla lista</Link>
       <h1>Termini di Servizio</h1>
       <p className="link-piccolo">Ultimo aggiornamento: [DATA]</p>

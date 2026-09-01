@@ -97,8 +97,8 @@ function SicurezzaAccount() {
     return <p className="messaggio-caricamento">Caricamento in corso...</p>;
   }
 
-  return (
-    <div className="app dettaglio">
+    return (
+    <div className="app dettaglio pannello-scuro">
       <Link to="/profilo">← Torna al profilo</Link>
       <h1>Sicurezza account</h1>
 

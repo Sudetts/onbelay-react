@@ -32,8 +32,8 @@ function ReimpostaPassword() {
     navigate('/');
   }
 
-  return (
-    <div className="app dettaglio">
+    return (
+    <div className="app dettaglio pannello-scuro">
       <h1>Imposta una nuova password</h1>
 
       <form onSubmit={handleSubmit} className="form">

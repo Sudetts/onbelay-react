@@ -1,17 +1,17 @@
 import { Link } from 'react-router-dom';
 
 function Privacy() {
-  return (
-    <div className="app dettaglio pagina-legale">
+      return (
+    <div className="app dettaglio pagina-legale pannello-scuro">
       <Link to="/">← Torna alla lista</Link>
       <h1>Informativa sulla Privacy</h1>
-      <p className="link-piccolo">Ultimo aggiornamento: [DATA]</p>
+      <p className="link-piccolo">Ultimo aggiornamento: 01/09/2026</p>
 
-      <h2>1. Titolare del trattamento</h2>
+            <h2>1. Titolare del trattamento</h2>
       <p>
         Il titolare del trattamento dei dati raccolti tramite il sito Onbelay è
-        Onbelay [SOSTITUIRE CON NOME E COGNOME REALI PRIMA DEL LANCIO], contattabile
-        all'indirizzo email: [EMAIL_PLACEHOLDER].
+        Luca Sudetti, contattabile
+        all'indirizzo email: info@onbelay.it.
       </p>
 
       <h2>2. Quali dati raccogliamo</h2>
@@ -72,7 +72,7 @@ function Privacy() {
         <li>Opporti al trattamento in determinate circostanze</li>
         <li>Proporre reclamo al Garante per la Protezione dei Dati Personali (www.garanteprivacy.it)</li>
       </ul>
-      <p>Per esercitare questi diritti, scrivi a [EMAIL_PLACEHOLDER].</p>
+      <p>Per esercitare questi diritti, scrivi a info@onbelay.it.</p>
 
       <h2>7. Cookie</h2>
       <p>

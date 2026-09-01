@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
@@ -7,6 +7,16 @@ function PasswordDimenticata() {
   const [messaggio, setMessaggio] = useState('');
   const [errore, setErrore] = useState('');
   const [caricamento, setCaricamento] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState('');
+
+  useEffect(() => {
+    if (window.turnstile) {
+      window.turnstile.render('#turnstile-widget-recupero', {
+        sitekey: '0x4AAAAAAEBx6Buicj5YPu_-',
+        callback: (token) => setCaptchaToken(token),
+      });
+    }
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -16,6 +26,7 @@ function PasswordDimenticata() {
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reimposta-password`,
+      captchaToken,
     });
 
     if (error) {
@@ -28,8 +39,14 @@ function PasswordDimenticata() {
   }
 
   return (
-    <div className="app dettaglio">
-      <Link to="/login">← Torna al login</Link>
+    <div className="app dettaglio pannello-scuro">
+      <Link to="/login" className="link-home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 9.5 12 3l9 6.5" />
+          <path d="M5 9v11a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9" />
+        </svg>
+        LOGIN
+      </Link>
       <h1>Password dimenticata</h1>
 
       <form onSubmit={handleSubmit} className="form">
@@ -40,6 +57,8 @@ function PasswordDimenticata() {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
+
+        <div id="turnstile-widget-recupero"></div>
 
         {errore && <p className="errore">{errore}</p>}
         {messaggio && <p className="messaggio-successo">{messaggio}</p>}

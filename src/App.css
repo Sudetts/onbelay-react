@@ -230,6 +230,8 @@
 .pannello-scuro > h2,
 .pannello-scuro > a,
 .pannello-scuro p:not(.errore):not(.messaggio-successo),
+.pannello-scuro li,
+.pannello-scuro p a,
 .pannello-scuro label,
 .pannello-scuro .link-piccolo,
 .pannello-scuro .link-piccolo a,
@@ -1663,7 +1665,7 @@ button.link-button.bottone-differenze:hover {
   color: var(--colore-testo-pannello);
 }
 
-.link-gpx {
+.dettaglio a.link-gpx {
   color: var(--colore-testo-pannello);
   font-weight: 600;
   text-decoration: underline;
@@ -2454,6 +2456,15 @@ button.link-button.bottone-differenze:hover {
   z-index: 1;
 }
 
+/* Cursore a croce invece della manina, per un tracciamento più preciso.
+   Serve sovrascrivere sia il cursore di base di Leaflet (.leaflet-grab)
+   sia quello mostrato durante il trascinamento della mappa. */
+.mappa-disegno-gpx.leaflet-container,
+.mappa-disegno-gpx .leaflet-grab,
+.mappa-disegno-gpx.leaflet-dragging .leaflet-grab {
+  cursor: crosshair !important;
+}
+
 .azioni-disegno-gpx {
   display: flex;
   gap: 10px;
@@ -2487,4 +2498,60 @@ button.link-button.bottone-differenze:hover {
   background-color: var(--colore-accento);
   color: #fff;
   border-color: var(--colore-accento);
+}
+
+.foto-galleria-cliccabile {
+  cursor: zoom-in;
+  transition: opacity 0.15s ease;
+}
+
+.foto-galleria-cliccabile:hover {
+  opacity: 0.88;
+}
+
+.overlay-lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4000;
+  padding: 20px;
+  cursor: default;
+}
+
+.immagine-lightbox {
+  max-width: 92vw;
+  max-height: 92vh;
+  object-fit: contain;
+  cursor: zoom-in;
+  transition: transform 0.2s ease;
+  border-radius: 4px;
+}
+
+.immagine-lightbox.zoom-attivo {
+  transform: scale(1.8);
+  cursor: zoom-out;
+}
+
+.btn-chiudi-lightbox {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2.2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 10px;
+  z-index: 4001;
+}
+
+.btn-chiudi-lightbox:hover {
+  opacity: 0.8;
 }

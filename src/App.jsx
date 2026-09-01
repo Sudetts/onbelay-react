@@ -407,8 +407,8 @@ function VerificaMfaObbligatoria() {
     window.location.href = '/';
   }
 
-  return (
-    <div className="app dettaglio">
+    return (
+    <div className="app dettaglio pannello-scuro">
       <h1>Verifica in due passaggi</h1>
       <p>Inserisci il codice a 6 cifre generato dalla tua app authenticator.</p>
 

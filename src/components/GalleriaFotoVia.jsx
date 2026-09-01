@@ -7,6 +7,13 @@ import { ETICHETTE_CATEGORIA } from '../utils/categorieFoto';
 function GalleriaFotoVia({ foto, onFotoEliminata, isAdmin }) {
   const { utente } = useAuth();
   const [fotoDaEliminare, setFotoDaEliminare] = useState(null);
+  const [fotoIngrandita, setFotoIngrandita] = useState(null);
+  const [zoomAttivo, setZoomAttivo] = useState(false);
+
+  function chiudiLightbox() {
+    setFotoIngrandita(null);
+    setZoomAttivo(false);
+  }
 
   async function eliminaFoto(id) {
     setFotoDaEliminare(null);
@@ -23,8 +30,13 @@ function GalleriaFotoVia({ foto, onFotoEliminata, isAdmin }) {
       {foto.map((f) => {
         const puoEliminare = utente && (utente.id === f.utente_id || isAdmin);
         return (
-          <figure className="scheda-foto-galleria" key={f.id}>
-            <img src={f.url} alt={f.didascalia} className="foto-galleria" />
+                    <figure className="scheda-foto-galleria" key={f.id}>
+            <img
+              src={f.url}
+              alt={f.didascalia}
+              className="foto-galleria foto-galleria-cliccabile"
+              onClick={() => setFotoIngrandita(f.url)}
+            />
             <figcaption>
               <span className="badge-categoria-foto">
                 {ETICHETTE_CATEGORIA[f.categoria] || f.categoria}
@@ -50,7 +62,7 @@ function GalleriaFotoVia({ foto, onFotoEliminata, isAdmin }) {
         );
       })}
 
-      {fotoDaEliminare && (
+            {fotoDaEliminare && (
         <Popup
           titolo="Elimina foto"
           messaggio="Vuoi eliminare definitivamente questa foto?"
@@ -59,6 +71,23 @@ function GalleriaFotoVia({ foto, onFotoEliminata, isAdmin }) {
           onConferma={() => eliminaFoto(fotoDaEliminare)}
           onAnnulla={() => setFotoDaEliminare(null)}
         />
+      )}
+
+      {fotoIngrandita && (
+        <div className="overlay-lightbox" onClick={chiudiLightbox}>
+          <button type="button" className="btn-chiudi-lightbox" onClick={chiudiLightbox} aria-label="Chiudi">
+            ×
+          </button>
+          <img
+            src={fotoIngrandita}
+            alt="Foto ingrandita"
+            className={`immagine-lightbox${zoomAttivo ? ' zoom-attivo' : ''}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setZoomAttivo((z) => !z);
+            }}
+          />
+        </div>
       )}
     </div>
   );

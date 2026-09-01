@@ -227,7 +227,15 @@ async function confermaEliminazione(id) {
         </svg>
         PROFILO
       </Link>
-      <h1>Pannello di amministrazione</h1>
+            <h1>Pannello di amministrazione</h1>
+      <a
+        href="https://dash.cloudflare.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="link-button"
+      >
+        📊 Vedi statistiche visite (Cloudflare) ↗
+      </a>
 
       <h2>Vie in attesa ({vieInAttesa.length})</h2>
       {vieInAttesa.length === 0 ? (
