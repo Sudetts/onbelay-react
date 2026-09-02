@@ -102,8 +102,10 @@ function ListaVie() {
   const [filtroViaMax, setFiltroViaMax] = useState(20);
     const [filtroRientroMin, setFiltroRientroMin] = useState(0);
   const [filtroRientroMax, setFiltroRientroMax] = useState(7);
-    const [filtriAvanzatiAperti, setFiltriAvanzatiAperti] = useState(false);
+      const [filtriAvanzatiAperti, setFiltriAvanzatiAperti] = useState(false);
   const [filtriAgganciati, setFiltriAgganciati] = useState(false);
+  const [soloVieFatte, setSoloVieFatte] = useState(false);
+  const [viaIdFatte, setViaIdFatte] = useState(null);
   
 
     useEffect(() => {
@@ -130,6 +132,21 @@ function ListaVie() {
         if (data?.residenza_lat && data?.residenza_lng) {
           setCentroUtente({ lat: data.residenza_lat, lng: data.residenza_lng });
         }
+      });
+  }, [utente]);
+
+  
+  useEffect(() => {
+    if (!utente) {
+      setViaIdFatte(null);
+      return;
+    }
+    supabase
+      .from('diario')
+      .select('via_id')
+      .eq('utente_id', utente.id)
+      .then(({ data }) => {
+        setViaIdFatte(new Set((data || []).map((voce) => voce.via_id)));
       });
   }, [utente]);
 
@@ -190,7 +207,8 @@ function ListaVie() {
     const passaAvvicinamento = !avvicinamentoFiltroAttivo || !via.tempo_avvicinamento || (via.tempo_avvicinamento >= filtroAvvicinamentoMin * 60 && via.tempo_avvicinamento <= filtroAvvicinamentoMax * 60);
     const passaVia = !viaFiltroAttivo || !via.tempo_via || (via.tempo_via >= filtroViaMin * 60 && via.tempo_via <= filtroViaMax * 60);
     const passaRientro = !rientroFiltroAttivo || !via.tempo_rientro || (via.tempo_rientro >= filtroRientroMin * 60 && via.tempo_rientro <= filtroRientroMax * 60);
-      return passaRegione && passaDifficolta && passaRicerca && passaRoccia && passaCorda && passaEsposizione && passaRitirata && passaMesi && passaQuota && passaLunghezzaCorda && passaAvvicinamento && passaVia && passaRientro;
+    const passaVieFatte = !soloVieFatte || (viaIdFatte && viaIdFatte.has(via.id));
+    return passaRegione && passaDifficolta && passaRicerca && passaRoccia && passaCorda && passaEsposizione && passaRitirata && passaMesi && passaQuota && passaLunghezzaCorda && passaAvvicinamento && passaVia && passaRientro && passaVieFatte;
 });
 
 const alcunFiltroAttivo =
@@ -206,7 +224,8 @@ const alcunFiltroAttivo =
   cordaFiltroAttivo ||
   avvicinamentoFiltroAttivo ||
   viaFiltroAttivo ||
-  rientroFiltroAttivo;
+  rientroFiltroAttivo ||
+  soloVieFatte;
 
   return (
     <div className="app">
@@ -240,12 +259,21 @@ const alcunFiltroAttivo =
     selezionati={filtroDifficolta}
     onCambia={setFiltroDifficolta}
   />
-        <MenuMultiSelezione
+                <MenuMultiSelezione
     etichetta="Mesi"
     opzioni={mesiDisponibili}
     selezionati={filtroMesi}
     onCambia={setFiltroMesi}
   />
+  {utente && (
+    <button
+      type="button"
+      className={soloVieFatte ? 'bottone-filtri-avanzati attivo' : 'bottone-filtri-avanzati'}
+      onClick={() => setSoloVieFatte((v) => !v)}
+    >
+      ✓ Solo vie fatte
+    </button>
+  )}
             <button
     type="button"
     className="bottone-filtri-avanzati"

@@ -2086,6 +2086,12 @@ button.link-button.bottone-differenze:hover {
   border-color: var(--colore-accento);
 }
 
+.bottone-filtri-avanzati.attivo {
+  background-color: var(--colore-accento);
+  color: #fff;
+  border-color: var(--colore-accento);
+}
+
 .icona-freccia-filtri {
   width: 16px;
   height: 16px;
