@@ -89,6 +89,7 @@ function ListaVie() {
   const [ricerca, setRicerca] = useState('');
   const [filtroRoccia, setFiltroRoccia] = useState([]);
   const [filtroCorda, setFiltroCorda] = useState([]);
+    const [filtroStileProtezione, setFiltroStileProtezione] = useState([]);
   const [filtroEsposizione, setFiltroEsposizione] = useState([]);
   const [filtroRitirata, setFiltroRitirata] = useState([]);
   const [filtroMesi, setFiltroMesi] = useState([]);
@@ -171,6 +172,7 @@ function ListaVie() {
   const difficoltaDisponibili = [...new Set(vie.map((via) => via.difficolta))];
   const rocciaDisponibili = [...new Set(vie.map((via) => via.tipo_roccia).filter(Boolean))];
   const cordaDisponibili = [...new Set(vie.map((via) => via.tipo_corda).filter(Boolean))];
+    const stileProtezioneDisponibili = [...new Set(vie.map((via) => via.stile_protezione).filter(Boolean))];
   const esposizioneDisponibili = [...new Set(
     vie.flatMap((via) => (via.esposizione ? via.esposizione.split(', ') : []))
   )];
@@ -193,6 +195,7 @@ function ListaVie() {
     const passaRicerca = via.nome.toLowerCase().includes(ricerca.toLowerCase());
     const passaRoccia = filtroRoccia.length === 0 || filtroRoccia.includes(via.tipo_roccia);
     const passaCorda = filtroCorda.length === 0 || filtroCorda.includes(via.tipo_corda);
+      const passaStileProtezione = filtroStileProtezione.length === 0 || filtroStileProtezione.includes(via.stile_protezione);
     const passaEsposizione = filtroEsposizione.length === 0 || (
       via.esposizione && filtroEsposizione.some((e) => via.esposizione.split(', ').includes(e))
     );
@@ -208,7 +211,7 @@ function ListaVie() {
     const passaVia = !viaFiltroAttivo || !via.tempo_via || (via.tempo_via >= filtroViaMin * 60 && via.tempo_via <= filtroViaMax * 60);
     const passaRientro = !rientroFiltroAttivo || !via.tempo_rientro || (via.tempo_rientro >= filtroRientroMin * 60 && via.tempo_rientro <= filtroRientroMax * 60);
     const passaVieFatte = !soloVieFatte || (viaIdFatte && viaIdFatte.has(via.id));
-    return passaRegione && passaDifficolta && passaRicerca && passaRoccia && passaCorda && passaEsposizione && passaRitirata && passaMesi && passaQuota && passaLunghezzaCorda && passaAvvicinamento && passaVia && passaRientro && passaVieFatte;
+    return passaRegione && passaDifficolta && passaRicerca && passaRoccia && passaCorda && passaEsposizione && passaRitirata && passaMesi && passaQuota && passaLunghezzaCorda && passaAvvicinamento && passaVia && passaRientro && passaVieFatte && passaStileProtezione;
 });
 
 const alcunFiltroAttivo =
@@ -217,6 +220,7 @@ const alcunFiltroAttivo =
   ricerca !== '' ||
   filtroRoccia.length > 0 ||
   filtroCorda.length > 0 ||
+  filtroStileProtezione.length > 0 ||
   filtroEsposizione.length > 0 ||
   filtroRitirata.length > 0 ||
   filtroMesi.length > 0 ||
@@ -311,6 +315,14 @@ const alcunFiltroAttivo =
     selezionati={filtroCorda}
     onCambia={setFiltroCorda}
   />
+
+    <MenuMultiSelezione
+    etichetta="Stile protezione"
+    opzioni={stileProtezioneDisponibili}
+    selezionati={filtroStileProtezione}
+    onCambia={setFiltroStileProtezione}
+  />
+  
     <MenuMultiSelezione
     etichetta="Ritirata possibile"
     opzioni={['Sì', 'No']}

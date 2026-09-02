@@ -129,6 +129,7 @@ async function confermaEliminazione(id) {
         tipo_roccia: modifica.tipo_roccia,
         qualita_roccia: modifica.qualita_roccia,
         impegno: modifica.impegno,
+                stile_protezione: modifica.stile_protezione,
         tipo_corda: modifica.tipo_corda,
         lunghezza_corda: modifica.lunghezza_corda,
         protezioni_mobili: modifica.protezioni_mobili,

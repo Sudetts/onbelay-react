@@ -168,9 +168,10 @@ async function handleSblocca() {
       </Link>
       <h1>{via.nome}</h1>
             <p>Zona: {via.zona}</p>
-      <p>
+            <p>
         Difficoltà: {via.difficolta}
         {via.impegno && ` · Impegno: ${via.impegno}`}
+        {via.stile_protezione && ` · Protezione: ${via.stile_protezione === 'sportiva' ? 'Sportiva' : via.stile_protezione === 'trad' ? 'Trad' : 'Mista'}`}
       </p>
 
       {(via.nazione || via.regione || via.provincia) && (

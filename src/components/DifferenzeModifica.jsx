@@ -32,9 +32,12 @@ const SEZIONI = [
       { chiave: 'tempo_via', etichetta: 'Tempo sulla via' },
     ],
   },
-  {
-    titolo: 'Impegno',
-    campi: [{ chiave: 'impegno', etichetta: 'Impegno' }],
+    {
+    titolo: 'Impegno e protezione',
+    campi: [
+      { chiave: 'impegno', etichetta: 'Impegno' },
+      { chiave: 'stile_protezione', etichetta: 'Stile di protezione' },
+    ],
   },
   {
     titolo: 'Materiale consigliato',

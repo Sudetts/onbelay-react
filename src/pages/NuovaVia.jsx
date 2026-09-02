@@ -16,6 +16,11 @@ const OPZIONI_MESI = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugn
 const OPZIONI_TIPO_ROCCIA = ['Calcare', 'Granito', 'Dolomia', 'Gneiss', 'Arenaria', 'Porfido', 'Basalto', 'Serpentino'];
 const OPZIONI_QUALITA_ROCCIA = ['Ottima', 'Buona', 'Discreta', 'Scarsa'];
 const OPZIONI_TIPO_CORDA = ['Singola', 'Doppia', 'Mezze corde'];
+const OPZIONI_STILE_PROTEZIONE = [
+  { value: 'sportiva', label: 'Sportiva (chiodata a fix)' },
+  { value: 'trad', label: 'Trad (protezione tradizionale)' },
+  { value: 'mista', label: 'Mista (fix + protezione tradizionale)' },
+];
 const OPZIONI_COPERTURA_CELLULARE = ['Buona', 'Parziale', 'Assente', 'Non verificata'];
 const OPZIONI_IMPEGNO = [
   { value: 'F', label: 'F - Facile' },
@@ -43,6 +48,7 @@ function NuovaVia() {
   const [qualitaRoccia, setQualitaRoccia] = useState('');
 
   const [impegno, setImpegno] = useState('');
+    const [stileProtezione, setStileProtezione] = useState('');
 
   const [tipoCorda, setTipoCorda] = useState('');
   const [lunghezzaCorda, setLunghezzaCorda] = useState('');
@@ -123,6 +129,12 @@ if (!tipoRoccia) {
       return;
     }
 
+    
+    if (!stileProtezione) {
+      setErrore('Seleziona lo stile di protezione (sportiva, trad o mista).');
+      return;
+    }
+
 //    if (!avvicinamentoFoto && !avvicinamentoGpx) {
 //     setErrore('Per l\'avvicinamento serve almeno una foto o una traccia GPX.');
 //      return;
@@ -167,6 +179,7 @@ if (!fotoExtraSonoValide(fotoExtra)) {
           tipo_roccia: tipoRoccia,
           qualita_roccia: qualitaRoccia,
           impegno,
+                    stile_protezione: stileProtezione,
           tipo_corda: tipoCorda,
           lunghezza_corda: lunghezzaCorda || null,
           protezioni_mobili: protezioniMobili === '' ? null : protezioniMobili === 'si',
@@ -337,11 +350,21 @@ return (<div className="app dettaglio pannello-scuro dettaglio-largo">
           required
           maxLength={15}
         />
-        <SelettoreConAltro
+
+                <SelettoreConAltro
           placeholder="Impegno (facoltativo)"
           opzioni={OPZIONI_IMPEGNO}
           valore={impegno}
           onCambia={setImpegno}
+        />
+        
+                <SelettoreConAltro
+          placeholder="Stile di protezione *"
+          opzioni={OPZIONI_STILE_PROTEZIONE}
+          valore={stileProtezione}
+          onCambia={setStileProtezione}
+          obbligatorio
+          mostraAltro={false}
         />
 
         <h2 className="titolo-sezione">Materiale consigliato</h2>

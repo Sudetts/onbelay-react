@@ -47,6 +47,7 @@ function ModificaVia() {
   const [qualitaRoccia, setQualitaRoccia] = useState('');
 
   const [impegno, setImpegno] = useState('');
+  const [stileProtezione, setStileProtezione] = useState('');
 
   const [tipoCorda, setTipoCorda] = useState('');
   const [lunghezzaCorda, setLunghezzaCorda] = useState('');
@@ -129,6 +130,7 @@ const [fotoExtra, setFotoExtra] = useState([]);
         setQualitaRoccia(data.qualita_roccia || '');
 
         setImpegno(data.impegno || '');
+        setStileProtezione(data.stile_protezione || '');
 
         setTipoCorda(data.tipo_corda || '');
         setLunghezzaCorda(data.lunghezza_corda ?? '');
@@ -214,6 +216,12 @@ const [fotoExtra, setFotoExtra] = useState([]);
       return;
     }
 
+    
+    if (!stileProtezione) {
+      setErrore('Seleziona lo stile di protezione (sportiva, trad o mista).');
+      return;
+    }
+
     setSalvataggio(true);
 
     try {
@@ -252,6 +260,7 @@ const [fotoExtra, setFotoExtra] = useState([]);
           tipo_roccia: tipoRoccia,
           qualita_roccia: qualitaRoccia,
           impegno,
+                    stile_protezione: stileProtezione,
           tipo_corda: tipoCorda,
           lunghezza_corda: lunghezzaCorda || null,
           protezioni_mobili: protezioniMobili === '' ? null : protezioniMobili === 'si',
@@ -431,6 +440,15 @@ const [fotoExtra, setFotoExtra] = useState([]);
           opzioni={OPZIONI_IMPEGNO}
           valore={impegno}
           onCambia={setImpegno}
+        />
+
+                <SelettoreConAltro
+          placeholder="Stile di protezione *"
+          opzioni={OPZIONI_STILE_PROTEZIONE}
+          valore={stileProtezione}
+          onCambia={setStileProtezione}
+          obbligatorio
+          mostraAltro={false}
         />
 
         <h2 className="titolo-sezione">Materiale consigliato</h2>
