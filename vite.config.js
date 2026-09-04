@@ -32,3 +32,13 @@ export default defineConfig({
     }),
   ],
 })
+
+VitePWA({
+  registerType: 'autoUpdate',
+  workbox: {
+    navigateFallbackDenylist: [/\.(png|jpg|jpeg|svg|gif|ico|txt|xml|webmanifest)$/],
+  },
+  manifest: {
+    // ... resta tutto uguale
+  },
+}),
