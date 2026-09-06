@@ -288,6 +288,8 @@ async function confermaRitaglioECarica() {
           <div className="azioni-profilo">
             <Link to="/nuova-via" className="azione-profilo-voce">Aggiungi via</Link>
 
+                        {/* Crediti nascosti temporaneamente: il sistema di pagamento non è ancora attivo.
+                Per riattivare, rimuovi questo commento.
             {profilo?.crediti !== undefined && (
               <div className="azione-profilo-voce blocco-crediti">
                 Crediti
@@ -299,6 +301,7 @@ async function confermaRitaglioECarica() {
                 {profilo.crediti}
               </div>
             )}
+            */}
 
             {profilo?.is_admin && (
               <Link to="/pannello-controllo-onbelay" className="azione-profilo-voce link-admin">Admin</Link>
