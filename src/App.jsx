@@ -20,6 +20,7 @@ import SicurezzaAccount from './pages/SicurezzaAccount';
 import MappaVie from './components/MappaVie';
 import MenuMultiSelezione from './components/MenuMultiSelezione';
 import FiltroRange from './components/FiltroRange';
+import Contattaci from './pages/Contattaci';
 import './App.css';
 
 
@@ -510,6 +511,7 @@ return (
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/termini" element={<Termini />} />
           <Route path="/sicurezza-account" element={<SicurezzaAccount />} />
+          <Route path="/contattaci" element={<Contattaci />} />
         </Routes>
         <Footer />
         <BannerCookie />

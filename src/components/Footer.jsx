@@ -7,6 +7,7 @@ function Footer() {
       <nav className="footer-nav">
         <Link to="/privacy">Privacy</Link>
         <Link to="/termini">Termini di Servizio</Link>
+        <Link to="/contattaci">Contattaci</Link>
       </nav>
     </footer>
   );
