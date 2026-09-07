@@ -21,6 +21,7 @@ import MappaVie from './components/MappaVie';
 import MenuMultiSelezione from './components/MenuMultiSelezione';
 import FiltroRange from './components/FiltroRange';
 import Contattaci from './pages/Contattaci';
+import DettagliProfilo from './pages/DettagliProfilo';
 import './App.css';
 
 
@@ -512,6 +513,7 @@ return (
           <Route path="/termini" element={<Termini />} />
           <Route path="/sicurezza-account" element={<SicurezzaAccount />} />
           <Route path="/contattaci" element={<Contattaci />} />
+          <Route path="/completa-profilo" element={<DettagliProfilo />} />
         </Routes>
         <Footer />
         <BannerCookie />

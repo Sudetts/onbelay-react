@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 
-function MenuMultiSelezione({ etichetta, opzioni, selezionati, onCambia, mostraSelezionaTutto = true }) {
+function MenuMultiSelezione({ etichetta, opzioni, selezionati, onCambia, mostraSelezionaTutto = true, obbligatorio = true }) {
   const [aperto, setAperto] = useState(false);
   const contenitoreRef = useRef(null);
 
@@ -41,7 +41,13 @@ function toggleTutti() {
     <div className="menu-multi-selezione" ref={contenitoreRef}>
       <button
         type="button"
-        className={selezionati.length > 0 ? 'bottone-menu-multi attivo' : 'bottone-menu-multi campo-vuoto'}
+        className={
+  selezionati.length > 0
+    ? 'bottone-menu-multi attivo'
+    : obbligatorio
+      ? 'bottone-menu-multi campo-vuoto'
+      : 'bottone-menu-multi'
+}
         onClick={() => setAperto((a) => !a)}
       >
         {testoBottone} ▾

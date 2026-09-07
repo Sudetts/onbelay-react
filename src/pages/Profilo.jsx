@@ -5,7 +5,6 @@ import { useAuth } from '../AuthContext';
 import { comprimiImmagine } from '../utils/comprimiImmagine';
 import Cropper from 'react-easy-crop';
 import MenuMultiSelezione from '../components/MenuMultiSelezione';
-import SelettoreResidenza from '../components/SelettoreResidenza';
 
 
 function Profilo() {
@@ -28,7 +27,6 @@ function Profilo() {
   const [vieModificateAperte, setVieModificateAperte] = useState(false);
   const [attesaNuoveAperte, setAttesaNuoveAperte] = useState(false);
   const [attesaModificateAperte, setAttesaModificateAperte] = useState(false);
-  const [mostraResidenza, setMostraResidenza] = useState(false);
 
   useEffect(() => {
     if (!utente) return;
@@ -311,13 +309,9 @@ async function confermaRitaglioECarica() {
               <Link to="/sicurezza-account" className="azione-profilo-voce">Sicurezza account</Link>
             )}
 
-            <button
-              type="button"
-              onClick={() => setMostraResidenza(true)}
-              className="azione-profilo-voce link-button"
-            >
+                        <Link to="/completa-profilo" className="azione-profilo-voce">
               Facci sapere chi sei
-            </button>
+            </Link>
 
            <button
   onClick={async () => {
@@ -456,35 +450,7 @@ async function confermaRitaglioECarica() {
           )}
                 </>
       )}
-
-            {mostraResidenza && (
-        <SelettoreResidenza
-          utenteId={utente.id}
-          datiIniziali={{
-            genere: profilo.genere,
-            annoNascita: profilo.anno_nascita,
-            stilePreferito: profilo.stile_preferito ? profilo.stile_preferito.split(', ').filter(Boolean) : [],
-            residenzaNome: profilo.residenza_nome,
-          }}
-          onSalvato={(dati) => {
-            setProfilo((prev) => ({
-              ...prev,
-              genere: dati.genere,
-              anno_nascita: dati.annoNascita,
-              stile_preferito: dati.stilePreferito.join(', '),
-              ...(dati.residenza
-                ? {
-                    residenza_lat: dati.residenza.lat,
-                    residenza_lng: dati.residenza.lng,
-                    residenza_nome: dati.residenza.nome,
-                  }
-                : {}),
-            }));
-            setMostraResidenza(false);
-          }}
-          onAnnulla={() => setMostraResidenza(false)}
-        />
-      )}
+      
     </div>
   );
 }
