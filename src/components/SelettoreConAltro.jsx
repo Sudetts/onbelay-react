@@ -48,14 +48,17 @@ function SelettoreConAltro({ placeholder, opzioni, valore, onCambia, obbligatori
     <div className="selettore-con-altro" ref={contenitoreRef}>
       <button
         type="button"
-        className={
+                className={`${
           valore
             ? 'bottone-selettore-altro'
             : `bottone-selettore-altro campo-vuoto${obbligatorio ? ' obbligatorio' : ''}`
-        }
+        }${aperto ? ' aperto' : ''}`}
         onClick={toggleTendina}
-      >
-        {valore || placeholder} ▾
+            >
+        <span>{valore || placeholder}</span>
+        <svg className="freccia-menu-multi" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 9l6 6 6-6" />
+        </svg>
       </button>
 
       {aperto && (

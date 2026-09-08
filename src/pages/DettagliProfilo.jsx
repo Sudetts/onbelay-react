@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
 import MenuMultiSelezione from '../components/MenuMultiSelezione';
+import SelettoreConAltro from '../components/SelettoreConAltro';
+import SelettoreAnnoNascita from '../components/SelettoreAnnoNascita';
 
 function DettagliProfilo() {
   const { utente } = useAuth();
@@ -81,7 +83,7 @@ function DettagliProfilo() {
       setCercando(true);
       try {
         const risposta = await fetch(
-          `https://photon.komoot.io/api/?q=${encodeURIComponent(ricerca)}&limit=8&lang=it`
+          `https://photon.komoot.io/api/?q=${encodeURIComponent(ricerca)}&limit=8`
         );
         const dati = await risposta.json();
         const soloItalia = (dati.features || [])
@@ -191,7 +193,7 @@ function DettagliProfilo() {
             La tua città
             <input
               type="text"
-              placeholder="Es. Trento, Bergamo, Torino..."
+              placeholder="Inserire città di residenza"
               value={ricerca}
               onChange={(e) => {
                 setRicerca(e.target.value);
@@ -224,26 +226,24 @@ function DettagliProfilo() {
         )}
 
         <label>
-          Genere
-          <select value={genere} onChange={(e) => setGenere(e.target.value)}>
-            <option value="">Preferisco non specificarlo</option>
-            <option value="femmina">Femmina</option>
-            <option value="maschio">Maschio</option>
-            <option value="altro">Altro</option>
-          </select>
-        </label>
+  Genere
+  <SelettoreConAltro
+    placeholder="Genere"
+    opzioni={[
+      { value: 'femmina', label: 'Femmina' },
+      { value: 'maschio', label: 'Maschio' },
+      { value: 'altro', label: 'Altro' },
+    ]}
+    valore={genere}
+    onCambia={setGenere}
+    mostraAltro={false}
+  />
+</label>
 
         <label>
-          Anno di nascita
-          <input
-            type="number"
-            placeholder="Es. 1990"
-            value={annoNascita}
-            onChange={(e) => setAnnoNascita(e.target.value)}
-            min={1900}
-            max={new Date().getFullYear()}
-          />
-        </label>
+  Anno di nascita
+  <SelettoreAnnoNascita valore={annoNascita} onCambia={setAnnoNascita} />
+</label>
 
         <label>
           Cosa preferisci scalare

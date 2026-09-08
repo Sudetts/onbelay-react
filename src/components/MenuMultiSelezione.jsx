@@ -39,18 +39,21 @@ function toggleTutti() {
 
   return (
     <div className="menu-multi-selezione" ref={contenitoreRef}>
-      <button
+                  <button
         type="button"
-        className={
-  selezionati.length > 0
-    ? 'bottone-menu-multi attivo'
-    : obbligatorio
-      ? 'bottone-menu-multi campo-vuoto'
-      : 'bottone-menu-multi'
-}
+                className={`${
+          selezionati.length > 0
+            ? 'bottone-menu-multi attivo'
+            : obbligatorio
+              ? 'bottone-menu-multi campo-vuoto'
+              : 'bottone-menu-multi vuoto-facoltativo'
+        }${aperto ? ' aperto' : ''}`}
         onClick={() => setAperto((a) => !a)}
       >
-        {testoBottone} ▾
+                <span>{testoBottone}</span>
+        <svg className="freccia-menu-multi" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 9l6 6 6-6" />
+        </svg>
       </button>
 
                 <div className={`tendina-menu-multi${aperto ? ' tendina-aperta' : ''}`}>

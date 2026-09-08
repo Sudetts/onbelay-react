@@ -1298,6 +1298,10 @@
   font-size: 0.9rem;
   cursor: pointer;
   font-family: var(--font-testo);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 .form button.bottone-menu-multi:hover:not(:disabled) {
   background-color: var(--colore-superficie);
@@ -1307,8 +1311,6 @@
   background-color: var(--colore-superficie);
   color: var(--colore-testo);
   width: 100%;
-  display: block;
-  text-align: left;
 }
 
 .form .bottone-menu-multi.campo-vuoto {
@@ -1328,9 +1330,7 @@
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
-  min-width: 240px;
-  width: max-content;
-  max-width: min(360px, 90vw);
+  right: 0;
   max-height: 260px;
   overflow-y: auto;
   background-color: #fff;
@@ -1466,7 +1466,6 @@
 
 .form .bottone-selettore-altro {
   width: 100%;
-  text-align: left;
   padding: 11px 14px;
   border-radius: 6px;
   border: 1px solid var(--colore-bordo);
@@ -1475,7 +1474,10 @@
   font-size: 1rem;
   font-family: var(--font-testo);
   cursor: pointer;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .form .bottone-selettore-altro.campo-vuoto {
@@ -2587,4 +2589,90 @@ button.link-button.bottone-differenze:hover {
 
 .ricerca-citta .input-residenza {
   margin-bottom: 0;
+}
+
+.bottone-menu-multi.vuoto-facoltativo {
+  color: #8a8a8a;
+}
+
+.freccia-menu-multi {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.form select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 14px 14px;
+  padding-right: 38px;
+}
+
+.banner-durata select {
+  background-image: none;
+  padding-right: 0;
+}
+
+.bottone-menu-multi.aperto,
+.bottone-selettore-altro.aperto {
+  border-color: var(--colore-accento);
+}
+
+.bottone-menu-multi.aperto,
+.bottone-selettore-altro.aperto {
+  border-color: var(--colore-accento);
+}
+
+.tendina-ruota {
+  padding: 8px;
+}
+
+.contenitore-ruota {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: var(--colore-superficie);
+}
+
+.lista-ruota {
+  height: 100%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+}
+
+.lista-ruota::-webkit-scrollbar {
+  display: none;
+}
+
+.voce-ruota {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: center;
+  font-size: 1rem;
+  color: var(--colore-testo-secondario);
+  opacity: 0.5;
+  transition: opacity 0.15s ease, font-weight 0.15s ease;
+}
+
+.voce-ruota-attiva {
+  opacity: 1;
+  font-weight: 700;
+  color: var(--colore-testo);
+  font-size: 1.15rem;
+}
+
+.linee-ruota {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--colore-accento);
+  border-bottom: 1px solid var(--colore-accento);
+  pointer-events: none;
+  z-index: 2;
 }
