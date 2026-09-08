@@ -2561,3 +2561,30 @@ button.link-button.bottone-differenze:hover {
 .btn-chiudi-lightbox:hover {
   opacity: 0.8;
 }
+
+/* Tendina di ricerca città nella pagina "Completa il profilo" */
+.ricerca-citta {
+  position: relative;
+}
+
+.ricerca-citta .risultati-ricerca {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background-color: #fff;
+  border: 1px solid var(--colore-bordo);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  margin-top: 0;
+}
+
+.ricerca-citta .risultati-ricerca li {
+  color: var(--colore-testo) !important;
+}
+
+.ricerca-citta .input-residenza {
+  margin-bottom: 0;
+}

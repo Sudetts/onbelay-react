@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../AuthContext';
@@ -6,13 +6,14 @@ import MenuMultiSelezione from '../components/MenuMultiSelezione';
 
 function DettagliProfilo() {
   const { utente } = useAuth();
+  const contenitoreRicercaRef = useRef(null);
+  const ignoraRicercaRef = useRef(false);
 
   const [caricamento, setCaricamento] = useState(true);
   const [ricerca, setRicerca] = useState('');
   const [risultati, setRisultati] = useState([]);
   const [cercando, setCercando] = useState(false);
   const [posizioneSelezionata, setPosizioneSelezionata] = useState(null);
-  const [ignoraRicerca, setIgnoraRicerca] = useState(false);
   const [salvataggio, setSalvataggio] = useState(false);
   const [errore, setErrore] = useState('');
   const [messaggio, setMessaggio] = useState('');
@@ -27,7 +28,7 @@ function DettagliProfilo() {
     async function caricaProfilo() {
       const { data, error } = await supabase
         .from('profili')
-        .select('genere, anno_nascita, stile_preferito, residenza_nome')
+        .select('genere, anno_nascita, stile_preferito, residenza_nome, residenza_citta, residenza_provincia, residenza_regione')
         .eq('id', utente.id)
         .single();
 
@@ -35,7 +36,20 @@ function DettagliProfilo() {
         setGenere(data.genere || '');
         setAnnoNascita(data.anno_nascita ?? '');
         setStilePreferito(data.stile_preferito ? data.stile_preferito.split(', ').filter(Boolean) : []);
-        setRicerca(data.residenza_nome || '');
+
+        if (data.residenza_nome) {
+          ignoraRicercaRef.current = true;
+          setRicerca(data.residenza_nome);
+        }
+
+        if (data.residenza_citta || data.residenza_provincia || data.residenza_regione) {
+          setPosizioneSelezionata({
+            nome: data.residenza_nome || '',
+            citta: data.residenza_citta || '',
+            provincia: data.residenza_provincia || '',
+            regione: data.residenza_regione || '',
+          });
+        }
       }
       setCaricamento(false);
     }
@@ -44,8 +58,18 @@ function DettagliProfilo() {
   }, [utente]);
 
   useEffect(() => {
-    if (ignoraRicerca) {
-      setIgnoraRicerca(false);
+    function gestisciClickFuori(e) {
+      if (contenitoreRicercaRef.current && !contenitoreRicercaRef.current.contains(e.target)) {
+        setRisultati([]);
+      }
+    }
+    document.addEventListener('mousedown', gestisciClickFuori);
+    return () => document.removeEventListener('mousedown', gestisciClickFuori);
+  }, []);
+
+  useEffect(() => {
+    if (ignoraRicercaRef.current) {
+      ignoraRicercaRef.current = false;
       return;
     }
     if (ricerca.trim().length < 3) {
@@ -57,10 +81,13 @@ function DettagliProfilo() {
       setCercando(true);
       try {
         const risposta = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(ricerca)}&limit=5`
+          `https://photon.komoot.io/api/?q=${encodeURIComponent(ricerca)}&limit=8&lang=it`
         );
         const dati = await risposta.json();
-        setRisultati(dati);
+        const soloItalia = (dati.features || [])
+          .filter((f) => f.properties.countrycode === 'IT')
+          .slice(0, 5);
+        setRisultati(soloItalia);
       } catch (err) {
         console.error('Errore nella ricerca:', err);
       }
@@ -68,16 +95,32 @@ function DettagliProfilo() {
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [ricerca, ignoraRicerca]);
+  }, [ricerca]);
+
+  function etichettaRisultato(risultato) {
+    const p = risultato.properties;
+    return [p.name, p.county, p.state].filter(Boolean).join(', ');
+  }
 
   function selezionaRisultato(risultato) {
-    const lat = parseFloat(risultato.lat);
-    const lng = parseFloat(risultato.lon);
-    const nome = risultato.display_name;
-    setPosizioneSelezionata({ lat, lng, nome });
-    setIgnoraRicerca(true);
-    setRicerca(nome);
+    const p = risultato.properties;
+    const nomeVisualizzato = etichettaRisultato(risultato);
+
+    setPosizioneSelezionata({
+      nome: nomeVisualizzato,
+      citta: p.city || p.name || '',
+      provincia: p.county || '',
+      regione: p.state || '',
+    });
+    ignoraRicercaRef.current = true;
+    setRicerca(nomeVisualizzato);
     setRisultati([]);
+  }
+
+  function gestisciClickInput() {
+    if (risultati.length > 0) {
+      setRisultati([]);
+    }
   }
 
   async function salvaTutto(e) {
@@ -93,9 +136,10 @@ function DettagliProfilo() {
     };
 
     if (posizioneSelezionata) {
-      aggiornamento.residenza_lat = posizioneSelezionata.lat;
-      aggiornamento.residenza_lng = posizioneSelezionata.lng;
       aggiornamento.residenza_nome = posizioneSelezionata.nome;
+      aggiornamento.residenza_citta = posizioneSelezionata.citta || null;
+      aggiornamento.residenza_provincia = posizioneSelezionata.provincia || null;
+      aggiornamento.residenza_regione = posizioneSelezionata.regione || null;
     }
 
     const { error } = await supabase
@@ -129,12 +173,12 @@ function DettagliProfilo() {
   return (
     <div className="app dettaglio pannello-scuro">
       <Link to="/profilo" className="link-home">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="8" r="4" />
-    <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
-  </svg>
-  PROFILO
-</Link>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+        </svg>
+        PROFILO
+      </Link>
       <h1>Completa il tuo profilo</h1>
       <p className="link-piccolo">
         Nessuno di questi dati è obbligatorio. Ci aiutano a capire meglio la community e, per la
@@ -142,30 +186,41 @@ function DettagliProfilo() {
       </p>
 
       <form onSubmit={salvaTutto} className="form">
-        <label>
-          La tua città
-          <input
-            type="text"
-            placeholder="Es. Trento, Bergamo, Torino..."
-            value={ricerca}
-            onChange={(e) => {
-              setRicerca(e.target.value);
-              setPosizioneSelezionata(null);
-            }}
-            className="input-residenza"
-          />
-        </label>
+        <div className="ricerca-citta" ref={contenitoreRicercaRef}>
+          <label>
+            La tua città
+            <input
+              type="text"
+              placeholder="Es. Trento, Bergamo, Torino..."
+              value={ricerca}
+              onChange={(e) => {
+                setRicerca(e.target.value);
+                setPosizioneSelezionata(null);
+              }}
+              onClick={gestisciClickInput}
+              className="input-residenza"
+            />
+          </label>
 
-        {cercando && <p className="link-piccolo">Ricerca in corso...</p>}
+          {cercando && <p className="link-piccolo">Ricerca in corso...</p>}
 
-        {risultati.length > 0 && (
-          <ul className="risultati-ricerca">
-            {risultati.map((risultato) => (
-              <li key={risultato.place_id} onClick={() => selezionaRisultato(risultato)}>
-                {risultato.display_name}
-              </li>
-            ))}
-          </ul>
+          {risultati.length > 0 && (
+            <ul className="risultati-ricerca">
+              {risultati.map((risultato, indice) => (
+                <li key={risultato.properties.osm_id || indice} onClick={() => selezionaRisultato(risultato)}>
+                  {etichettaRisultato(risultato)}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {posizioneSelezionata && (posizioneSelezionata.provincia || posizioneSelezionata.regione) && (
+          <p className="link-piccolo">
+            {posizioneSelezionata.citta && <>Città: {posizioneSelezionata.citta} · </>}
+            {posizioneSelezionata.provincia && <>Provincia: {posizioneSelezionata.provincia} · </>}
+            {posizioneSelezionata.regione && <>Regione: {posizioneSelezionata.regione}</>}
+          </p>
         )}
 
         <label>
