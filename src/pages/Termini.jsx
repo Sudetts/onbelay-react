@@ -1,17 +1,17 @@
 import { Link } from 'react-router-dom';
 
 function Termini() {
-    return (
-    <div className="app dettaglio pannello-scuro">
-  <Link to="/" className="link-home">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 9.5 12 3l9 6.5" />
-      <path d="M5 9v11a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9" />
-    </svg>
-    HOME
-  </Link>
+  return (
+    <div className="app dettaglio pagina-legale pannello-scuro">
+      <Link to="/" className="link-home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 9.5 12 3l9 6.5" />
+          <path d="M5 9v11a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9" />
+        </svg>
+        HOME
+      </Link>
       <h1>Termini di Servizio</h1>
-      <p className="link-piccolo">Ultimo aggiornamento: [DATA]</p>
+      <p className="link-piccolo">Ultimo aggiornamento: 9 settembre 2026</p>
 
       <h2>1. Cos'è Onbelay</h2>
       <p>
@@ -22,9 +22,11 @@ function Termini() {
 
       <h2>2. Account utente</h2>
       <p>
-        Per creare e consultare contenuti è necessario registrarsi con un indirizzo email valido. Sei
-        responsabile della sicurezza delle tue credenziali di accesso. Ci riserviamo il diritto di sospendere
-        account che violano questi termini o che vengono usati in modo fraudolento.
+        Per creare e consultare contenuti è necessario registrarsi con un indirizzo email valido. Il
+        servizio è riservato a chi ha compiuto almeno 14 anni: registrandoti dichiari di possedere
+        questo requisito. Sei responsabile della sicurezza delle tue credenziali di accesso. Ci
+        riserviamo il diritto di sospendere account che violano questi termini o che vengono usati in
+        modo fraudolento.
       </p>
 
       <h2>3. Contenuti caricati dagli utenti</h2>
@@ -91,7 +93,7 @@ function Termini() {
       </p>
 
       <h2>9. Contatti</h2>
-      <p>Per domande su questi termini, scrivi a [EMAIL_PLACEHOLDER].</p>
+      <p>Per domande su questi termini, scrivi a info@onbelay.it.</p>
     </div>
   );
 }
