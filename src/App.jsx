@@ -111,17 +111,34 @@ function ListaVie() {
   const [viaIdFatte, setViaIdFatte] = useState(null);
   
 
-    useEffect(() => {
+        useEffect(() => {
+    let risolto = false;
+
     async function caricaVie() {
-      const { data, error } = await supabase.from('vie').select('*').eq('stato', 'approvata').eq('richiesta_eliminazione', false);
-      if (error) {
-        console.error('Errore nel caricamento:', error);
-      } else {
-        setVie(data);
+      try {
+        const { data, error } = await supabase.from('vie').select('*').eq('stato', 'approvata').eq('richiesta_eliminazione', false);
+        if (error) {
+          console.error('Errore nel caricamento:', error);
+        } else {
+          setVie(data);
+        }
+      } catch (err) {
+        console.error('Errore nel caricamento delle vie:', err);
+      } finally {
+        risolto = true;
+        setCaricamento(false);
       }
-      setCaricamento(false);
     }
     caricaVie();
+
+    const timeoutSicurezza = setTimeout(() => {
+      if (!risolto) {
+        console.warn('Timeout nel caricamento vie, sblocco comunque l\'interfaccia.');
+        setCaricamento(false);
+      }
+    }, 8000);
+
+    return () => clearTimeout(timeoutSicurezza);
   }, []);
 
   useEffect(() => {
